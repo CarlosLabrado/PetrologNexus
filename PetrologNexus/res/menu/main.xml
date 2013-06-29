@@ -1,9 +1,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android" >
 
     <item
-        android:id="@+id/action_settings"
+        android:id="@+id/connected"
         android:orderInCategory="100"
-        android:showAsAction="never"
-        android:title="@string/action_settings"/>
-
+        android:icon="@drawable/bton"
+        android:showAsAction="always|withText"
+        android:title="@string/action_connected"/>
+    <item
+            android:id="@+id/disconnected"
+            android:orderInCategory="100"
+            android:icon="@drawable/btoff"
+            android:showAsAction="always|withText"
+            android:title="@string/action_disconnect"/>
 </menu>
