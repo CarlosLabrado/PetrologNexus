@@ -2,7 +2,7 @@
 <resources>
 
     <string name="app_name">PetrologNexus</string>
-    <string name="action_connect">Connect</string>
+    <string name="action_connected">Connect</string>
     <string name="action_disconnect">Disconnect</string>
 
 </resources>
