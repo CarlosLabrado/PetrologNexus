@@ -64,6 +64,7 @@ public class MainActivity extends Activity {
             case R.id.disconnect:
                 try {
                     mBluetoothSocket.close();
+                    mBluetoothAdapter.disable();
                     Thread.sleep(200);
                 } catch (IOException e) {
                     e.printStackTrace();
