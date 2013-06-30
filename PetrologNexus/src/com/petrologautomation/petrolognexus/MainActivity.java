@@ -4,7 +4,10 @@ import android.app.ActionBar;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
+import android.content.BroadcastReceiver;
+import android.content.Context;
 import android.content.Intent;
+import android.content.IntentFilter;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
@@ -23,11 +26,34 @@ public class MainActivity extends Activity {
     public static final int REQUEST_ENABLE_BT = 1;
     Menu MyMenu;
 
+    // Create a BroadcastReceiver for ACTION_FOUND
+    private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
+        public void onReceive(Context context, Intent intent) {
+            String action = intent.getAction();
+            // When discovery finds a device
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                if (device.getName().contains("Petrolog")) {
+                    ConnectWithPetrolog (device);
+                }
+            }
+        }
+    };
+
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-	}
+
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        registerReceiver(mReceiver, filter);
+    }
+    protected void onDestroy() {
+        unregisterReceiver(mReceiver);
+        super.onDestroy();
+    }
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
@@ -57,14 +83,8 @@ public class MainActivity extends Activity {
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                     }
                     else {
-                        if (ConnectWithPetrolog()) {
-                            MyMenu.getItem(1).setVisible(false); //Connect
-                            MyMenu.getItem(2).setVisible(true); //Disconnect
-                        }
-                        else {
-                            MyMenu.getItem(1).setVisible(true); //Connect
-                            MyMenu.getItem(2).setVisible(false); //Disconnect
-                        }
+                        Toast.makeText(this,"Bluetooth active",Toast.LENGTH_SHORT).show();
+                        mBluetoothAdapter.startDiscovery(); //Blocking
                     }
                 }
                 break;
@@ -92,50 +112,30 @@ public class MainActivity extends Activity {
     public void onActivityResult (int request, int result, Intent data ) {
         if (request == REQUEST_ENABLE_BT )
             if (result == RESULT_OK){
-                if (ConnectWithPetrolog()) {
-                    MyMenu.getItem(1).setVisible(false); //Connect
-                    MyMenu.getItem(2).setVisible(true); //Disconnect
-                }
-                else {
-                    MyMenu.getItem(1).setVisible(true); //Connect
-                    MyMenu.getItem(2).setVisible(false); //Disconnect
-                }
+                mBluetoothAdapter.startDiscovery();
             }
             else
                 Toast.makeText(this,"Bluetooth activation failed",Toast.LENGTH_SHORT).show();
     }
 
-    private boolean ConnectWithPetrolog () {
-
-        Toast.makeText(this,"Bluetooth active",Toast.LENGTH_SHORT).show();
-        Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
-        // If there are paired devices
-        if (pairedDevices.size() > 0) {
-            for (BluetoothDevice device : pairedDevices) {
-                if (device.getName().contains("Petrolog")){
-                    try {
-                        mBluetoothSocket =
-                                device.createInsecureRfcommSocketToServiceRecord
-                                        (device.getUuids()[0].getUuid());
-                        /* Blocking !!!*/
-                        mBluetoothSocket.connect();
-                        /* Release Block!*/
-                        ActionBar bar = getActionBar();
-                        bar.setTitle (getString(R.string.app_title)+" - "+device.getName());
-                        Toast.makeText(this,"Connected!!",Toast.LENGTH_SHORT)
-                                .show();
-                        return true;
-                    } catch (IOException e) {
-                        Toast.makeText(this,"Error while connecting",Toast.LENGTH_SHORT)
-                                .show();
-                    }
-                }
-            }
+    private void ConnectWithPetrolog (BluetoothDevice device) {
+        try {
+            mBluetoothSocket = device.createInsecureRfcommSocketToServiceRecord
+                                (device.getUuids()[0].getUuid());
+            /* Blocking !!!*/
+            mBluetoothSocket.connect();
+            /* Release Block!*/
+            ActionBar bar = getActionBar();
+            bar.setTitle (getString(R.string.app_title)+" - "+device.getName());
+            Toast.makeText(this,"Connected!!",Toast.LENGTH_SHORT).show();
+            MyMenu.getItem(1).setVisible(false); //Connect
+            MyMenu.getItem(2).setVisible(true); //Disconnect
+            return;
+        } catch (IOException e) {
+            Toast.makeText(this,"Error while connecting",Toast.LENGTH_SHORT).show();
         }
-        else
-            Toast.makeText(this,"No paired devices found",Toast.LENGTH_SHORT).show();
-
-        return false;
+        MyMenu.getItem(1).setVisible(true); //Connect
+        MyMenu.getItem(2).setVisible(false); //Disconnect
     }
 
 }
