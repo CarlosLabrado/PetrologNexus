@@ -4,4 +4,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
+    <!-- Petrolog Design guidelines. -->
+    <dimen name="frame_margin">8dp</dimen>
+    <dimen name="frame_padding">5dp</dimen>
+
 </resources>
