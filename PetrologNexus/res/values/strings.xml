@@ -4,5 +4,6 @@
     <string name="app_name">PetrologNexus</string>
     <string name="action_connect">Connect</string>
     <string name="action_disconnect">Disconnect</string>
+    <string name="app_title">PetrologNexus</string>
 
 </resources>

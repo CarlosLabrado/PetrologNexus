@@ -9,6 +9,7 @@ import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -19,20 +20,22 @@ public class MainActivity extends Activity {
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket mBluetoothSocket;
     public static final int REQUEST_ENABLE_BT = 1;
+    Menu MyMenu;
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
-        bar = getActionBar();
-        bar.setSubtitle("");
 	}
 
 	@Override
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
-		getMenuInflater().inflate(R.menu.main, menu);
-		return true;
+		getMenuInflater().inflate(R.menu.mainmenu, menu);
+        menu.getItem(1).setVisible(false);
+        //Feo
+        MyMenu = menu;
+        return true;
 	}
     @Override
     public boolean onOptionsItemSelected(MenuItem item) {
@@ -50,16 +53,25 @@ public class MainActivity extends Activity {
                         Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
                         startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
                     }
-                    else
-                        ConnectWithPetrolog();
+                    else {
+                        if (ConnectWithPetrolog()) {
+                            MyMenu.getItem(0).setVisible(false); //Connect
+                            MyMenu.getItem(1).setVisible(true); //Disconnect
+                        }
+                        else {
+                            MyMenu.getItem(0).setVisible(true); //Connect
+                            MyMenu.getItem(1).setVisible(false); //Disconnect
+                        }
+                    }
                 }
                 break;
 
             case R.id.disconnect:
                 try {
                     mBluetoothSocket.close();
-                    mBluetoothAdapter.disable();
                     Thread.sleep(200);
+                    MyMenu.getItem(0).setVisible(true);    //Connect
+                    MyMenu.getItem(1).setVisible(false);  //Disconnect
                 } catch (IOException e) {
                     e.printStackTrace();
                 }catch (InterruptedException e) {
@@ -77,13 +89,20 @@ public class MainActivity extends Activity {
     public void onActivityResult (int request, int result, Intent data ) {
         if (request == REQUEST_ENABLE_BT )
             if (result == RESULT_OK){
-                ConnectWithPetrolog();
+                if (ConnectWithPetrolog()) {
+                    MyMenu.getItem(0).setVisible(false); //Connect
+                    MyMenu.getItem(1).setVisible(true); //Disconnect
+                }
+                else {
+                    MyMenu.getItem(0).setVisible(true); //Connect
+                    MyMenu.getItem(1).setVisible(false); //Disconnect
+                }
             }
             else
                 Toast.makeText(this,"Bluetooth activation failed",Toast.LENGTH_SHORT).show();
     }
 
-    private void ConnectWithPetrolog () {
+    private boolean ConnectWithPetrolog () {
 
         Toast.makeText(this,"Bluetooth active",Toast.LENGTH_SHORT).show();
         Set<BluetoothDevice> pairedDevices = mBluetoothAdapter.getBondedDevices();
@@ -99,9 +118,10 @@ public class MainActivity extends Activity {
                         mBluetoothSocket.connect();
                         /* Release Block!*/
                         ActionBar bar = getActionBar();
-                        bar.setSubtitle(device.getName());
+                        bar.setTitle (getString(R.string.app_title)+" - "+device.getName());
                         Toast.makeText(this,"Connected!!",Toast.LENGTH_SHORT)
                                 .show();
+                        return true;
                     } catch (IOException e) {
                         Toast.makeText(this,"Error while connecting",Toast.LENGTH_SHORT)
                                 .show();
@@ -111,6 +131,8 @@ public class MainActivity extends Activity {
         }
         else
             Toast.makeText(this,"No paired devices found",Toast.LENGTH_SHORT).show();
+
+        return false;
     }
 
 }
