@@ -8,11 +8,13 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
@@ -23,6 +25,7 @@ public class MainActivity extends Activity {
     ActionBar bar;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket mBluetoothSocket;
+
     public static final int REQUEST_ENABLE_BT = 1;
     Menu MyMenu;
 
@@ -35,7 +38,7 @@ public class MainActivity extends Activity {
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device.getName().contains("Petrolog")) {
-                    ConnectWithPetrolog (device);
+                    new AsyncBluetoothConnect().execute(device);
                 }
             }
         }
@@ -84,7 +87,7 @@ public class MainActivity extends Activity {
                     }
                     else {
                         Toast.makeText(this,"Bluetooth active",Toast.LENGTH_SHORT).show();
-                        mBluetoothAdapter.startDiscovery(); //Blocking
+                        mBluetoothAdapter.startDiscovery();
                     }
                 }
                 break;
@@ -111,31 +114,56 @@ public class MainActivity extends Activity {
 
     public void onActivityResult (int request, int result, Intent data ) {
         if (request == REQUEST_ENABLE_BT )
-            if (result == RESULT_OK){
+            if (result == RESULT_OK) {
                 mBluetoothAdapter.startDiscovery();
             }
             else
                 Toast.makeText(this,"Bluetooth activation failed",Toast.LENGTH_SHORT).show();
     }
 
-    private void ConnectWithPetrolog (BluetoothDevice device) {
-        try {
-            mBluetoothSocket = device.createInsecureRfcommSocketToServiceRecord
-                                (device.getUuids()[0].getUuid());
-            /* Blocking !!!*/
-            mBluetoothSocket.connect();
-            /* Release Block!*/
-            ActionBar bar = getActionBar();
-            bar.setTitle (getString(R.string.app_title)+" - "+device.getName());
-            Toast.makeText(this,"Connected!!",Toast.LENGTH_SHORT).show();
-            MyMenu.getItem(1).setVisible(false); //Connect
-            MyMenu.getItem(2).setVisible(true); //Disconnect
-            return;
-        } catch (IOException e) {
-            Toast.makeText(this,"Error while connecting",Toast.LENGTH_SHORT).show();
+    public class AsyncBluetoothConnect extends AsyncTask<BluetoothDevice, Void, Boolean> {
+        BluetoothDevice Device;
+        FrameLayout Wait = (FrameLayout) findViewById(R.id.waiting_bt_cx);
+
+        protected void onPreExecute() {
+            Wait.setVisibility(View.VISIBLE);
         }
-        MyMenu.getItem(1).setVisible(true); //Connect
-        MyMenu.getItem(2).setVisible(false); //Disconnect
+
+        protected Boolean doInBackground(BluetoothDevice... device) {
+            Device = device[0];
+            try {
+                mBluetoothSocket = device[0].createInsecureRfcommSocketToServiceRecord
+                        (device[0].getUuids()[0].getUuid());
+            /* Blocking !!!*/
+                mBluetoothSocket.connect();
+            /* Release Block!*/
+                return true;
+            } catch (IOException e) {
+                return false;
+            }
+        }
+
+        protected void onPostExecute(Boolean ok) {
+            if (ok) {
+                /* BT Menu icon */
+                MyMenu.getItem(1).setVisible(false); //Connect
+                MyMenu.getItem(2).setVisible(true); //Disconnect
+                /* Action bar title (Well Name) */
+                ActionBar bar = getActionBar();
+                bar.setTitle(getString(R.string.app_title) + " - " + Device.getName());
+                mBluetoothAdapter.cancelDiscovery();
+            }
+            else {
+                MyMenu.getItem(1).setVisible(true); //Connect
+                MyMenu.getItem(2).setVisible(false); //Disconnect
+            }
+            Wait.setVisibility(View.INVISIBLE);
+        }
+
     }
 
 }
+
+
+
+
