@@ -10,6 +10,7 @@ import android.app.Activity;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.widget.SearchView;
 import android.widget.Toast;
 
 import java.io.IOException;
@@ -32,8 +33,10 @@ public class MainActivity extends Activity {
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.mainmenu, menu);
-        menu.getItem(1).setVisible(false);
+        menu.getItem(2).setVisible(false);
         //Feo
+        SearchView tempsearch = (SearchView) menu.findItem(R.id.search).getActionView();
+        tempsearch.setQueryHint(getText(R.string.action_search));
         MyMenu = menu;
         return true;
 	}
@@ -55,12 +58,12 @@ public class MainActivity extends Activity {
                     }
                     else {
                         if (ConnectWithPetrolog()) {
-                            MyMenu.getItem(0).setVisible(false); //Connect
-                            MyMenu.getItem(1).setVisible(true); //Disconnect
+                            MyMenu.getItem(1).setVisible(false); //Connect
+                            MyMenu.getItem(2).setVisible(true); //Disconnect
                         }
                         else {
-                            MyMenu.getItem(0).setVisible(true); //Connect
-                            MyMenu.getItem(1).setVisible(false); //Disconnect
+                            MyMenu.getItem(1).setVisible(true); //Connect
+                            MyMenu.getItem(2).setVisible(false); //Disconnect
                         }
                     }
                 }
@@ -70,8 +73,8 @@ public class MainActivity extends Activity {
                 try {
                     mBluetoothSocket.close();
                     Thread.sleep(200);
-                    MyMenu.getItem(0).setVisible(true);    //Connect
-                    MyMenu.getItem(1).setVisible(false);  //Disconnect
+                    MyMenu.getItem(1).setVisible(true);    //Connect
+                    MyMenu.getItem(2).setVisible(false);  //Disconnect
                 } catch (IOException e) {
                     e.printStackTrace();
                 }catch (InterruptedException e) {
@@ -90,12 +93,12 @@ public class MainActivity extends Activity {
         if (request == REQUEST_ENABLE_BT )
             if (result == RESULT_OK){
                 if (ConnectWithPetrolog()) {
-                    MyMenu.getItem(0).setVisible(false); //Connect
-                    MyMenu.getItem(1).setVisible(true); //Disconnect
+                    MyMenu.getItem(1).setVisible(false); //Connect
+                    MyMenu.getItem(2).setVisible(true); //Disconnect
                 }
                 else {
-                    MyMenu.getItem(0).setVisible(true); //Connect
-                    MyMenu.getItem(1).setVisible(false); //Disconnect
+                    MyMenu.getItem(1).setVisible(true); //Connect
+                    MyMenu.getItem(2).setVisible(false); //Disconnect
                 }
             }
             else
