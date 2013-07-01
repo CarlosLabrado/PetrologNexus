@@ -1,6 +1,7 @@
 package com.petrologautomation.petrolognexus;
 
 import android.app.ActionBar;
+import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -8,6 +9,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -18,16 +20,34 @@ import android.widget.FrameLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.maps.CameraUpdate;
+import com.google.android.gms.maps.CameraUpdateFactory;
+import com.google.android.gms.maps.GoogleMap;
+import com.google.android.gms.maps.GoogleMapOptions;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
+
 import java.io.IOException;
 import java.util.Set;
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener {
+
     ActionBar bar;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket mBluetoothSocket;
+    private GoogleMap WellLocation = null;
 
     public static final int REQUEST_ENABLE_BT = 1;
     Menu MyMenu;
+    LocationClient CurrentLocation;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -52,7 +72,38 @@ public class MainActivity extends Activity {
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
+        //Location client
+        CurrentLocation = new LocationClient(this,this,this);
+        CurrentLocation.connect();
     }
+    /*
+     * Called by Location Services when the request to connect the
+     * client finishes successfully. At this point, you can
+     * request the current location or start periodic updates
+     */
+    @Override
+    public void onConnected(Bundle dataBundle) {
+        // Display the connection status
+        Toast.makeText(this, "Connected to Location Services", Toast.LENGTH_SHORT).show();
+    }
+    /*
+     * Called by Location Services if the connection to the
+     * location client drops because of an error.
+     */
+    @Override
+    public void onDisconnected() {
+        // Display the connection status
+        Toast.makeText(this, "Disconnected from Location Services", Toast.LENGTH_SHORT).show();
+    }
+
+    /*
+     * Called by Location Services if the attempt to
+     * Location Services fails.
+     */
+    @Override
+    public void onConnectionFailed(ConnectionResult connectionResult) {
+
+        }
     protected void onDestroy() {
         unregisterReceiver(mReceiver);
         super.onDestroy();
@@ -95,6 +146,9 @@ public class MainActivity extends Activity {
             case R.id.disconnect:
                 try {
                     mBluetoothSocket.close();
+                    if(WellLocation != null){
+                        WellLocation.clear();
+                    }
                     Thread.sleep(200);
                     MyMenu.getItem(1).setVisible(true);    //Connect
                     MyMenu.getItem(2).setVisible(false);  //Disconnect
@@ -152,6 +206,22 @@ public class MainActivity extends Activity {
                 ActionBar bar = getActionBar();
                 bar.setTitle(getString(R.string.app_title) + " - " + Device.getName());
                 mBluetoothAdapter.cancelDiscovery();
+                //Map
+                LatLng coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
+                                               CurrentLocation.getLastLocation().getLongitude());
+                if (WellLocation == null) {
+                    WellLocation = ((MapFragment) getFragmentManager().findFragmentById(R.id.MapFragment))
+                            .getMap();
+                    // Check if we were successful in obtaining the map.
+                    if (WellLocation != null) {
+                        // The Map is verified. It is now safe to manipulate the map.
+                        CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinate,17);
+                        WellLocation.animateCamera(cameraUpdate);
+                        WellLocation.addMarker(new MarkerOptions()
+                                .position(coordinate)
+                                .icon(BitmapDescriptorFactory.fromResource(R.drawable.oilpumpjack)));
+                    }
+                }
             }
             else {
                 MyMenu.getItem(1).setVisible(true); //Connect
