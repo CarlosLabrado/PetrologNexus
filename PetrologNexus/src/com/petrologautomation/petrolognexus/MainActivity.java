@@ -1,7 +1,6 @@
 package com.petrologautomation.petrolognexus;
 
 import android.app.ActionBar;
-import android.app.FragmentTransaction;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -9,10 +8,10 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -26,15 +25,14 @@ import com.google.android.gms.location.LocationClient;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.GoogleMapOptions;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
-import java.util.Set;
+import java.util.Timer;
+import java.util.TimerTask;
 
 public class MainActivity extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks,
@@ -44,9 +42,10 @@ public class MainActivity extends Activity implements
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket mBluetoothSocket;
     private GoogleMap WellLocation = null;
-
+    boolean Conectado = false;
     public static final int REQUEST_ENABLE_BT = 1;
     Menu MyMenu;
+    FrameLayout test;
     LocationClient CurrentLocation;
 
     // Create a BroadcastReceiver for ACTION_FOUND
@@ -75,6 +74,21 @@ public class MainActivity extends Activity implements
         //Location client
         CurrentLocation = new LocationClient(this,this,this);
         CurrentLocation.connect();
+
+        Timer actualiza = new Timer();
+        actualiza.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Serial
+                Log.i("PN - Conectado",""+Conectado);
+                if (Conectado) {
+                    G4_ESC algo = new G4_ESC(mBluetoothSocket);
+                    Log.i("PN - Respuesta",algo.result);
+                }
+            }
+
+        }, 0, 1000);
+
     }
     /*
      * Called by Location Services when the request to connect the
@@ -145,6 +159,7 @@ public class MainActivity extends Activity implements
 
             case R.id.disconnect:
                 try {
+                    Conectado = false;
                     mBluetoothSocket.close();
                     if(WellLocation != null){
                         WellLocation.clear();
@@ -222,15 +237,25 @@ public class MainActivity extends Activity implements
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.oilpumpjack)));
                     }
                 }
+                Conectado = true;
+                Toast.makeText(MainActivity.this, "Connect", Toast.LENGTH_SHORT)
+                        .show();
+
             }
             else {
                 MyMenu.getItem(1).setVisible(true); //Connect
                 MyMenu.getItem(2).setVisible(false); //Disconnect
+                Toast.makeText(MainActivity.this, "Connect Error", Toast.LENGTH_SHORT)
+                        .show();
             }
+
             Wait.setVisibility(View.INVISIBLE);
+
+
         }
 
     }
+
 
 }
 

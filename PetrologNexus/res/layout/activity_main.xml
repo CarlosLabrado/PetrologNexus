@@ -206,16 +206,19 @@
             android:focusableInTouchMode="false"
             android:visibility="invisible"
             android:background="@android:color/darker_gray"
-            android:focusable="true"
-            android:alpha=".5"
-            android:id="@+id/waiting_bt_cx">
+            android:focusable="false"
+            android:id="@+id/waiting_bt_cx"
+            android:alpha=".7"
+            android:layout_gravity="center_vertical"
+            >
 
         <ProgressBar
                 style="?android:attr/progressBarStyleLarge"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:id="@+id/progressBar"
-                android:layout_gravity="center"/>
+                android:layout_gravity="center"
+                android:background="@android:color/transparent"/>
 
     </FrameLayout>
 
