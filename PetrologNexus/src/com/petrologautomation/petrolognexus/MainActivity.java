@@ -138,6 +138,25 @@ public class MainActivity extends Activity implements
                             }
                             wellStatus.append(po);
                             wellStatus.append("\n");
+                             /* Format Pump Off Strokes*/
+                            int tempint = PetrologSerialCom.getPumpOffStrokes();
+                            SpannableString poS = new SpannableString("Pump Strokes: "+tempint);
+                            if(String.valueOf(tempint).length()==1){
+                                poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,15,0);
+                            }else if(String.valueOf(tempint).length()==2){
+                                poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,16,0);
+                            }else if (String.valueOf(tempint).length()==3){
+                                 poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,17,0);
+                            }
+
+                            wellStatus.append(poS);
+                            wellStatus.append("\n");
+                             /* Format Fillage*/
+                            tempint = PetrologSerialCom.getFillage();
+                            SpannableString fill = new SpannableString("Fillage: "+tempint+" %");
+                            fill.setSpan(new ForegroundColorSpan(Color.BLUE),9,11,0);
+                            wellStatus.append(fill);
+                            wellStatus.append("\n");
                         }
                     });
                 }
