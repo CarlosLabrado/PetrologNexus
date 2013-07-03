@@ -8,15 +8,20 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
+import android.text.SpannableString;
+import android.text.style.ForegroundColorSpan;
+import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.SearchView;
+import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -45,8 +50,11 @@ public class MainActivity extends Activity implements
     boolean Conectado = false;
     public static final int REQUEST_ENABLE_BT = 1;
     Menu MyMenu;
-    FrameLayout test;
     LocationClient CurrentLocation;
+    G4_Petrolog PetrologSerialCom;
+
+    TextView wellStatus;
+    TextView PumpOffStatus;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -68,27 +76,73 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+        wellStatus = (TextView)findViewById(R.id.Current);
+
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
         registerReceiver(mReceiver, filter);
+
         //Location client
         CurrentLocation = new LocationClient(this,this,this);
         CurrentLocation.connect();
 
-        Timer actualiza = new Timer();
-        actualiza.schedule(new TimerTask() {
+        Timer SerialComHeartBeat = new Timer();
+        SerialComHeartBeat.schedule(new TimerTask() {
             @Override
             public void run() {
                 // Serial
-                Log.i("PN - Conectado",""+Conectado);
                 if (Conectado) {
-                    G4_ESC algo = new G4_ESC(mBluetoothSocket);
-                    Log.i("PN - Respuesta",algo.result);
+                    PetrologSerialCom.HeartBeat();
                 }
             }
+        }, 0, 200);
 
-        }, 0, 1000);
 
+        Timer UIUpdate = new Timer();
+        SerialComHeartBeat.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Serial
+                if (Conectado) {
+                    wellStatus.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            /* Format Well Status */
+                            String temp = PetrologSerialCom.getWellStatus();
+                            SpannableString ws = new SpannableString("Well Status: "+temp);
+                            if (temp.contains("On")){
+                                ws.setSpan(new ForegroundColorSpan(Color.BLUE),13,15,0);
+                                /* Changes the size of the text in proportion to its original size */
+                                //ws.setSpan(new RelativeSizeSpan(1f),13,15,0);
+                               // wellStatus.setText(ws);
+                            }
+                            else if (temp.contains("Off")){
+                                ws.setSpan(new ForegroundColorSpan(Color.RED),13,16,0);
+                                /* Changes the size of the text in proportion to its original size */
+                                //ws.setSpan(new RelativeSizeSpan(1.5f),13,16,0);
+                            }
+                           wellStatus.setText(ws);
+                           wellStatus.append("\n");
+                            /* Format Pump Off */
+                            temp = PetrologSerialCom.getPumpOffStatus();
+                            SpannableString po = new SpannableString("Pump Off: "+temp);
+                            if (temp.contains("Normal")){
+                                po.setSpan(new ForegroundColorSpan(Color.BLUE),10,16,0);
+                                /* Changes the size of the text in proportion to its original size */
+                              //  po.setSpan(new RelativeSizeSpan(2f),10,16,0);
+                            }
+                            else if (temp.contains("Pump Off")){
+                                po.setSpan(new ForegroundColorSpan(Color.RED),10,18,0);
+                                /* Changes the size of the text in proportion to its original size */
+                                //po.setSpan(new RelativeSizeSpan(2f),10,18,0);
+                            }
+                            wellStatus.append(po);
+                            wellStatus.append("\n");
+                        }
+                    });
+                }
+            }
+        }, 0, 600);
     }
     /*
      * Called by Location Services when the request to connect the
@@ -217,6 +271,8 @@ public class MainActivity extends Activity implements
                 /* BT Menu icon */
                 MyMenu.getItem(1).setVisible(false); //Connect
                 MyMenu.getItem(2).setVisible(true); //Disconnect
+                /* Init G4 Com */
+                PetrologSerialCom = new G4_Petrolog(mBluetoothSocket);
                 /* Action bar title (Well Name) */
                 ActionBar bar = getActionBar();
                 bar.setTitle(getString(R.string.app_title) + " - " + Device.getName());
@@ -237,6 +293,7 @@ public class MainActivity extends Activity implements
                                 .icon(BitmapDescriptorFactory.fromResource(R.drawable.oilpumpjack)));
                     }
                 }
+                /* Run Serial Heart Beat only if BT connection established */
                 Conectado = true;
                 Toast.makeText(MainActivity.this, "Connect", Toast.LENGTH_SHORT)
                         .show();
