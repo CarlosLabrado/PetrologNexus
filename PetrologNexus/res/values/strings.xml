@@ -2,8 +2,13 @@
 <resources>
 
     <string name="app_name">PetrologNexus</string>
+    <string name="app_title">PetrologNexus</string>
+<!--Menu Items-->
     <string name="action_connect">Connect</string>
     <string name="action_disconnect">Disconnect</string>
-    <string name="app_title">PetrologNexus</string>
+    <string name="action_login">Telemetry Login</string>
+    <string name="action_search">Find Well</string>
+    <string name="action_tutorial">Tutorial</string>
+
 
 </resources>
