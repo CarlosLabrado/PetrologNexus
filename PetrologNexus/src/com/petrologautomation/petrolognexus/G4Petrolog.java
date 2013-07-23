@@ -11,7 +11,7 @@ import java.io.OutputStream;
 /**
  * Created by Cesar on 6/30/13.
  */
-public class G4_Petrolog {
+public class G4Petrolog {
 
     final static int TIMEOUT_VALUE = 10;
 
@@ -30,7 +30,7 @@ public class G4_Petrolog {
      * Author: CCR, JCC
      *
      * */
-    public G4_Petrolog(BluetoothSocket socket){
+    public G4Petrolog(BluetoothSocket socket){
         try {
             Tx = socket.getOutputStream();
             Rx = socket.getInputStream();
@@ -162,6 +162,7 @@ public class G4_Petrolog {
             return "Empty - Number Format";
         }
     }
+
     /*
      * This method gets Pump Off Flag.
      * Author: CCR, JCC
@@ -181,6 +182,42 @@ public class G4_Petrolog {
             return "Empty - Null Pointer";
         } catch (NumberFormatException e){
             return "Empty - Number Format";
+        }
+    }
+
+    /*
+     * This method gets Pump Off Strokes (Setting).
+     * Author: CCR, JCC
+     *
+     * */
+    public int getPumpOffStrokes (){
+        try {
+            int PumpOffStrokes = Integer.valueOf(S_1.substring(11,13),16);
+            return PumpOffStrokes;
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Fillage (Setting).
+     * Author: CCR, JCC
+     *
+     * */
+    public int getFillageSetting (){
+        try {
+            int PumpOffStrokes = Integer.valueOf(S_1.substring(33,35),16)*10;
+            return PumpOffStrokes;
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
         }
     }
 }

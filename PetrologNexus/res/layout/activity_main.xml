@@ -42,18 +42,19 @@
                 <FrameLayout
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:id="@+id/CurrentTv"
-                        android:layout_weight="100"
+                        android:id="@+id/Current"
+                        android:layout_weight="150"
                         android:background="@drawable/background_with_shadow"
                         android:layout_marginRight="@dimen/frame_margin"
                         android:layout_marginBottom="@dimen/frame_margin"
                         android:padding="@dimen/frame_padding">
 
                     <TextView
-                            android:layout_width="wrap_content"
-                            android:layout_height="wrap_content"
+                            android:layout_width="fill_parent"
+                            android:layout_height="fill_parent"
                             android:text="New Text"
-                            android:id="@+id/Current"/>
+                            android:id="@+id/CurrentTV"
+                            android:textSize="18dp"/>
                 </FrameLayout>
 
                 <FrameLayout
@@ -71,7 +72,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="New Text"
-                            android:id="@+id/Runtime"
+                            android:id="@+id/RuntimeTV"
                             android:layout_weight="100"
                             />
                 </FrameLayout>
@@ -92,7 +93,7 @@
                 <ImageView
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:id="@+id/RuntimeTrend"
+                        android:id="@+id/RuntimeTrendIV"
                         android:layout_weight="100"
                         android:background="@drawable/trend"
                         />
@@ -139,7 +140,7 @@
                 <ImageView
                         android:layout_width="fill_parent"
                         android:layout_height="fill_parent"
-                        android:id="@+id/Dyna"
+                        android:id="@+id/DynaIV"
                         android:layout_weight="50"
                         android:background="@drawable/dyna"
                         android:adjustViewBounds="false"/>
@@ -167,9 +168,9 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="New Text"
-                            android:id="@+id/Settings"
+                            android:id="@+id/SettingsTV"
                             android:layout_weight="100"
-                            />
+                            android:focusableInTouchMode="true"/>
                 </FrameLayout>
 
                 <FrameLayout
@@ -186,7 +187,7 @@
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
                             android:text="New Text"
-                            android:id="@+id/Fillage"
+                            android:id="@+id/FillageTV"
                             android:layout_weight="100"
                             />
                 </FrameLayout>

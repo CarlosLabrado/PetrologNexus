@@ -8,20 +8,15 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.text.style.RelativeSizeSpan;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
 import android.widget.SearchView;
-import android.widget.TextView;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -38,10 +33,21 @@ import com.google.android.gms.maps.model.MarkerOptions;
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
+import java.util.UUID;
 
 public class MainActivity extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener {
+
+    public static G4Petrolog PetrologSerialCom;
+
+    private static FrameLayout All;
+    private static wellStatus_post wellStatusPost;
+    private static wellRuntime_post wellRuntimePost;
+    private static wellHistoricalRuntime_post wellHistoricalRuntimePost;
+    private static wellDynagraph_post wellDynagraphPost;
+    private static wellSettings_post wellSettingsPost;
+    private static wellFillage_post wellFillagePost;
 
     ActionBar bar;
     private BluetoothAdapter mBluetoothAdapter;
@@ -49,12 +55,9 @@ public class MainActivity extends Activity implements
     private GoogleMap WellLocation = null;
     boolean Conectado = false;
     public static final int REQUEST_ENABLE_BT = 1;
+    public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
     Menu MyMenu;
     LocationClient CurrentLocation;
-    G4_Petrolog PetrologSerialCom;
-
-    TextView wellStatus;
-    TextView PumpOffStatus;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -65,6 +68,9 @@ public class MainActivity extends Activity implements
                 // Get the BluetoothDevice object from the Intent
                 BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
                 if (device.getName().contains("Petrolog")) {
+                    device.fetchUuidsWithSdp();
+                    Log.i("PN - BT","Start UUID Discovery");
+                    mBluetoothAdapter.cancelDiscovery();
                     new AsyncBluetoothConnect().execute(device);
                 }
             }
@@ -76,7 +82,6 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
-        wellStatus = (TextView)findViewById(R.id.Current);
 
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -86,6 +91,7 @@ public class MainActivity extends Activity implements
         CurrentLocation = new LocationClient(this,this,this);
         CurrentLocation.connect();
 
+        /* Timer to update info from Petrolog */
         Timer SerialComHeartBeat = new Timer();
         SerialComHeartBeat.schedule(new TimerTask() {
             @Override
@@ -97,71 +103,36 @@ public class MainActivity extends Activity implements
             }
         }, 0, 200);
 
+        /* Timer to Update UI */
+        All = (FrameLayout)findViewById(R.id.Main);
+
+        wellStatusPost = new wellStatus_post(findViewById(R.id.CurrentTV));
+        wellRuntimePost = new wellRuntime_post(findViewById(R.id.RuntimeTV));
+        wellHistoricalRuntimePost = new wellHistoricalRuntime_post(findViewById(R.id.RuntimeTrendIV));
+        wellDynagraphPost = new wellDynagraph_post(findViewById(R.id.DynaIV));
+        wellSettingsPost = new wellSettings_post(findViewById(R.id.SettingsTV));
+        wellFillagePost = new wellFillage_post(findViewById(R.id.SettingsTV));
 
         Timer UIUpdate = new Timer();
-        SerialComHeartBeat.schedule(new TimerTask() {
+        UIUpdate.schedule(new TimerTask() {
             @Override
             public void run() {
                 // Serial
                 if (Conectado) {
-                    wellStatus.post(new Runnable() {
+                    All.post(new Runnable() {
                         @Override
                         public void run() {
-                            /* Format Well Status */
-                            String temp = PetrologSerialCom.getWellStatus();
-                            SpannableString ws = new SpannableString("Well Status: "+temp);
-                            if (temp.contains("On")){
-                                ws.setSpan(new ForegroundColorSpan(Color.BLUE),13,15,0);
-                                /* Changes the size of the text in proportion to its original size */
-                                //ws.setSpan(new RelativeSizeSpan(1f),13,15,0);
-                               // wellStatus.setText(ws);
-                            }
-                            else if (temp.contains("Off")){
-                                ws.setSpan(new ForegroundColorSpan(Color.RED),13,16,0);
-                                /* Changes the size of the text in proportion to its original size */
-                                //ws.setSpan(new RelativeSizeSpan(1.5f),13,16,0);
-                            }
-                           wellStatus.setText(ws);
-                           wellStatus.append("\n");
-                            /* Format Pump Off */
-                            temp = PetrologSerialCom.getPumpOffStatus();
-                            SpannableString po = new SpannableString("Pump Off: "+temp);
-                            if (temp.contains("Normal")){
-                                po.setSpan(new ForegroundColorSpan(Color.BLUE),10,16,0);
-                                /* Changes the size of the text in proportion to its original size */
-                              //  po.setSpan(new RelativeSizeSpan(2f),10,16,0);
-                            }
-                            else if (temp.contains("Pump Off")){
-                                po.setSpan(new ForegroundColorSpan(Color.RED),10,18,0);
-                                /* Changes the size of the text in proportion to its original size */
-                                //po.setSpan(new RelativeSizeSpan(2f),10,18,0);
-                            }
-                            wellStatus.append(po);
-                            wellStatus.append("\n");
-                             /* Format Pump Off Strokes*/
-                            int tempint = PetrologSerialCom.getPumpOffStrokes();
-                            SpannableString poS = new SpannableString("Pump Strokes: "+tempint);
-                            if(String.valueOf(tempint).length()==1){
-                                poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,15,0);
-                            }else if(String.valueOf(tempint).length()==2){
-                                poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,16,0);
-                            }else if (String.valueOf(tempint).length()==3){
-                                 poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,17,0);
-                            }
-
-                            wellStatus.append(poS);
-                            wellStatus.append("\n");
-                             /* Format Fillage*/
-                            tempint = PetrologSerialCom.getFillage();
-                            SpannableString fill = new SpannableString("Fillage: "+tempint+" %");
-                            fill.setSpan(new ForegroundColorSpan(Color.BLUE),9,11,0);
-                            wellStatus.append(fill);
-                            wellStatus.append("\n");
+                            wellStatusPost.post();
+                            wellRuntimePost.post();
+                            wellHistoricalRuntimePost.post();
+                            wellDynagraphPost.post();
+                            wellSettingsPost.post();
+                            wellFillagePost.post();
                         }
                     });
                 }
             }
-        }, 0, 600);
+        }, 0, 400);
     }
     /*
      * Called by Location Services when the request to connect the
@@ -273,16 +244,23 @@ public class MainActivity extends Activity implements
 
         protected Boolean doInBackground(BluetoothDevice... device) {
             Device = device[0];
+
             try {
+                Log.i("PN - BT",""+device[0].getName());
                 mBluetoothSocket = device[0].createInsecureRfcommSocketToServiceRecord
-                        (device[0].getUuids()[0].getUuid());
-            /* Blocking !!!*/
+                        (UUID.fromString(UUID_BLUE_RADIOS));
+
+                /* Blocking !!!*/
                 mBluetoothSocket.connect();
-            /* Release Block!*/
+                /* Release Block!*/
                 return true;
             } catch (IOException e) {
                 return false;
+            } catch (NullPointerException e) {
+                Log.i("PN - BT","No device found?");
+                return false;
             }
+
         }
 
         protected void onPostExecute(Boolean ok) {
@@ -291,11 +269,10 @@ public class MainActivity extends Activity implements
                 MyMenu.getItem(1).setVisible(false); //Connect
                 MyMenu.getItem(2).setVisible(true); //Disconnect
                 /* Init G4 Com */
-                PetrologSerialCom = new G4_Petrolog(mBluetoothSocket);
+                PetrologSerialCom = new G4Petrolog(mBluetoothSocket);
                 /* Action bar title (Well Name) */
                 ActionBar bar = getActionBar();
                 bar.setTitle(getString(R.string.app_title) + " - " + Device.getName());
-                mBluetoothAdapter.cancelDiscovery();
                 //Map
                 LatLng coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
                                                CurrentLocation.getLastLocation().getLongitude());
@@ -314,14 +291,14 @@ public class MainActivity extends Activity implements
                 }
                 /* Run Serial Heart Beat only if BT connection established */
                 Conectado = true;
-                Toast.makeText(MainActivity.this, "Connect", Toast.LENGTH_SHORT)
+                Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT)
                         .show();
 
             }
             else {
                 MyMenu.getItem(1).setVisible(true); //Connect
                 MyMenu.getItem(2).setVisible(false); //Disconnect
-                Toast.makeText(MainActivity.this, "Connect Error", Toast.LENGTH_SHORT)
+                Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT)
                         .show();
             }
 
