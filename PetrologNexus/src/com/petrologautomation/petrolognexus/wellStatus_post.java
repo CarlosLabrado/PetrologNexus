@@ -1,10 +1,15 @@
 package com.petrologautomation.petrolognexus;
 
+import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
+import android.util.Log;
 import android.view.View;
 import android.widget.TextView;
+
+import java.text.DecimalFormat;
+import java.text.NumberFormat;
 
 /**
  * Created by Cesar on 7/22/13.
@@ -19,57 +24,72 @@ public class wellStatus_post {
 
     }
 
-    public void post() {
+    public void post(Context myContext) {
 
-        /* Format Well Status */
-        String temp = MainActivity.PetrologSerialCom.getWellStatus();
-        SpannableString ws = new SpannableString("Well Status: "+temp);
-        if (temp.contains("On")){
-            ws.setSpan(new ForegroundColorSpan(Color.BLUE),13,15,0);
-        /* Changes the size of the text in proportion to its original size */
-            //ws.setSpan(new RelativeSizeSpan(1f),13,15,0);
-            // wellStatus.setText(ws);
-        }
-        else if (temp.contains("Off")){
-            ws.setSpan(new ForegroundColorSpan(Color.RED),13,16,0);
-        /* Changes the size of the text in proportion to its original size */
-            //ws.setSpan(new RelativeSizeSpan(1.5f),13,16,0);
-        }
-        wellStatus.setText(ws);
-        wellStatus.append("\n");
+    /* Format Well Status */
+        String data = MainActivity.PetrologSerialCom.getWellStatus();
+        String title = myContext.getString(R.string.well_status);
+        if (data.contains("Running")){
+            wellStatus.setText(StringFormat.format(myContext,title,data,Color.BLUE,false));
+            wellStatus.append("\n");
+
         /* Format Pump Off */
-        temp = MainActivity.PetrologSerialCom.getPumpOffStatus();
-        SpannableString po = new SpannableString("Pump Off: "+temp);
-        if (temp.contains("Normal")){
-            po.setSpan(new ForegroundColorSpan(Color.BLUE),10,16,0);
-         /* Changes the size of the text in proportion to its original size */
-            //  po.setSpan(new RelativeSizeSpan(2f),10,16,0);
-        }
-        else if (temp.contains("Pump Off")){
-            po.setSpan(new ForegroundColorSpan(Color.RED),10,18,0);
-        /* Changes the size of the text in proportion to its original size */
-            //po.setSpan(new RelativeSizeSpan(2f),10,18,0);
-        }
-        wellStatus.append(po);
-        wellStatus.append("\n");
-        /* Format Pump Off Strokes*/
-        int tempint = MainActivity.PetrologSerialCom.getPumpOffStrokes();
-        SpannableString poS = new SpannableString("Pump Strokes: "+tempint);
-        if(String.valueOf(tempint).length()==1){
-            poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,15,0);
-        }else if(String.valueOf(tempint).length()==2){
-            poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,16,0);
-        }else if (String.valueOf(tempint).length()==3){
-            poS.setSpan(new ForegroundColorSpan(Color.BLUE),14,17,0);
-        }
+            title = myContext.getString(R.string.pump_off);
+            data = MainActivity.PetrologSerialCom.getPumpOffStatus();
+            if (data.contains("No")){
+                wellStatus.append(StringFormat.format(myContext,title,data,Color.BLUE,false));
+                wellStatus.append("\n");
+            }
+            else if (data.contains("Yes")){
+                wellStatus.append(StringFormat.format(myContext,title,data,Color.RED,false));
+                wellStatus.append("\n");
+            }
+            else {
+                wellStatus.append(StringFormat.format(myContext,title,"",Color.GRAY,true));
+                wellStatus.append("\n");
+            }
 
-        wellStatus.append(poS);
-        wellStatus.append("\n");
-        /* Format Fillage*/
-        tempint = MainActivity.PetrologSerialCom.getFillageSetting();
-        SpannableString fill = new SpannableString("Fillage: "+tempint+" %");
-        fill.setSpan(new ForegroundColorSpan(Color.BLUE),9,11,0);
-        wellStatus.append(fill);
-        wellStatus.append("\n");
+        /* Format Strokes this Cycle */
+            title = myContext.getString(R.string.strokes_this);
+            int dataInt = MainActivity.PetrologSerialCom.getStrokesThis();
+            if (dataInt > 0){
+                wellStatus.append(StringFormat.format(myContext,title,String.valueOf(dataInt),Color.BLUE,false));
+            }
+            else {
+                wellStatus.append(StringFormat.format(myContext, title, "", Color.GRAY, true));
+            }
+        }
+        else if (data.contains("Stopped")){
+            wellStatus.setText(StringFormat.format(myContext,title,data,Color.BLUE,false));
+            wellStatus.append("\n");
+
+        /* Format Next Start */
+            title = myContext.getString(R.string.next_start);
+            int min = MainActivity.PetrologSerialCom.getMinNextStart();
+            int sec = MainActivity.PetrologSerialCom.getSecNextStart();
+            if ((min >= 0 && min != 255) && (sec >= 0 && sec != 255)){
+                data = String.format("%02d",min)+":"+String.format("%02d",sec);
+                wellStatus.append(StringFormat.format(myContext,title,data,Color.BLUE,false));
+                wellStatus.append("\n");
+            }
+            else {
+                wellStatus.append(StringFormat.format(myContext,title,"",Color.GRAY,true));
+                wellStatus.append("\n");
+            }
+
+        /* Format Strokes this Cycle */
+            title = myContext.getString(R.string.strokes_last);
+            int dataInt = MainActivity.PetrologSerialCom.getStrokesLast();
+            if (dataInt > 0){
+                wellStatus.append(StringFormat.format(myContext,title,String.valueOf(dataInt),Color.BLUE,false));
+            }
+            else {
+                wellStatus.append(StringFormat.format(myContext,title,"",Color.GRAY,true));
+            }
+        }
+        else {
+            wellStatus.setText(StringFormat.format(myContext,title,"",Color.GRAY,true));
+            wellStatus.append("\n");
+        }
     }
 }

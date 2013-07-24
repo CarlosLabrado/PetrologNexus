@@ -122,12 +122,12 @@ public class MainActivity extends Activity implements
                     All.post(new Runnable() {
                         @Override
                         public void run() {
-                            wellStatusPost.post();
-                            wellRuntimePost.post();
-                            wellHistoricalRuntimePost.post();
-                            wellDynagraphPost.post();
-                            wellSettingsPost.post();
-                            wellFillagePost.post();
+                            wellStatusPost.post(getBaseContext());
+                            wellRuntimePost.post(getBaseContext());
+                            wellHistoricalRuntimePost.post(getBaseContext());
+                            wellDynagraphPost.post(getBaseContext());
+                            wellSettingsPost.post(getBaseContext());
+                            wellFillagePost.post(getBaseContext());
                         }
                     });
                 }

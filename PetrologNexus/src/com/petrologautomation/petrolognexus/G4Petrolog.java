@@ -139,6 +139,9 @@ public class G4Petrolog {
 
         } catch (IOException e) {
             e.printStackTrace();
+        } catch (StringIndexOutOfBoundsException e) {
+            e.printStackTrace();
+            Log.i("PN - Rx","Bad Response = "+Result);
         }
     }
     /*
@@ -150,9 +153,9 @@ public class G4Petrolog {
         try {
             int OnOff = Integer.valueOf(E.substring(24,25),16);
             if(OnOff%3 == 0){
-               return "On";
+               return "Running";
             }else{
-               return "Off";
+               return "Stopped";
             }
         } catch (StringIndexOutOfBoundsException e){
             return "Empty - String Out of Bounds";
@@ -170,11 +173,11 @@ public class G4Petrolog {
      * */
     public String getPumpOffStatus (){
         try {
-            int OnOff = Integer.valueOf(E.substring(21,22),16);
-            if(OnOff%2 == 0){
-                return "Normal";
+            int OnOff = Integer.valueOf(E.substring(16,17),16);
+            if(OnOff%3 == 0){
+                return "No";
             }else{
-                return "Pump Off";
+                return "Yes";
             }
         } catch (StringIndexOutOfBoundsException e){
             return "Empty - String Out of Bounds";
@@ -186,11 +189,79 @@ public class G4Petrolog {
     }
 
     /*
+     * This method gets Strokes this Cycle.
+     * Author: CCR, JCC
+     *
+     * */
+    public int getStrokesThis (){
+        try {
+            return Integer.valueOf(MB.substring(25,29),16);
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Strokes Last Cycle.
+     * Author: CCR, JCC
+     *
+     * */
+    public int getStrokesLast (){
+        try {
+            return Integer.valueOf(MB.substring(42,46),16);
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Minutes to Next Start.
+     * Author: CCR, JCC
+     *
+     * */
+    public int getMinNextStart (){
+        try {
+            return 255-Integer.valueOf(MB.substring(50,52),16);
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Minutes to Next Start.
+     * Author: CCR, JCC
+     *
+     * */
+    public int getSecNextStart (){
+        try {
+            return 255-Integer.valueOf(MB.substring(52,54),16);
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
      * This method gets Pump Off Strokes (Setting).
      * Author: CCR, JCC
      *
      * */
-    public int getPumpOffStrokes (){
+    public int getPumpOffStrokesSetting (){
         try {
             int PumpOffStrokes = Integer.valueOf(S_1.substring(11,13),16);
             return PumpOffStrokes;

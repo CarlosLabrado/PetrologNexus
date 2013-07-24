@@ -47,14 +47,15 @@
                         android:background="@drawable/background_with_shadow"
                         android:layout_marginRight="@dimen/frame_margin"
                         android:layout_marginBottom="@dimen/frame_margin"
-                        android:padding="@dimen/frame_padding">
+                        android:padding="@dimen/frame_padding"
+                        >
 
                     <TextView
                             android:layout_width="fill_parent"
                             android:layout_height="fill_parent"
-                            android:text="New Text"
                             android:id="@+id/CurrentTV"
-                            android:textSize="18dp"/>
+                            android:textSize="16dp"
+                            android:gravity="center_vertical|right"/>
                 </FrameLayout>
 
                 <FrameLayout

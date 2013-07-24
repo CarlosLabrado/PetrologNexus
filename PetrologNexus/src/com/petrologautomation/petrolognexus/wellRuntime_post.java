@@ -1,6 +1,7 @@
 package com.petrologautomation.petrolognexus;
 
 
+import android.content.Context;
 import android.view.View;
 import android.widget.TextView;
 
@@ -17,7 +18,7 @@ public class wellRuntime_post {
 
     }
 
-    public void post() {
+    public void post(Context myContext) {
 
         /* Format and post data using view passed as parameter to constructor */
 
