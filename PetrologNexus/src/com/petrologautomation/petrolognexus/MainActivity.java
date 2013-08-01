@@ -8,6 +8,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.graphics.Color;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -16,9 +17,11 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.widget.FrameLayout;
+import android.widget.LinearLayout;
 import android.widget.SearchView;
 import android.widget.Toast;
 
+import com.androidplot.xy.XYPlot;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
@@ -35,6 +38,8 @@ import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
+
 public class MainActivity extends Activity implements
         GooglePlayServicesClient.ConnectionCallbacks,
         GooglePlayServicesClient.OnConnectionFailedListener {
@@ -42,6 +47,13 @@ public class MainActivity extends Activity implements
     public static G4Petrolog PetrologSerialCom;
 
     private static FrameLayout All;
+
+    private static HoloCircularProgressBar TodayRuntime;
+    private static HoloCircularProgressBar YesterdayRuntime;
+
+    private static XYPlot RuntimeTread;
+    private static XYPlot Dynagraph;
+
     private static wellStatus_post wellStatusPost;
     private static wellRuntime_post wellRuntimePost;
     private static wellHistoricalRuntime_post wellHistoricalRuntimePost;
@@ -82,6 +94,8 @@ public class MainActivity extends Activity implements
 		super.onCreate(savedInstanceState);
 		setContentView(R.layout.activity_main);
 
+        //Remove notification bar
+        getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
 
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -90,6 +104,10 @@ public class MainActivity extends Activity implements
         //Location client
         CurrentLocation = new LocationClient(this,this,this);
         CurrentLocation.connect();
+
+        //Init Graphs
+        RuntimeTread = FormatTrend.format((XYPlot)findViewById(R.id.runtimeTrend));
+        Dynagraph = FormatGraph.format((XYPlot)findViewById(R.id.dynagraph));
 
         /* Timer to update info from Petrolog */
         Timer SerialComHeartBeat = new Timer();
@@ -106,12 +124,13 @@ public class MainActivity extends Activity implements
         /* Timer to Update UI */
         All = (FrameLayout)findViewById(R.id.Main);
 
-        wellStatusPost = new wellStatus_post(findViewById(R.id.CurrentTV));
-        wellRuntimePost = new wellRuntime_post(findViewById(R.id.RuntimeTV));
-        wellHistoricalRuntimePost = new wellHistoricalRuntime_post(findViewById(R.id.RuntimeTrendIV));
-        wellDynagraphPost = new wellDynagraph_post(findViewById(R.id.DynaIV));
-        wellSettingsPost = new wellSettings_post(findViewById(R.id.SettingsTV));
-        wellFillagePost = new wellFillage_post(findViewById(R.id.SettingsTV));
+        TodayRuntime = (HoloCircularProgressBar) findViewById(R.id.runtime_today);
+
+
+        YesterdayRuntime = (HoloCircularProgressBar) findViewById(R.id.runtime_yesterday);
+
+
+        wellStatusPost = new wellStatus_post(this);
 
         Timer UIUpdate = new Timer();
         UIUpdate.schedule(new TimerTask() {
@@ -122,18 +141,21 @@ public class MainActivity extends Activity implements
                     All.post(new Runnable() {
                         @Override
                         public void run() {
-                            wellStatusPost.post(getBaseContext());
-                            wellRuntimePost.post(getBaseContext());
-                            wellHistoricalRuntimePost.post(getBaseContext());
-                            wellDynagraphPost.post(getBaseContext());
-                            wellSettingsPost.post(getBaseContext());
-                            wellFillagePost.post(getBaseContext());
+                            wellStatusPost.post();
+                            TodayRuntime.setProgress(.25f);
+                            YesterdayRuntime.setProgress(.5f);
                         }
                     });
                 }
             }
         }, 0, 400);
     }
+    @Override
+    protected void onResume (){
+        super.onResume();
+        getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+    }
+
     /*
      * Called by Location Services when the request to connect the
      * client finishes successfully. At this point, you can
@@ -308,6 +330,7 @@ public class MainActivity extends Activity implements
         }
 
     }
+
 
 
 }

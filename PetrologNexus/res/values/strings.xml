@@ -15,21 +15,27 @@
     <string name="n_a">N/A</string>
 
     <!--Current Status Titles -->
-    <string name="well_status">Well Status:&#160;</string>
+    <string name="well_status">Well Status:</string>
 
     <!--Current Status Titles (Well ON)-->
-    <string name="pump_off">Pump Off:&#160;</string>
-    <string name="strokes_this">Strokes this Cycle:&#160;</string>
+    <string name="pump_off">Pump Off:</string>
+    <string name="strokes_this">Strokes This:</string>
 
     <!--Current Status Titles (Well OFF)-->
-    <string name="next_start">Next Start:&#160;</string>
-    <string name="strokes_last">Strokes last Cycle:&#160;</string>
+    <string name="next_start">Next Start:</string>
+    <string name="strokes_last">Strokes Last:</string>
 
     <!--Settings-->
-    <string name="pump_up_setting">Strokes @ Pump Up:&#160;</string>
-    <string name="pump_off_setting">Strokes @ Pump Off:&#160;</string>
-    <string name="fillage_setting">Percent Fillage:&#160;</string>
-    <string name="timeout_setting">Current Time Out:&#160;</string>
-    <string name="auto_timeout_setting">Automatic Time Out:&#160;</string>
+    <string name="pump_up_setting">Strokes @ Pump Up:</string>
+    <string name="pump_off_setting">Strokes @ Pump Off:</string>
+    <string name="fillage_setting">Percent Fillage:</string>
+    <string name="timeout_setting">Current Time Out:</string>
+    <string name="auto_timeout_setting">Automatic Time Out:</string>
+
+    <!--Fillage-->
+    <string name="current_fillage">Current Fillage:</string>
+    <string name="percent_fillage_setting">Percent Fillage Setting:</string>
+    <string name="pump_off_distance">Pump Off Distance:</string>
+
 
 </resources>

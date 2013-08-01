@@ -2,94 +2,98 @@ package com.petrologautomation.petrolognexus;
 
 import android.content.Context;
 import android.graphics.Color;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.util.Log;
-import android.view.View;
 import android.widget.TextView;
-
-import java.text.DecimalFormat;
-import java.text.NumberFormat;
 
 /**
  * Created by Cesar on 7/22/13.
  */
 public class wellStatus_post {
 
-    TextView wellStatus;
+    MainActivity myAct;
+    TextView current_t1TV;
+    TextView current_v1TV;
+    TextView current_t2TV;
+    TextView current_v2TV;
+    TextView current_t3TV;
+    TextView current_v3TV;
 
-    public wellStatus_post (View view){
+    public wellStatus_post (MainActivity myActivity){
 
-        wellStatus = (TextView) view;
+        myAct = myActivity;
+        current_t1TV = (TextView)myAct.findViewById(R.id.current_t1TV);
+        current_v1TV = (TextView)myAct.findViewById(R.id.current_v1TV);
+        current_t2TV = (TextView)myAct.findViewById(R.id.current_t2TV);
+        current_v2TV = (TextView)myAct.findViewById(R.id.current_v2TV);
+        current_t3TV = (TextView)myAct.findViewById(R.id.current_t3TV);
+        current_v3TV = (TextView)myAct.findViewById(R.id.current_v3TV);
 
     }
 
-    public void post(Context myContext) {
+    public void post() {
 
     /* Format Well Status */
         String data = MainActivity.PetrologSerialCom.getWellStatus();
-        String title = myContext.getString(R.string.well_status);
+        String title = myAct.getString(R.string.well_status);
+        current_t1TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
         if (data.contains("Running")){
-            wellStatus.setText(StringFormat.format(myContext,title,data,Color.BLUE,false));
-            wellStatus.append("\n");
+            current_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
 
         /* Format Pump Off */
-            title = myContext.getString(R.string.pump_off);
+            title = myAct.getString(R.string.pump_off);
+            current_t2TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
             data = MainActivity.PetrologSerialCom.getPumpOffStatus();
             if (data.contains("No")){
-                wellStatus.append(StringFormat.format(myContext,title,data,Color.BLUE,false));
-                wellStatus.append("\n");
+                current_v2TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
             }
             else if (data.contains("Yes")){
-                wellStatus.append(StringFormat.format(myContext,title,data,Color.RED,false));
-                wellStatus.append("\n");
+                current_v2TV.setText(StringFormatValue.format(myAct,data,Color.RED,1.2f,false));
             }
             else {
-                wellStatus.append(StringFormat.format(myContext,title,"",Color.GRAY,true));
-                wellStatus.append("\n");
+                current_v2TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
             }
 
         /* Format Strokes this Cycle */
-            title = myContext.getString(R.string.strokes_this);
             int dataInt = MainActivity.PetrologSerialCom.getStrokesThis();
+            data = String.valueOf(dataInt);
+            title = myAct.getString(R.string.strokes_this);
+            current_t3TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
             if (dataInt > 0){
-                wellStatus.append(StringFormat.format(myContext,title,String.valueOf(dataInt),Color.BLUE,false));
+                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.RED,1.2f,false));
             }
             else {
-                wellStatus.append(StringFormat.format(myContext, title, "", Color.GRAY, true));
+                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
             }
         }
         else if (data.contains("Stopped")){
-            wellStatus.setText(StringFormat.format(myContext,title,data,Color.BLUE,false));
-            wellStatus.append("\n");
+            current_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
 
         /* Format Next Start */
-            title = myContext.getString(R.string.next_start);
+            title = myAct.getString(R.string.next_start);
+            current_t2TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
             int min = MainActivity.PetrologSerialCom.getMinNextStart();
             int sec = MainActivity.PetrologSerialCom.getSecNextStart();
             if ((min >= 0 && min != 255) && (sec >= 0 && sec != 255)){
                 data = String.format("%02d",min)+":"+String.format("%02d",sec);
-                wellStatus.append(StringFormat.format(myContext,title,data,Color.BLUE,false));
-                wellStatus.append("\n");
+                current_v2TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
             }
             else {
-                wellStatus.append(StringFormat.format(myContext,title,"",Color.GRAY,true));
-                wellStatus.append("\n");
+                current_v2TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
             }
 
         /* Format Strokes this Cycle */
-            title = myContext.getString(R.string.strokes_last);
+            title = myAct.getString(R.string.strokes_last);
+            current_t3TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
             int dataInt = MainActivity.PetrologSerialCom.getStrokesLast();
             if (dataInt > 0){
-                wellStatus.append(StringFormat.format(myContext,title,String.valueOf(dataInt),Color.BLUE,false));
+                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
             }
             else {
-                wellStatus.append(StringFormat.format(myContext,title,"",Color.GRAY,true));
+                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
             }
         }
         else {
-            wellStatus.setText(StringFormat.format(myContext,title,"",Color.GRAY,true));
-            wellStatus.append("\n");
+            data = myAct.getString(R.string.n_a);
+            current_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
         }
     }
 }

@@ -2,7 +2,9 @@
 <module type="JAVA_MODULE" version="4">
   <component name="FacetManager">
     <facet type="android" name="Android">
-      <configuration />
+      <configuration>
+        <option name="LIBRARY_PROJECT" value="true" />
+      </configuration>
     </facet>
   </component>
   <component name="NewModuleRootManager" inherit-compiler-output="true">
@@ -11,13 +13,8 @@
       <sourceFolder url="file://$MODULE_DIR$/gen" isTestSource="false" />
       <sourceFolder url="file://$MODULE_DIR$/src" isTestSource="false" />
     </content>
-    <orderEntry type="inheritedJdk" />
+    <orderEntry type="jdk" jdkName="Android 4.2.2 Platform" jdkType="Android SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
-    <orderEntry type="library" name="gen" level="application" />
-    <orderEntry type="module" module-name="google-play-services_lib" exported="" />
-    <orderEntry type="library" exported="" name="google-play-services" level="project" />
-    <orderEntry type="module" module-name="HoloCircularProgressBar" />
-    <orderEntry type="library" name="androidplot-core-0.6.0" level="project" />
   </component>
 </module>
 

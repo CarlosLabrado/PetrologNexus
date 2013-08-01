@@ -1,11 +1,7 @@
 package com.petrologautomation.petrolognexus;
 
 
-import android.content.Context;
 import android.graphics.Color;
-import android.text.SpannableString;
-import android.text.style.ForegroundColorSpan;
-import android.view.View;
 import android.widget.TextView;
 
 /**
@@ -13,45 +9,52 @@ import android.widget.TextView;
  */
 public class wellSettings_post {
 
-    TextView wellParameters;
+    MainActivity myAct;
+    TextView settings_t1TV;
+    TextView settings_v1TV;
+    TextView settings_t2TV;
+    TextView settings_v2TV;
+    TextView settings_t3TV;
+    TextView settings_v3TV;
 
-    public wellSettings_post(View view){
+    public wellSettings_post(MainActivity myActivity){
 
-        wellParameters = (TextView) view;
+        myAct = myActivity;
+        settings_t1TV = (TextView)myAct.findViewById(R.id.settings_t1TV);
+        settings_v1TV = (TextView)myAct.findViewById(R.id.settings_v1TV);
+        settings_t2TV = (TextView)myAct.findViewById(R.id.settings_t2TV);
+        settings_v2TV = (TextView)myAct.findViewById(R.id.settings_v2TV);
+
 
     }
 
-    public void post(Context myContext) {
+    public void post() {
 
         /* Format Pump Off Strokes Setting*/
         int tempInt = MainActivity.PetrologSerialCom.getPumpOffStrokesSetting();
-        String title = myContext.getString(R.string.pump_off_setting);
+        String data = String.valueOf(tempInt);
+        String title = myAct.getString(R.string.pump_off_setting);
+        settings_t1TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
         if (tempInt > 0) {
             /* No error found */
-            wellParameters.setText(
-                    StringFormat.format(myContext,title,String.valueOf(tempInt),Color.BLUE,false));
-            wellParameters.append("\n");
+            settings_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
         }
         else {
             /* Data error */
-            wellParameters.setText(
-                    StringFormat.format(myContext,title,"",Color.GRAY,true));
-            wellParameters.append("\n");
+            settings_v1TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
         }
 
         /* Format % Fillage Setting*/
         tempInt = MainActivity.PetrologSerialCom.getFillageSetting();
-        title = myContext.getString(R.string.fillage_setting);
+        title = myAct.getString(R.string.fillage_setting);
+        settings_t2TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
         if (tempInt > 0) {
             /* No error found */
-            wellParameters.append(
-                    StringFormat.format(myContext,title,String.valueOf(tempInt),Color.BLUE,false));
-            wellParameters.append("\n");
+            settings_v2TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
         }
         else {
-            wellParameters.append(
-                    StringFormat.format(myContext,title,"",Color.GRAY,true));
-            wellParameters.append("\n");
+            /* Data error */
+            settings_v2TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
         }
     }
 }
