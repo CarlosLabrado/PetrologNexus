@@ -281,14 +281,73 @@ public class G4Petrolog {
      * */
     public int getFillageSetting (){
         try {
-            int PumpOffStrokes = Integer.valueOf(S_1.substring(33,35),16)*10;
-            return PumpOffStrokes;
+            int Fillage = (Integer.valueOf(S_1.substring(33,35),16))*10;
+            return Fillage;
         } catch (StringIndexOutOfBoundsException e){
             return -1;
         } catch (NullPointerException e){
             return -2;
         } catch (NumberFormatException e){
             return -3;
+        }
+    }
+
+    /*
+     * This method gets Pump Up Strokes (Setting).
+     * Author: CCR
+     *
+     * */
+    public int getPumpUpSetting (){
+        try {
+            int PumpUpStrokes = Integer.valueOf(S_1.substring(9,11),16);
+            return PumpUpStrokes;
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Current Timeout (Setting).
+     * Author: CCR
+     *
+     * */
+    public int getCurrentTimeoutSetting (){
+        try {
+            int CurrentTimeout = 256-Integer.valueOf(S_1.substring(29,31),16);
+            return CurrentTimeout;
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets AutomaticTO (Setting).
+     * Author: CCR
+     *
+     * */
+    public String getAutomaticTOSetting (){
+        try {
+            int AutomaticTO = Integer.valueOf(S_1.substring(37,39),16);
+            if (AutomaticTO != 0){
+                return "Yes";
+            }
+            else {
+                return "No";
+            }
+        } catch (StringIndexOutOfBoundsException e){
+            return "StringOutOfBounds";
+        } catch (NullPointerException e){
+            return "NullPointer";
+        } catch (NumberFormatException e){
+            return "NumberFormat";
         }
     }
 }

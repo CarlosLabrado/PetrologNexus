@@ -2,6 +2,7 @@ package com.petrologautomation.petrolognexus;
 
 
 import android.graphics.Color;
+import android.util.Log;
 import android.widget.TextView;
 
 /**
@@ -16,6 +17,10 @@ public class wellSettings_post {
     TextView settings_v2TV;
     TextView settings_t3TV;
     TextView settings_v3TV;
+    TextView settings_t4TV;
+    TextView settings_v4TV;
+    TextView settings_t5TV;
+    TextView settings_v5TV;
 
     public wellSettings_post(MainActivity myActivity){
 
@@ -24,16 +29,22 @@ public class wellSettings_post {
         settings_v1TV = (TextView)myAct.findViewById(R.id.settings_v1TV);
         settings_t2TV = (TextView)myAct.findViewById(R.id.settings_t2TV);
         settings_v2TV = (TextView)myAct.findViewById(R.id.settings_v2TV);
+        settings_t3TV = (TextView)myAct.findViewById(R.id.settings_t3TV);
+        settings_v3TV = (TextView)myAct.findViewById(R.id.settings_v3TV);
+        settings_t4TV = (TextView)myAct.findViewById(R.id.settings_t4TV);
+        settings_v4TV = (TextView)myAct.findViewById(R.id.settings_v4TV);
+        settings_t5TV = (TextView)myAct.findViewById(R.id.settings_t5TV);
+        settings_v5TV = (TextView)myAct.findViewById(R.id.settings_v5TV);
 
 
     }
 
     public void post() {
 
-        /* Format Pump Off Strokes Setting*/
-        int tempInt = MainActivity.PetrologSerialCom.getPumpOffStrokesSetting();
+        /* Format Pump Up Setting */
+        int tempInt = MainActivity.PetrologSerialCom.getPumpUpSetting();
         String data = String.valueOf(tempInt);
-        String title = myAct.getString(R.string.pump_off_setting);
+        String title = myAct.getString(R.string.pump_up_setting);
         settings_t1TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
         if (tempInt > 0) {
             /* No error found */
@@ -44,9 +55,10 @@ public class wellSettings_post {
             settings_v1TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
         }
 
-        /* Format % Fillage Setting*/
-        tempInt = MainActivity.PetrologSerialCom.getFillageSetting();
-        title = myAct.getString(R.string.fillage_setting);
+        /* Format Pump Off Strokes Setting*/
+        tempInt = MainActivity.PetrologSerialCom.getPumpOffStrokesSetting();
+        data = String.valueOf(tempInt);
+        title = myAct.getString(R.string.pump_off_setting);
         settings_t2TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
         if (tempInt > 0) {
             /* No error found */
@@ -55,6 +67,47 @@ public class wellSettings_post {
         else {
             /* Data error */
             settings_v2TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
+        }
+
+        /* Format % Fillage Setting*/
+        tempInt = MainActivity.PetrologSerialCom.getFillageSetting();
+        data = String.valueOf(tempInt)+"%";
+        title = myAct.getString(R.string.fillage_setting);
+        settings_t3TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
+        if (tempInt > 0) {
+            /* No error found */
+            settings_v3TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
+        }
+        else {
+            /* Data error */
+            settings_v3TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
+        }
+
+        /* Format Current Timeout Setting*/
+        tempInt = MainActivity.PetrologSerialCom.getCurrentTimeoutSetting();
+        data = String.valueOf(tempInt)+" min";
+        title = myAct.getString(R.string.timeout_setting);
+        settings_t4TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
+        if (tempInt > 0) {
+            /* No error found */
+            settings_v4TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
+        }
+        else {
+            /* Data error */
+            settings_v4TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
+        }
+
+        /* Format % Fillage Setting*/
+        data = MainActivity.PetrologSerialCom.getAutomaticTOSetting();
+        title = myAct.getString(R.string.auto_timeout_setting);
+        settings_t5TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
+        if (data.contains("Yes")||data.contains("No")) {
+            /* No error found */
+            settings_v5TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
+        }
+        else {
+            /* Data error */
+            settings_v5TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
         }
     }
 }

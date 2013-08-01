@@ -131,6 +131,7 @@ public class MainActivity extends Activity implements
 
 
         wellStatusPost = new wellStatus_post(this);
+        wellSettingsPost = new wellSettings_post(this);
 
         Timer UIUpdate = new Timer();
         UIUpdate.schedule(new TimerTask() {
@@ -142,6 +143,7 @@ public class MainActivity extends Activity implements
                         @Override
                         public void run() {
                             wellStatusPost.post();
+                            wellSettingsPost.post();
                             TodayRuntime.setProgress(.25f);
                             YesterdayRuntime.setProgress(.5f);
                         }
