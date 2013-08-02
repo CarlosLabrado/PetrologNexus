@@ -19,11 +19,11 @@
 
     <!--Current Status Titles (Well ON)-->
     <string name="pump_off">Pump Off:</string>
-    <string name="strokes_this">Strokes This:</string>
+    <string name="strokes_this">Current Cycle:</string>
 
     <!--Current Status Titles (Well OFF)-->
     <string name="next_start">Next Start:</string>
-    <string name="strokes_last">Strokes Last:</string>
+    <string name="strokes_last">Last Cycle:</string>
 
     <!--Settings-->
     <string name="pump_up_setting">Strokes @ Pump Up:</string>

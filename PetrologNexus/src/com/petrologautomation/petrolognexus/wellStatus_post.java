@@ -54,11 +54,11 @@ public class wellStatus_post {
 
         /* Format Strokes this Cycle */
             int dataInt = MainActivity.PetrologSerialCom.getStrokesThis();
-            data = String.valueOf(dataInt);
+            data = String.valueOf(dataInt)+" strokes";
             title = myAct.getString(R.string.strokes_this);
             current_t3TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
             if (dataInt > 0){
-                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.RED,1.2f,false));
+                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
             }
             else {
                 current_v3TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
@@ -84,7 +84,7 @@ public class wellStatus_post {
             title = myAct.getString(R.string.strokes_last);
             current_t3TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
             int dataInt = MainActivity.PetrologSerialCom.getStrokesLast();
-            String data1 = String.valueOf(dataInt);
+            String data1 = String.valueOf(dataInt)+" strokes";
             if (dataInt > 0){
                 current_v3TV.setText(StringFormatValue.format(myAct,data1,Color.BLUE,1.2f,false));
             }

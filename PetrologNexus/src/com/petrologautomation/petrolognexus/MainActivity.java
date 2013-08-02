@@ -48,8 +48,6 @@ public class MainActivity extends Activity implements
 
     private static FrameLayout All;
 
-    private static HoloCircularProgressBar TodayRuntime;
-    private static HoloCircularProgressBar YesterdayRuntime;
 
     private static XYPlot RuntimeTread;
     private static XYPlot Dynagraph;
@@ -124,14 +122,9 @@ public class MainActivity extends Activity implements
         /* Timer to Update UI */
         All = (FrameLayout)findViewById(R.id.Main);
 
-        TodayRuntime = (HoloCircularProgressBar) findViewById(R.id.runtime_today);
-
-
-        YesterdayRuntime = (HoloCircularProgressBar) findViewById(R.id.runtime_yesterday);
-
-
         wellStatusPost = new wellStatus_post(this);
         wellSettingsPost = new wellSettings_post(this);
+        wellRuntimePost = new wellRuntime_post(this);
 
         Timer UIUpdate = new Timer();
         UIUpdate.schedule(new TimerTask() {
@@ -144,8 +137,7 @@ public class MainActivity extends Activity implements
                         public void run() {
                             wellStatusPost.post();
                             wellSettingsPost.post();
-                            TodayRuntime.setProgress(.25f);
-                            YesterdayRuntime.setProgress(.5f);
+                            wellRuntimePost.post();
                         }
                     });
                 }

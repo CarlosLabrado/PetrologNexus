@@ -350,4 +350,93 @@ public class G4Petrolog {
             return "NumberFormat";
         }
     }
+
+    /*
+     * This method gets Yesterday's Runtime in seconds.
+     * Author: CCR
+     *
+     * */
+    public int getYesterdayRuntime (){
+        try {
+            int YesterdayRuntime = Integer.valueOf(S_1.substring(45,49),16);
+            return YesterdayRuntime*2;
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Today's Runtime in seconds.
+     * Author: CCR
+     *
+     * */
+    public int getTodayRuntime (){
+        try {
+            int TodayRuntime = Integer.valueOf(MB.substring(38,42),16);
+            if (getOverflowHrsToday()){
+                return TodayRuntime+65535;
+            }
+            else{
+                return TodayRuntime;
+            }
+
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
+        }
+    }
+
+    /*
+     * This method gets Hours Today Overflow bit.
+     * Author: CCR
+     *
+     * */
+    public boolean getOverflowHrsToday (){
+        try {
+            int temp = Integer.valueOf(E.substring(16,17),16);
+            if (temp%2 == 0) {
+                return false;
+            }
+            else {
+                return true;
+            }
+        } catch (StringIndexOutOfBoundsException e){
+            return false;
+        } catch (NullPointerException e){
+            return false;
+        } catch (NumberFormatException e){
+            return false;
+        }
+    }
+
+    /*
+     * This method gets Petrolog Clock.
+     * Author: CCR
+     *
+     * */
+    public String getPetrologClock (){
+        int foo = 0;
+        try {
+            /* Validate Usage */
+            int totalSecToday = Integer.valueOf(H.substring(3).substring(0,2))*3600 +
+                                Integer.valueOf(H.substring(3).substring(3,5))*60   +
+                                Integer.valueOf(H.substring(3).substring(6,8));
+            foo = totalSecToday;
+            return H.substring(3);
+        } catch (StringIndexOutOfBoundsException e){
+            return "Empty - String Out of Bounds - "+foo;
+        } catch (NullPointerException e){
+            return "Empty - Null Pointer - "+foo;
+        } catch (NumberFormatException e){
+            return "Empty - Number Format - "+foo;
+        }
+    }
+
 }
