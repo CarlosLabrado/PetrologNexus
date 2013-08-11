@@ -15,7 +15,7 @@ public class FormatGraph {
         // Domain
         myGraph.setDomainValueFormat(new DecimalFormat("0"));
 
-        //Range
+        // Range
         myGraph.setRangeValueFormat(new DecimalFormat("0"));
 
         myGraph.getGraphWidget().getDomainLabelPaint().setColor(Color.BLACK);
@@ -23,6 +23,11 @@ public class FormatGraph {
 
         myGraph.getGraphWidget().getDomainOriginLabelPaint().setColor(Color.BLACK);
         myGraph.getGraphWidget().getDomainOriginLinePaint().setColor(Color.BLACK);
+
+
+        // General
+        myGraph.setGridPadding(5,5,5,5);
+        myGraph.getLayoutManager().remove(myGraph.getLegendWidget());
 
         return myGraph;
     }

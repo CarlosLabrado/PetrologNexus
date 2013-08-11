@@ -66,10 +66,20 @@ public class wellRuntime_post {
             todayRuntime.setText(StringFormatValue.format(myAct,data, Color.BLUE,1.2f,false));
             /* % */
             String InternalClock = MainActivity.PetrologSerialCom.getPetrologClock();
-            int totalSecToday = Integer.valueOf(InternalClock.substring(0,2))*3600 +
-                                Integer.valueOf(InternalClock.substring(3,5))*60   +
-                                Integer.valueOf(InternalClock.substring(6,8));
-            data = String.valueOf((secToday*100)/totalSecToday)+"%";
+            int totalSecToday = 0;
+            try {
+                totalSecToday = Integer.valueOf(InternalClock.substring(0,2))*3600 +
+                        Integer.valueOf(InternalClock.substring(3,5))*60   +
+                        Integer.valueOf(InternalClock.substring(6,8));
+            } catch (NumberFormatException e){
+                Log.i("PN - H","Empty - Number Format - "+totalSecToday);
+            }
+            try {
+                data = String.valueOf((secToday*100)/totalSecToday)+"%";
+
+            } catch (ArithmeticException e) {
+                Log.i("PN - H","Divide by Zero - "+totalSecToday);
+            }
             todayRuntimePercent.setText(StringFormatValue.format(myAct,data, Color.BLUE,1f,false));
             TodayRuntimePB.setProgress((float)secToday/totalSecToday);
         }

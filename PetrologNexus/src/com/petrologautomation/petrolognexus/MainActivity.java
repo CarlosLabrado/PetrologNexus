@@ -125,6 +125,9 @@ public class MainActivity extends Activity implements
         wellStatusPost = new wellStatus_post(this);
         wellSettingsPost = new wellSettings_post(this);
         wellRuntimePost = new wellRuntime_post(this);
+        wellDynagraphPost = new wellDynagraph_post(this);
+        wellHistoricalRuntimePost = new wellHistoricalRuntime_post(this);
+
 
         Timer UIUpdate = new Timer();
         UIUpdate.schedule(new TimerTask() {
@@ -138,11 +141,28 @@ public class MainActivity extends Activity implements
                             wellStatusPost.post();
                             wellSettingsPost.post();
                             wellRuntimePost.post();
+
                         }
                     });
                 }
             }
         }, 0, 400);
+
+        Timer StaticDynaUpdate = new Timer();
+        StaticDynaUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Serial
+                if (Conectado) {
+                    All.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            wellDynagraphPost.post();
+                        }
+                    });
+                }
+            }
+        }, 0, 200);
     }
     @Override
     protected void onResume (){
@@ -286,6 +306,9 @@ public class MainActivity extends Activity implements
                 MyMenu.getItem(2).setVisible(true); //Disconnect
                 /* Init G4 Com */
                 PetrologSerialCom = new G4Petrolog(mBluetoothSocket);
+                /* Ask Petrolog last 30 days of history */
+                PetrologSerialCom.requestPetrologHistory();
+                wellHistoricalRuntimePost.post();
                 /* Action bar title (Well Name) */
                 ActionBar bar = getActionBar();
                 bar.setTitle(getString(R.string.app_title) + " - " + Device.getName());

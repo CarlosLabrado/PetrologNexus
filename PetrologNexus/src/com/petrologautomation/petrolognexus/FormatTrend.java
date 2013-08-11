@@ -23,9 +23,9 @@ public class FormatTrend {
         myGraph.setDomainValueFormat(new DecimalFormat("0"));
 
         //Range
-        myGraph.setRangeBoundaries(1, 110, BoundaryMode.FIXED);
-        myGraph.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 110);
-        myGraph.setRangeStepValue(19);
+        myGraph.setRangeBoundaries(0, 30, BoundaryMode.FIXED);
+        myGraph.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 30);
+        myGraph.setRangeStepValue(5);
         myGraph.setRangeValueFormat(new DecimalFormat("0"));
 
         myGraph.getGraphWidget().getDomainLabelPaint().setColor(Color.BLACK);

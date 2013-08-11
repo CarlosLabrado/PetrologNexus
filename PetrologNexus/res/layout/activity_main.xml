@@ -286,7 +286,8 @@
                     android:layout_marginBottom="@dimen/frame_margin"
                     android:layout_marginTop="@dimen/frame_margin"
                     android:padding="0dp"
-                    android:layout_marginRight="@dimen/frame_margin">
+                    android:layout_marginRight="@dimen/frame_margin"
+                    >
 
                 <com.androidplot.xy.XYPlot
                         android:id="@+id/runtimeTrend"
@@ -350,14 +351,12 @@
                         android:layout_height="fill_parent"
                         androidPlot.GraphWidget.BackgroundPaint.Color="#fffdfdfe"
                         androidPlot.GraphWidget.GridBackgroundPaint.Color="#fffdfdfe"
-                        androidPlot.GraphWidget.DomainOriginLinePaint.Color="#ff000000"
-                        androidPlot.GraphWidget.DomainOriginLablePaint.Color="#ff000000"
-                        androidPlot.GraphWidget.RangeOriginLinePaint.Color="#ff000000"
-                        androidPlot.GraphWidget.RangeOriginLablePaint.Color="#ff000000"
+                        androidPlot.GraphWidget.DomainOriginLabelPaint.Color="#ff000000"
+                        androidPlot.GraphWidget.RangeOriginLabelPaint.Color="#ff000000"
                         androidPlot.BackgroundPaint.Color="#fffdfdfe"
                         androidPlot.BorderStyle="Plot.BorderStyle.NONE|null|null"
                         androidPlot.PlotMargins="-20|-1|0|0"
-                        androidPlot.PlotPadding="0|0|20|0"
+                        androidPlot.PlotPadding="1|1|20|0"
                         />
 
             </FrameLayout>

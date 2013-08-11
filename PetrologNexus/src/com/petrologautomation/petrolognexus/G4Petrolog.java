@@ -4,9 +4,15 @@ import android.bluetooth.BluetoothSocket;
 import android.util.Log;
 import android.widget.Switch;
 
+import com.androidplot.xy.SimpleXYSeries;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
+import java.util.Iterator;
+import java.util.LinkedList;
+import java.util.List;
 
 /**
  * Created by Cesar on 6/30/13.
@@ -14,16 +20,28 @@ import java.io.OutputStream;
 public class G4Petrolog {
 
     final static int TIMEOUT_VALUE = 10;
+    final static int _12_BIT_MAX = 4096;
 
     InputStream Rx  = null;
     OutputStream Tx = null;
 
     private int Step = 0;
+    private int countForDyna = 0;
+
     private String Result;
     private String S_1;
     private String E;
     private String MB;
     private String H;
+    private String F1;
+    private String F2;
+    private String F3;
+    private String F4;
+    private String F5;
+    private String F6;
+    private String F7;
+    private String F8;
+    private String O;
 
     /*
      * Constructor
@@ -42,34 +60,60 @@ public class G4Petrolog {
     }
 
     /*
+ * This method should be called by the user every time the historical info is needed.
+ * Author: CCR, JCC
+ *
+ * */
+    public void requestPetrologHistory (){
+
+        SendCommand("01E");
+        SendCommand("01E");
+        SendCommand("01F1");
+        SendCommand("01F2");
+        SendCommand("01F3");
+        SendCommand("01F4");
+        SendCommand("01F5");
+        SendCommand("01F6");
+        SendCommand("01F7");
+        SendCommand("01F8");
+    }
+
+    /*
      * This method should be called by the user every time the information update is needed.
      * Author: CCR, JCC
      *
      * */
     public void HeartBeat (){
-        switch (Step){
-            case 0:
+        countForDyna++;
+        if (countForDyna % 2 == 0) {
+            /* MB */
+//            Log.i("PN - Rx","Envie MB");
+            SendCommand("01MB");
+        }
+        else {
+            switch (Step){
+                case 0:
                 /* S?1 */
-                Step = 1;
-                SendCommand("01S?1");
-                break;
-            case 1:
+                    Step = 1;
+//                    Log.i("PN - Rx","Envie S?1");
+                    SendCommand("01S?1");
+                    break;
+                case 1:
                 /* E */
-                Step = 2;
-                SendCommand("01E");
-                break;
-            case 2:
-                /* MB */
-                Step = 3;
-                SendCommand("01MB");
-                break;
-            case 3:
+                    Step = 2;
+//                    Log.i("PN - Rx","Envie E");
+                    SendCommand("01E");
+                    break;
+                case 2:
                 /* H */
-                Step = 0;
-                SendCommand("01H");
-                break;
-            default:
-                break;
+                    Step = 0;
+//                    Log.i("PN - Rx","Envie H");
+                    SendCommand("01H");
+                    break;
+                default:
+                    break;
+            }
+
         }
     }
 
@@ -89,9 +133,22 @@ public class G4Petrolog {
 
         try {
             // Tx
+//            if(Rx.available() != 0){
+//                byte[] flush = new byte[512];
+//                Rx.read(flush);
+//            }
             Tx.flush();
             Tx.write(command.getBytes());
             Tx.write(0x0D);
+//            if(command.contains("O")){
+//                try {
+//                    Thread.sleep(50);
+//                    Tx.write(0x0D);
+//                } catch (InterruptedException e) {
+//                    e.printStackTrace();
+//                }
+//            }
+
 
             // Rx
             do {
@@ -118,7 +175,7 @@ public class G4Petrolog {
 
             // Process Result
             char [] tempCommand = new char [1];
-            Result.getChars(2,3,tempCommand,0);
+            Result.getChars(2, 3, tempCommand, 0);
             switch (tempCommand[0]){
                 case 'S':
                     S_1 = Result;
@@ -132,8 +189,41 @@ public class G4Petrolog {
                 case 'H':
                     H = Result;
                     break;
+                case 'F':
+                    char [] tempF = new char[1];
+                    Result.getChars(3,4,tempF,0);
+                    switch (tempF[0]){
+                        case '1':
+                            F1 = Result;
+                            break;
+                        case '2':
+                            F2 = Result;
+                            break;
+                        case '3':
+                            F3 = Result;
+                            break;
+                        case '4':
+                            F4 = Result;
+                            break;
+                        case '5':
+                            F5 = Result;
+                            break;
+                        case '6':
+                            F6 = Result;
+                            break;
+                        case '7':
+                            F7 = Result;
+                            break;
+                        case '8':
+                            F8 = Result;
+                            break;
+                        default:
+                            break;
+                    }
+                    break;
                 default:
                     Log.i("PN - Rx","Bad Response = "+Result);
+                    break;
             }
 
 
@@ -144,6 +234,7 @@ public class G4Petrolog {
             Log.i("PN - Rx","Bad Response = "+Result);
         }
     }
+
     /*
      * This method gets Well Status.
      * Author: CCR, JCC
@@ -152,7 +243,7 @@ public class G4Petrolog {
     public String getWellStatus (){
         try {
             int OnOff = Integer.valueOf(E.substring(24,25),16);
-            if(OnOff%3 == 0){
+            if((OnOff&0x08) == 0){
                return "Running";
             }else{
                return "Stopped";
@@ -174,7 +265,7 @@ public class G4Petrolog {
     public String getPumpOffStatus (){
         try {
             int OnOff = Integer.valueOf(E.substring(16,17),16);
-            if(OnOff%3 == 0){
+            if((OnOff&0x04) == 0){
                 return "No";
             }else{
                 return "Yes";
@@ -439,4 +530,160 @@ public class G4Petrolog {
         }
     }
 
+    /*
+     * This method gets the latest Dyna.
+     * Author: CCR
+     *
+     * */
+    public int[] getLoadPositionPoint (){
+        int[] PosLoad = new int[2];
+
+        try {
+            /* Position */
+            PosLoad[0] = Integer.valueOf(MB.substring(59,63),16);
+            /* Load */
+            PosLoad[1] = Integer.valueOf(MB.substring(55,59),16);
+        } catch (StringIndexOutOfBoundsException e){
+            PosLoad [0] = -1;
+        } catch (NullPointerException e){
+            PosLoad [0] = -2;
+        } catch (NumberFormatException e){
+            PosLoad [0] = -3;
+        }
+        return PosLoad;
+
+    }
+
+    /*
+     * This method gets a day (from the last 31) runtime in seconds.
+     * Author: CCR
+     *
+     * */
+    public int getHistoricalRuntime (int day){
+        final int HEADER = 4;
+        final int CHARS_IN_DAY = 16;
+        final int OFFSET_IN_DAY = 6;
+        final int SEC_LENGHT = 4;
+        int HistoricalRuntime;
+
+
+        if (day < 0 || day > 31){
+            /* Parameter Error */
+            return -4;
+        }
+        else{
+            if (day<=4){
+                int location = HEADER+((day-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+
+                try {
+                    HistoricalRuntime = Integer.valueOf(F1.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else if (day<=8){
+
+                int location = HEADER+(((day-4)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F2.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else if (day<=12){
+                int location = HEADER+(((day-8)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F3.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else if (day<=16){
+                int location = HEADER+(((day-12)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F4.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else if (day<=20){
+                int location = HEADER+(((day-16)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F5.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else if (day<=24){
+                int location = HEADER+(((day-20)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F6.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else if (day<=28){
+                int location = HEADER+(((day-24)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F7.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            else {
+                int location = HEADER+(((day-28)-1)*CHARS_IN_DAY)+OFFSET_IN_DAY;
+                try {
+                    HistoricalRuntime = Integer.valueOf(F8.substring(location,location+SEC_LENGHT),16);
+                } catch (StringIndexOutOfBoundsException e){
+                    return -1;
+                } catch (NullPointerException e){
+                    return -2;
+                } catch (NumberFormatException e){
+                    return -3;
+                }
+
+            }
+            if (HistoricalRuntime < 43200){
+                return HistoricalRuntime*2;
+            }
+            else {
+                return 0;
+            }
+        }
+    }
 }
