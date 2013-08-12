@@ -8,24 +8,30 @@
             android:title="@string/action_search"
             android:actionViewClass="android.widget.SearchView"/>
     <item
-            android:id="@+id/connect"
+            android:id="@+id/clean"
             android:orderInCategory="1"
+            android:showAsAction="always"
+            android:icon="@drawable/ic_menu_delete"
+            android:title="@string/action_disconnect"/>
+    <item
+            android:id="@+id/connect"
+            android:orderInCategory="2"
             android:showAsAction="always"
             android:icon="@drawable/stat_sys_data_bluetooth"
             android:title="@string/action_connect"/>
     <item
             android:id="@+id/disconnect"
-            android:orderInCategory="2"
+            android:orderInCategory="3"
             android:showAsAction="always"
             android:icon="@drawable/stat_sys_data_bluetooth_connected"
             android:title="@string/action_disconnect"/>
     <item
             android:id="@+id/login"
-            android:orderInCategory="3"
+            android:orderInCategory="4"
             android:title="@string/action_login"/>
     <item
             android:id="@+id/tutorial"
-            android:orderInCategory="4"
+            android:orderInCategory="5"
             android:title="@string/action_tutorial"/>
 
 </menu>

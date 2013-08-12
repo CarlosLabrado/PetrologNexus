@@ -127,6 +127,7 @@ public class MainActivity extends Activity implements
         wellRuntimePost = new wellRuntime_post(this);
         wellDynagraphPost = new wellDynagraph_post(this);
         wellHistoricalRuntimePost = new wellHistoricalRuntime_post(this);
+        wellFillagePost = new wellFillage_post(this);
 
 
         Timer UIUpdate = new Timer();
@@ -141,7 +142,7 @@ public class MainActivity extends Activity implements
                             wellStatusPost.post();
                             wellSettingsPost.post();
                             wellRuntimePost.post();
-
+                            wellFillagePost.post();
                         }
                     });
                 }
@@ -207,7 +208,7 @@ public class MainActivity extends Activity implements
 	public boolean onCreateOptionsMenu(Menu menu) {
 		// Inflate the menu; this adds items to the action bar if it is present.
 		getMenuInflater().inflate(R.menu.mainmenu, menu);
-        menu.getItem(2).setVisible(false);
+        menu.getItem(3).setVisible(false);
         //Feo
         SearchView tempsearch = (SearchView) menu.findItem(R.id.search).getActionView();
         tempsearch.setQueryHint(getText(R.string.action_search));
@@ -245,8 +246,8 @@ public class MainActivity extends Activity implements
                         WellLocation.clear();
                     }
                     Thread.sleep(200);
-                    MyMenu.getItem(1).setVisible(true);    //Connect
-                    MyMenu.getItem(2).setVisible(false);  //Disconnect
+                    MyMenu.getItem(2).setVisible(true);    //Connect
+                    MyMenu.getItem(3).setVisible(false);  //Disconnect
                 } catch (IOException e) {
                     e.printStackTrace();
                 }catch (InterruptedException e) {
@@ -254,6 +255,11 @@ public class MainActivity extends Activity implements
                 }
 
                 break;
+
+            case R.id.clean:
+                wellDynagraphPost.clean();
+                break;
+
             default:
                 break;
         }
@@ -302,8 +308,8 @@ public class MainActivity extends Activity implements
         protected void onPostExecute(Boolean ok) {
             if (ok) {
                 /* BT Menu icon */
-                MyMenu.getItem(1).setVisible(false); //Connect
-                MyMenu.getItem(2).setVisible(true); //Disconnect
+                MyMenu.getItem(2).setVisible(false); //Connect
+                MyMenu.getItem(3).setVisible(true); //Disconnect
                 /* Init G4 Com */
                 PetrologSerialCom = new G4Petrolog(mBluetoothSocket);
                 /* Ask Petrolog last 30 days of history */
@@ -313,8 +319,18 @@ public class MainActivity extends Activity implements
                 ActionBar bar = getActionBar();
                 bar.setTitle(getString(R.string.app_title) + " - " + Device.getName());
                 //Map
-                LatLng coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
-                                               CurrentLocation.getLastLocation().getLongitude());
+                LatLng coordinate = null;
+                try{
+                    coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
+                            CurrentLocation.getLastLocation().getLongitude());
+                }
+                catch (NullPointerException e){
+                    Toast.makeText(MainActivity.this, "Error Getting Location", Toast.LENGTH_SHORT).show();
+                    /* Dummy coordinates when location services not available */
+                    LatLng foo = new LatLng(31.993518,-102.078835);
+                    coordinate = foo;
+                }
+
                 if (WellLocation == null) {
                     WellLocation = ((MapFragment) getFragmentManager().findFragmentById(R.id.MapFragment))
                             .getMap();
@@ -335,8 +351,8 @@ public class MainActivity extends Activity implements
 
             }
             else {
-                MyMenu.getItem(1).setVisible(true); //Connect
-                MyMenu.getItem(2).setVisible(false); //Disconnect
+                MyMenu.getItem(2).setVisible(true); //Connect
+                MyMenu.getItem(3).setVisible(false); //Disconnect
                 Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT)
                         .show();
             }

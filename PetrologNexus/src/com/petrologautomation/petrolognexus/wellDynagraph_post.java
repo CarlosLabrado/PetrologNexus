@@ -13,6 +13,7 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 
 import java.util.Arrays;
+import java.util.List;
 
 /**
  * Created by Cesar on 7/22/13.
@@ -23,6 +24,7 @@ public class wellDynagraph_post {
     private XYPlot Dynagraph;
     private Number[] serie = new Number[2];
     private SimpleXYSeries toDyna;
+    private LineAndPointFormatter lineFormat;
 
     public wellDynagraph_post(MainActivity myActivity){
 
@@ -37,7 +39,7 @@ public class wellDynagraph_post {
         myWidget.setRangeOriginLinePaint(originPaint);
         myWidget.setDrawMarkersEnabled(false);
 
-        LineAndPointFormatter lineFormat = new LineAndPointFormatter(
+        lineFormat = new LineAndPointFormatter(
                 Color.BLUE,
                 null,
                 null,
@@ -56,8 +58,6 @@ public class wellDynagraph_post {
     public void post() {
         int[] temp;
 
-        //Dynagraph.clear();
-
         temp = MainActivity.PetrologSerialCom.getLoadPositionPoint();
         if (temp[0]==0||temp[1]==0){
             return;
@@ -66,4 +66,11 @@ public class wellDynagraph_post {
         Dynagraph.redraw();
 
     }
+
+    public void clean() {
+        Dynagraph.clear();
+        Dynagraph.addSeries(toDyna= new SimpleXYSeries(Arrays.asList(serie),
+                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, ""), lineFormat);
+    }
+
 }

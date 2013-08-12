@@ -34,7 +34,7 @@
 
     <!--Fillage-->
     <string name="current_fillage">Current Fillage:</string>
-    <string name="percent_fillage_setting">Percent Fillage Setting:</string>
+    <string name="percent_fillage_setting">Fillage Setting:</string>
     <string name="pump_off_distance">Pump Off Distance:</string>
 
 

@@ -2,6 +2,7 @@ package com.petrologautomation.petrolognexus;
 
 
 import android.content.Context;
+import android.graphics.Color;
 import android.view.View;
 import android.widget.TextView;
 
@@ -10,17 +11,38 @@ import android.widget.TextView;
  */
 public class wellFillage_post {
 
-    TextView wellFillage;
+    MainActivity myAct;
+    TextView currentFillage;
+    TextView fillageSetting;
+    TextView pumpOffDistance;
 
-    public wellFillage_post(View view){
+    public wellFillage_post(MainActivity myActivity){
 
-        wellFillage = (TextView) view;
+        myAct = myActivity;
+
+        currentFillage = (TextView)myAct.findViewById(R.id.fillage_v1TV);
+        fillageSetting = (TextView)myAct.findViewById(R.id.fillage_v2TV);
+        pumpOffDistance = (TextView)myAct.findViewById(R.id.fillage_v3TV);
+
 
     }
 
-    public void post(Context myContext) {
-
-        /* Format and post data using view passed as parameter to constructor */
+    public void post() {
+        int fillSetting = MainActivity.PetrologSerialCom.getFillageSetting();
+        int currentFill = MainActivity.PetrologSerialCom.getCurrentFillage();
+        if (currentFill>100){
+            currentFill = 100;
+            currentFillage.setText(StringFormatValue.format(myAct,""+currentFill+"%", Color.BLUE, 1.2f, false));
+        }
+        else if (currentFill < 0){
+            currentFillage.setText(StringFormatValue.format(myAct,""+currentFill, Color.BLUE, 1.2f, true));
+        }
+        else {
+            currentFillage.setText(StringFormatValue.format(myAct,""+currentFill+"%", Color.BLUE, 1.2f, false));
+        }
+        int pumpOffDis = currentFill-fillSetting;
+        fillageSetting.setText(StringFormatValue.format(myAct,""+fillSetting+"%", Color.BLUE, 1.2f, false));
+        pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.BLUE, 1.2f, false));
 
     }
 }

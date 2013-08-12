@@ -76,6 +76,7 @@ public class G4Petrolog {
         SendCommand("01F6");
         SendCommand("01F7");
         SendCommand("01F8");
+        SendCommand("01S?1");
     }
 
     /*
@@ -84,31 +85,29 @@ public class G4Petrolog {
      *
      * */
     public void HeartBeat (){
+        /* MB */
+        SendCommand("01MB");
+
         countForDyna++;
-        if (countForDyna % 2 == 0) {
-            /* MB */
-//            Log.i("PN - Rx","Envie MB");
-            SendCommand("01MB");
+        if (countForDyna % 5 == 0) {
+            /* One Sec @ 200ms HeartBeat */
+            Log.i("PN - Rx","Envie E");
+            SendCommand("01E");
         }
-        else {
+        if (countForDyna % 26 == 0){
+            /* 5.2 Sec @ 200ms HeartBeat */
             switch (Step){
                 case 0:
-                /* S?1 */
+                /* H */
                     Step = 1;
-//                    Log.i("PN - Rx","Envie S?1");
-                    SendCommand("01S?1");
+                    Log.i("PN - Rx","Envie H");
+                    SendCommand("01H");
                     break;
                 case 1:
-                /* E */
-                    Step = 2;
-//                    Log.i("PN - Rx","Envie E");
-                    SendCommand("01E");
-                    break;
-                case 2:
-                /* H */
+                /* O */
                     Step = 0;
-//                    Log.i("PN - Rx","Envie H");
-                    SendCommand("01H");
+                    Log.i("PN - Rx","Envie 0");
+                    SendCommand("01O");
                     break;
                 default:
                     break;
@@ -133,21 +132,21 @@ public class G4Petrolog {
 
         try {
             // Tx
-//            if(Rx.available() != 0){
-//                byte[] flush = new byte[512];
-//                Rx.read(flush);
-//            }
+            if(Rx.available() != 0){
+                byte[] flush = new byte[512];
+                Rx.read(flush);
+            }
             Tx.flush();
             Tx.write(command.getBytes());
             Tx.write(0x0D);
-//            if(command.contains("O")){
-//                try {
-//                    Thread.sleep(50);
-//                    Tx.write(0x0D);
-//                } catch (InterruptedException e) {
-//                    e.printStackTrace();
-//                }
-//            }
+            if(command.contains("O")){
+                try {
+                    Thread.sleep(50);
+                    Tx.write(0x0D);
+                } catch (InterruptedException e) {
+                    e.printStackTrace();
+                }
+            }
 
 
             // Rx
@@ -222,6 +221,9 @@ public class G4Petrolog {
                     }
                     break;
                 default:
+                    if (Result.contains(",,")) {
+                        O = Result;
+                    }
                     Log.i("PN - Rx","Bad Response = "+Result);
                     break;
             }
@@ -684,6 +686,22 @@ public class G4Petrolog {
             else {
                 return 0;
             }
+        }
+    }
+    /*
+     * This method gets the latest running fillage.
+     * Author: CCR, JCC
+     *
+     * */
+    public int getCurrentFillage (){
+        try {
+            return(Integer.valueOf(O.substring(4,8),16));
+        } catch (StringIndexOutOfBoundsException e){
+            return -1;
+        } catch (NullPointerException e){
+            return -2;
+        } catch (NumberFormatException e){
+            return -3;
         }
     }
 }
