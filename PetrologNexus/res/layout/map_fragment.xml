@@ -14,7 +14,7 @@
         map:uiTiltGestures="true"
         map:uiZoomControls="false"
         map:uiZoomGestures="true"
-        map:cameraTargetLat="32.76"
-        map:cameraTargetLng="-104.11"
-        map:cameraZoom="3">
+        map:cameraTargetLat="32.002544"
+        map:cameraTargetLng="-102.077118"
+        map:cameraZoom="10">
 </fragment>

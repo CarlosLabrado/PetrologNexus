@@ -56,10 +56,10 @@ public class wellHistoricalRuntime_post {
                 null,
                 label);
         Paint myPaint = new Paint();
-        myPaint.setStyle(Paint.Style.FILL);
+        myPaint.setStyle(Paint.Style.FILL_AND_STROKE);
         myPaint.setStrokeWidth(3);
         myPaint.setAlpha(250);
-        myPaint.setShader(new LinearGradient(0, 0, 0, 250, Color.WHITE, Color.RED, Shader.TileMode.MIRROR));
+        myPaint.setShader(new LinearGradient(0, 0, 0, 250, Color.WHITE, Color.RED, Shader.TileMode.REPEAT));
         lineFormat.setLinePaint(myPaint);
 
         History.getLayoutManager().remove(History.getLegendWidget());

@@ -1,0 +1,161 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+    <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+            android:layout_width="200dp"
+            android:layout_height="wrap_content">
+
+        <TableLayout
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:id="@+id/tableLayout"
+                android:layout_gravity="center">
+
+            <TableRow
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:id="@+id/settings_R0">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="@string/clock_setting"
+                        android:id="@+id/settings_t0TV"
+                        android:layout_weight="100"
+                        android:paddingRight="5dp"
+                        android:gravity="center_vertical|right"/>
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/settings_v0ET"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical"
+                        android:inputType="text"
+                        />
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="100"
+                    android:id="@+id/settings_R1">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="@string/pump_up_setting"
+                        android:id="@+id/settings_t1TV"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="5dp"/>
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/settings_v1ET"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical"
+                        android:inputType="number"/>
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="100"
+                    android:id="@+id/settings_R2">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="@string/pump_off_setting"
+                        android:id="@+id/settings_t2TV"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="5dp"/>
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/settings_v2ET"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical"
+                        android:inputType="number"/>
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="100"
+                    android:id="@+id/settings_R3">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="@string/fillage_setting"
+                        android:id="@+id/settings_t3TV"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="5dp"/>
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/settings_v3ET"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical"
+                        android:inputType="number"/>
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="100"
+                    android:id="@+id/settings_R4">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="@string/timeout_setting"
+                        android:id="@+id/settings_t4TV"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="5dp"/>
+
+                <EditText
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:id="@+id/settings_v4ET"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical"
+                        android:inputType="number"/>
+            </TableRow>
+
+            <TableRow
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:layout_weight="100"
+                    android:id="@+id/settings_R5">
+
+                <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:text="@string/auto_timeout_setting"
+                        android:id="@+id/settings_t5TV"
+                        android:layout_weight="100"
+                        android:gravity="center_vertical|right"
+                        android:paddingRight="5dp"/>
+
+                <Spinner
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:id="@+id/automatic_time_out"
+                        android:layout_weight="100"
+                        android:spinnerMode="dropdown"/>
+
+            </TableRow>
+
+        </TableLayout>
+    </FrameLayout>

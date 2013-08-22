@@ -3,6 +3,7 @@ package com.petrologautomation.petrolognexus;
 
 import android.graphics.Color;
 import android.util.Log;
+import android.widget.EditText;
 import android.widget.TextView;
 
 /**
@@ -35,7 +36,6 @@ public class wellSettings_post {
         settings_v4TV = (TextView)myAct.findViewById(R.id.settings_v4TV);
         settings_t5TV = (TextView)myAct.findViewById(R.id.settings_t5TV);
         settings_v5TV = (TextView)myAct.findViewById(R.id.settings_v5TV);
-
 
     }
 

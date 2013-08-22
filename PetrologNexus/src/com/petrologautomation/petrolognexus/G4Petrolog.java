@@ -2,17 +2,12 @@ package com.petrologautomation.petrolognexus;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
-import android.widget.Switch;
-
-import com.androidplot.xy.SimpleXYSeries;
-
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
-import java.util.Iterator;
-import java.util.LinkedList;
-import java.util.List;
+import java.util.Calendar;
+import java.util.GregorianCalendar;
+
 
 /**
  * Created by Cesar on 6/30/13.
@@ -25,8 +20,13 @@ public class G4Petrolog {
     InputStream Rx  = null;
     OutputStream Tx = null;
 
+    public boolean HeartBeatStopped = false;
+
     private int Step = 0;
     private int countForDyna = 0;
+
+    private int[] PosLoad = new int[2];
+    private boolean stopO = false;
 
     private String Result;
     private String S_1;
@@ -59,6 +59,28 @@ public class G4Petrolog {
         }
     }
 
+    public void Disconnect(){
+        if (Tx == null || Rx == null){
+            /* Already Disconnected */
+        }
+        else {
+            HeartBeatStopped = true;
+            try {
+                Thread.sleep(1000);
+            } catch (InterruptedException e) {
+                e.printStackTrace();
+            }
+            try {
+                Tx.close();
+                Rx.close();
+            } catch (IOException e) {
+                e.printStackTrace();
+            }
+            Tx = null;
+            Rx = null;
+        }
+    }
+
     /*
  * This method should be called by the user every time the historical info is needed.
  * Author: CCR, JCC
@@ -77,6 +99,7 @@ public class G4Petrolog {
         SendCommand("01F7");
         SendCommand("01F8");
         SendCommand("01S?1");
+        SendCommand("01H");
     }
 
     /*
@@ -85,34 +108,39 @@ public class G4Petrolog {
      *
      * */
     public void HeartBeat (){
-        /* MB */
-        SendCommand("01MB");
-
-        countForDyna++;
-        if (countForDyna % 5 == 0) {
-            /* One Sec @ 200ms HeartBeat */
-            Log.i("PN - Rx","Envie E");
-            SendCommand("01E");
+        if (HeartBeatStopped){
+            return;
         }
-        if (countForDyna % 26 == 0){
-            /* 5.2 Sec @ 200ms HeartBeat */
-            switch (Step){
-                case 0:
-                /* H */
-                    Step = 1;
-                    Log.i("PN - Rx","Envie H");
-                    SendCommand("01H");
-                    break;
-                case 1:
-                /* O */
-                    Step = 0;
-                    Log.i("PN - Rx","Envie 0");
-                    SendCommand("01O");
-                    break;
-                default:
-                    break;
+        else {
+            if (stopO){
+                SendCommand("");
+                stopO = false;
             }
+            /* MB */
+            SendCommand("01MB");
 
+            countForDyna++;
+            if (countForDyna % 5 == 0) {
+            /* One Sec @ 200ms HeartBeat */
+                SendCommand("01E");
+            }
+            if (countForDyna % 26 == 0){
+            /* 5.2 Sec @ 200ms HeartBeat */
+                switch (Step){
+                    case 0:
+                /* H */
+                        Step = 1;
+                        SendCommand("01H");
+                        break;
+                    case 1:
+                /* O */
+                        Step = 0;
+                        SendCommand("01O");
+                        break;
+                    default:
+                        break;
+                }
+            }
         }
     }
 
@@ -131,46 +159,41 @@ public class G4Petrolog {
         int timeout = 0;
 
         try {
-            // Tx
-            if(Rx.available() != 0){
-                byte[] flush = new byte[512];
-                Rx.read(flush);
-            }
-            Tx.flush();
-            Tx.write(command.getBytes());
-            Tx.write(0x0D);
-            if(command.contains("O")){
-                try {
-                    Thread.sleep(50);
-                    Tx.write(0x0D);
-                } catch (InterruptedException e) {
-                    e.printStackTrace();
+            try {
+                // Tx
+                if(Rx.available() != 0){
+                    byte[] flush = new byte[512];
+                    Rx.read(flush);
                 }
-            }
-
-
-            // Rx
-            do {
-                if ( Rx.available() != 0 ) {
+                Tx.flush();
+                Tx.write(command.getBytes());
+                Tx.write(0x0D);
+                do {
+                    // Rx
+                    if ( Rx.available() != 0 ) {
                     /* Blocking until byte Rx */
-                    i++;
-                    buffer[i] = (char) Rx.read();
-                    Result = Result+ buffer[i];
-                    timeout = 0;
-                }
-                else {
-                    try {
-                        Thread.sleep(100);
-                    } catch (InterruptedException e) {
-                        e.printStackTrace();
+                        i++;
+                        buffer[i] = (char) Rx.read();
+                        Result = Result+ buffer[i];
+                        timeout = 0;
                     }
-                    timeout++;
-                    if (timeout >= TIMEOUT_VALUE){
-                        Result = "Time Out!";
-                        break;
+                    else {
+                        try {
+                            Thread.sleep(100);
+                        } catch (InterruptedException e) {
+                            e.printStackTrace();
+                        }
+                        timeout++;
+                        if (timeout >= TIMEOUT_VALUE){
+                            Result = "Time Out!";
+                            break;
+                        }
                     }
-                }
-            } while (buffer[i] != 0x1A);
+                } while (buffer[i] != 0x1A);
+            }
+            catch(NullPointerException e) {
+                Log.i("PN - Rx","Null Rx Stream");
+            }
 
             // Process Result
             char [] tempCommand = new char [1];
@@ -184,6 +207,24 @@ public class G4Petrolog {
                     break;
                 case 'M':
                     MB = Result;
+                    try {
+                    /* Position */
+                        if (Integer.valueOf(MB.substring(59,63),16) <= _12_BIT_MAX &&
+                                Integer.valueOf(MB.substring(59,63),16) > 0   ){
+                            PosLoad[0] = Integer.valueOf(MB.substring(59,63),16);
+                        }
+                    /* Load */
+                        if (Integer.valueOf(MB.substring(55,59),16) <= _12_BIT_MAX &&
+                                Integer.valueOf(MB.substring(55,59),16) > 0   ){
+                            PosLoad[1] = Integer.valueOf(MB.substring(55,59),16);
+                        }
+                    } catch (StringIndexOutOfBoundsException e){
+                        PosLoad [0] = -1;
+                    } catch (NullPointerException e){
+                        PosLoad [0] = -2;
+                    } catch (NumberFormatException e){
+                        PosLoad [0] = -3;
+                    }
                     break;
                 case 'H':
                     H = Result;
@@ -221,10 +262,37 @@ public class G4Petrolog {
                     }
                     break;
                 default:
-                    if (Result.contains(",,")) {
+                    if (Result.substring(12,14).equals(",,")) {
                         O = Result;
+                        try {
+                        /* Position */
+                            if (Integer.valueOf(O.substring(19,23),16) <= _12_BIT_MAX &&
+                                    Integer.valueOf(O.substring(19,23),16) > 0){
+                                PosLoad[0] = Integer.valueOf(O.substring(19,23),16);
+                            }
+                        /* Load */
+                            if (Integer.valueOf(O.substring(14,18),16) <= _12_BIT_MAX &&
+                                    Integer.valueOf(O.substring(14,18),16) > 0){
+                                PosLoad[1] = Integer.valueOf(O.substring(14,18),16);
+                            }
+                            if (Integer.valueOf(O.substring(8,12),16) < 200){
+                                stopO = true;
+                            }
+                        } catch (StringIndexOutOfBoundsException e){
+                            Log.i("PN - Rx","O Error 1 = "+Result);
+                            PosLoad [0] = -1;
+                        } catch (NullPointerException e){
+                            Log.i("PN - Rx","O Error 2 = "+Result);
+                            PosLoad [0] = -2;
+                        } catch (NumberFormatException e){
+                            Log.i("PN - Rx","O Error 3 = "+Result);
+                            PosLoad [0] = -3;
+                        }
+
                     }
-                    Log.i("PN - Rx","Bad Response = "+Result);
+                    else {
+                        Log.i("PN - Rx","Bad Response = "+Result);
+                    }
                     break;
             }
 
@@ -522,7 +590,7 @@ public class G4Petrolog {
                                 Integer.valueOf(H.substring(3).substring(3,5))*60   +
                                 Integer.valueOf(H.substring(3).substring(6,8));
             foo = totalSecToday;
-            return H.substring(3);
+            return H.substring(3,H.length()-2);
         } catch (StringIndexOutOfBoundsException e){
             return "Empty - String Out of Bounds - "+foo;
         } catch (NullPointerException e){
@@ -538,20 +606,7 @@ public class G4Petrolog {
      *
      * */
     public int[] getLoadPositionPoint (){
-        int[] PosLoad = new int[2];
 
-        try {
-            /* Position */
-            PosLoad[0] = Integer.valueOf(MB.substring(59,63),16);
-            /* Load */
-            PosLoad[1] = Integer.valueOf(MB.substring(55,59),16);
-        } catch (StringIndexOutOfBoundsException e){
-            PosLoad [0] = -1;
-        } catch (NullPointerException e){
-            PosLoad [0] = -2;
-        } catch (NumberFormatException e){
-            PosLoad [0] = -3;
-        }
         return PosLoad;
 
     }
@@ -688,6 +743,7 @@ public class G4Petrolog {
             }
         }
     }
+
     /*
      * This method gets the latest running fillage.
      * Author: CCR, JCC
@@ -695,7 +751,7 @@ public class G4Petrolog {
      * */
     public int getCurrentFillage (){
         try {
-            return(Integer.valueOf(O.substring(4,8),16));
+            return(Integer.valueOf(O.substring(8,12),16));
         } catch (StringIndexOutOfBoundsException e){
             return -1;
         } catch (NullPointerException e){
@@ -703,5 +759,102 @@ public class G4Petrolog {
         } catch (NumberFormatException e){
             return -3;
         }
+    }
+
+    /*
+     * This method sets new values to POC parameters.
+     * Clock -> String
+     * Pump Up -> Int
+     * Pump Off -> Int
+     * Fillage -> Int
+     * TimeOut -> Int
+     * Autotimeout -> Boolean
+     * Author: CCR, JCC
+     *
+     * */
+    public boolean setSettings (String clock, int pu, int po, int fillage, int to, boolean ato){
+
+        HeartBeatStopped = true;
+
+        SendCommand("01E");
+
+        /* Pump Off */
+        SendCommand("01SK"+String.format("%02x", po));
+        Log.i("PN - Settings", "PO: " + "01SK" + String.format("%02x", po));
+
+        /* Fillage */
+        int toSend = fillage/10;
+        if (toSend < 2){
+            toSend = 2;
+        }
+        if (toSend > 9){
+            toSend = 9;
+        }
+
+        /* Pump Up */
+        SendCommand("01SX"+String.format("%02x",pu));
+        Log.i("PN - Settings", "PU: " + "01SX" + String.format("%02x", pu));
+
+
+        SendCommand("01ST"+String.format("%02x", toSend));
+        Log.i("PN - Settings", "Fillage: " + "01ST" + String.format("%02x", toSend));
+
+        /* Time Out */
+        if (to > 0 && to < 255){
+            SendCommand("01SP"+Integer.toHexString(256-to));
+            Log.i("PN - Settings", "TO: " + "01SP" + String.format("%02x", 256 - to));
+
+        }
+        else if (to < 0){
+            SendCommand("01SP"+Integer.toHexString(256-1));
+            Log.i("PN - Settings", "TO: " + "01SP" + String.format("%02x", 256 - 1));
+        }
+        else {
+            /* error */
+            return true;
+        }
+
+        /* Auto TimeOut */
+        if(ato){
+            SendCommand("01SG01");
+        }
+        else{
+            SendCommand("01SG00");
+        }
+        /* Clock */
+        if(clock.matches("[0-2][0-9].[0-5][0-9].[0-5][0-9].[0-3][0-9].[0-1][0-9].[0-9][0-9]")){
+            SendCommand("01SH"+clock);
+            Log.i("PN - Settings", "Date: " + "01SH" + clock);
+        }
+        else{
+            Calendar myDateTime = new GregorianCalendar();
+
+            SendCommand("01SH"+String.format("%02d", myDateTime.get(Calendar.HOUR_OF_DAY))  +" "
+                    +String.format("%02d", myDateTime.get(Calendar.MINUTE))       +" "
+                    +String.format("%02d", myDateTime.get(Calendar.SECOND))       +" "
+                    +String.format("%02d", myDateTime.get(Calendar.DAY_OF_MONTH)) +" "
+                    +String.format("%02d", myDateTime.get(Calendar.MONTH))        +" "
+                    +String.format("%02d", myDateTime.get(Calendar.YEAR) % 2000)
+            );
+            Log.i("PN - Settings", "Date: " + "01SH" + String.format("%02d", myDateTime.get(Calendar.HOUR_OF_DAY)) + " "
+                    + String.format("%02d", myDateTime.get(Calendar.MINUTE)) + " "
+                    + String.format("%02d", myDateTime.get(Calendar.SECOND)) + " "
+                    + String.format("%02d", myDateTime.get(Calendar.DAY_OF_MONTH)) + " "
+                    + String.format("%02d", myDateTime.get(Calendar.MONTH)) + " "
+                    + String.format("%02d", myDateTime.get(Calendar.YEAR) % 2000)
+            );
+        }
+
+        SendCommand("01E");
+
+        SendCommand("01S?1");
+        Log.i("PN - Settings","S?1: "+"01S?1");
+
+
+        HeartBeatStopped = false;
+
+
+        return false;
+
     }
 }

@@ -58,9 +58,17 @@ public class wellDynagraph_post {
     public void post() {
         int[] temp;
 
-        temp = MainActivity.PetrologSerialCom.getLoadPositionPoint();
-        if (temp[0]==0||temp[1]==0){
+        if(MainActivity.PetrologSerialCom.getWellStatus().equals("Stopped")){
             return;
+        }
+
+        temp = MainActivity.PetrologSerialCom.getLoadPositionPoint();
+        if (temp[0]==0||temp[1]==0||temp[0]<0){
+            /* Error */
+            return;
+        }
+        if (toDyna.size() > 2000){
+            clean();
         }
         toDyna.addLast(temp[0],temp[1]);
         Dynagraph.redraw();
@@ -71,6 +79,7 @@ public class wellDynagraph_post {
         Dynagraph.clear();
         Dynagraph.addSeries(toDyna= new SimpleXYSeries(Arrays.asList(serie),
                 SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, ""), lineFormat);
+        Dynagraph.redraw();
     }
 
 }

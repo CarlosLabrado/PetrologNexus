@@ -5,6 +5,9 @@ import android.content.Context;
 import android.graphics.Color;
 import android.util.Log;
 import android.view.View;
+import android.view.animation.Animation;
+import android.view.animation.AnimationUtils;
+import android.widget.TextSwitcher;
 import android.widget.TextView;
 
 import de.passsy.holocircularprogressbar.HoloCircularProgressBar;
@@ -35,6 +38,9 @@ public class wellRuntime_post {
 
         TodayRuntimePB = (HoloCircularProgressBar) myAct.findViewById(R.id.runtime_today);
         YesterdayRuntimePB = (HoloCircularProgressBar) myAct.findViewById(R.id.runtime_yesterday);
+
+        Animation in = AnimationUtils.loadAnimation(myAct, android.R.anim.fade_in);
+        Animation out = AnimationUtils.loadAnimation(myAct,android.R.anim.fade_out);
 
     }
 
