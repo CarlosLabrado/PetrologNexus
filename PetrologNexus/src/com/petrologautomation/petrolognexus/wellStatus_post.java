@@ -127,7 +127,10 @@ public class wellStatus_post {
                 }
             }
             else {
-                current_v3TV.setText(StringFormatValue.format(myAct,data1,Color.GRAY,1.2f,true));
+                TextView TempTVCC = (TextView)current_v3TV.getCurrentView();
+                if (!TempTVCC.getText().toString().equals(myAct.getString(R.string.n_a))){
+                    current_v3TV.setText(StringFormatValue.format(myAct,data1,Color.GRAY,1.2f,true));
+                }
             }
         }
         else {

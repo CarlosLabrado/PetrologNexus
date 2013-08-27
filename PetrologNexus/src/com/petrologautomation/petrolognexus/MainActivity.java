@@ -11,6 +11,7 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
+import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
@@ -33,12 +34,15 @@ import com.androidplot.xy.XYPlot;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.GooglePlayServicesClient;
 import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.MapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
@@ -69,7 +73,7 @@ public class MainActivity extends Activity implements
     private Timer StaticDynaUpdate;
     private Timer SerialComHeartBeat;
 
-    private static XYPlot RuntimeTread;
+    private static XYPlot RuntimeTrend;
     private static XYPlot Dynagraph;
 
     private static wellStatus_post wellStatusPost;
@@ -86,8 +90,10 @@ public class MainActivity extends Activity implements
     public static final int REQUEST_ENABLE_BT = 1;
     public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
 
-    Menu MyMenu;
-    LocationClient CurrentLocation;
+    private Menu MyMenu;
+    private LocationClient CurrentLocation;
+    private Marker tabletMarker = null;
+    private Marker wellMarker = null;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
@@ -144,20 +150,9 @@ public class MainActivity extends Activity implements
     @Override
     protected void onPause (){
         super.onPause();
-
-        UIUpdate.cancel();
-        UIUpdate.purge();
-
-        StaticDynaUpdate.cancel();
-        StaticDynaUpdate.purge();
-
-        SerialComHeartBeat.cancel();
-        SerialComHeartBeat.purge();
-
-        if (PetrologSerialCom != null){
-            PetrologSerialCom.Disconnect();
-        }
-
+        Disconnect();
+        /* Disconnect Location Services */
+        CurrentLocation.disconnect();
     }
 
     @Override
@@ -175,7 +170,42 @@ public class MainActivity extends Activity implements
     public void onConnected(Bundle dataBundle) {
         // Display the connection status
         Toast.makeText(this, "Connected to Location Services", Toast.LENGTH_SHORT).show();
+        LocationRequest myLocationRequest = LocationRequest.create();
+        myLocationRequest.setFastestInterval(0);
+        myLocationRequest.setInterval(0).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
+        CurrentLocation.requestLocationUpdates(myLocationRequest, myLocationListener);
+
+        if (WellLocation == null) {
+            WellLocation = ((MapFragment) getFragmentManager().findFragmentById(R.id.MapFragment))
+                    .getMap();
+        }
+        LatLng foo = new LatLng(31.993518,-102.078835);
+        if (tabletMarker == null){
+            tabletMarker = WellLocation.addMarker(new MarkerOptions()
+                    .position(foo)
+                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position)));
+        }
+
     }
+
+    private LocationListener myLocationListener = new LocationListener() {
+        @Override
+        public void onLocationChanged(Location location) {
+            LatLng coordinate;
+            try{
+                coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
+                        CurrentLocation.getLastLocation().getLongitude());
+                tabletMarker.setPosition(coordinate);
+
+            }
+            catch (NullPointerException e){
+                Toast.makeText(MainActivity.this, "Error Getting Location", Toast.LENGTH_SHORT).show();
+            }
+            catch (IllegalStateException e){
+                Toast.makeText(MainActivity.this, "Not Connected to Location Services", Toast.LENGTH_SHORT).show();
+            }
+        }
+    };
     /*
      * Called by Location Services if the connection to the
      * location client drops because of an error.
@@ -193,7 +223,8 @@ public class MainActivity extends Activity implements
     @Override
     public void onConnectionFailed(ConnectionResult connectionResult) {
 
-        }
+    }
+
     protected void onDestroy() {
         unregisterReceiver(mReceiver);
         super.onDestroy();
@@ -213,13 +244,24 @@ public class MainActivity extends Activity implements
     public boolean onPrepareOptionsMenu(Menu menu) {
         MyMenu = menu;
 
-        MyMenu.getItem(4).setVisible(false); //Disconnect
-        MyMenu.getItem(0).setVisible(false); //Settings
-        MyMenu.getItem(1).setVisible(false); //Clean
-        //help
-        helpDisconnected.setVisibility(View.VISIBLE);
-        helpConnected.setVisibility(View.INVISIBLE);
-
+        if (mBluetoothSocket == null){
+            MyMenu.getItem(4).setVisible(false); //Disconnect
+            MyMenu.getItem(0).setVisible(false); //Settings
+            MyMenu.getItem(1).setVisible(false); //Clean
+            //help
+            helpDisconnected.setVisibility(View.VISIBLE);
+            helpConnected.setVisibility(View.INVISIBLE);
+        }
+        else {
+            /* Menu icons */
+            MyMenu.getItem(3).setVisible(false); //Connect
+            MyMenu.getItem(4).setVisible(true); //Disconnect
+            MyMenu.getItem(0).setVisible(true); //Settings
+            MyMenu.getItem(1).setVisible(true); //Clean
+            //help
+            helpDisconnected.setVisibility(View.INVISIBLE);
+            helpConnected.setVisibility(View.VISIBLE);
+        }
 
         return true;
     }
@@ -229,6 +271,9 @@ public class MainActivity extends Activity implements
 
         switch (item.getItemId()) {
             case R.id.connect:
+                /* Disable BT connect menu button */
+                MyMenu.getItem(3).setEnabled(false);
+
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 if (mBluetoothAdapter == null) {
                     // Device does not support Bluetooth
@@ -245,35 +290,11 @@ public class MainActivity extends Activity implements
                         mBluetoothAdapter.startDiscovery();
                     }
                 }
+                myInit();
                 break;
 
             case R.id.disconnect:
-                try {
-                    PetrologSerialCom.Disconnect();
-                    Connected = false;
-                    mBluetoothSocket.close();
-                    mBluetoothSocket = null;
-                    wellDynagraphPost.clean();
-                    if(WellLocation != null){
-                        WellLocation.clear();
-                    }
-                    Thread.sleep(200);
-                    MyMenu.getItem(3).setVisible(true);  //Connect
-                    MyMenu.getItem(4).setVisible(false); //Disconnect
-                    MyMenu.getItem(0).setVisible(false); //Settings
-                    MyMenu.getItem(1).setVisible(false); //Clean
-                    //help
-                    helpDisconnected.setVisibility(View.VISIBLE);
-                    helpConnected.setVisibility(View.INVISIBLE);
-
-                }
-                catch (IOException e) {
-                    e.printStackTrace();
-                }
-                catch (InterruptedException e) {
-                    e.printStackTrace();
-                }
-
+                Disconnect();
                 break;
 
             case R.id.clean:
@@ -473,6 +494,9 @@ public class MainActivity extends Activity implements
         }
 
         protected void onPostExecute(Boolean ok) {
+            /* Enable BT connect menu button */
+            MyMenu.getItem(3).setEnabled(true);
+
             if (ok) {
                 /* Menu icons */
                 MyMenu.getItem(3).setVisible(false); //Connect
@@ -492,24 +516,20 @@ public class MainActivity extends Activity implements
                 try{
                     coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
                             CurrentLocation.getLastLocation().getLongitude());
+                    /* 'coordinate' got correct value (no exception occurred). Put Pump Jack marker on map */
+                    CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinate,17);
+                    WellLocation.animateCamera(cameraUpdate);
+                    wellMarker = WellLocation.addMarker(new MarkerOptions()
+                            .position(coordinate)
+                            .icon(BitmapDescriptorFactory.fromResource(R.drawable.oilpumpjack)));
                 }
                 catch (NullPointerException e){
                     Toast.makeText(MainActivity.this, "Error Getting Location", Toast.LENGTH_SHORT).show();
-                    /* Dummy coordinates when location services not available */
-                    LatLng foo = new LatLng(31.993518,-102.078835);
-                    coordinate = foo;
+                }
+                catch (IllegalStateException e){
+                    Toast.makeText(MainActivity.this, "Not Connected to Location Services", Toast.LENGTH_SHORT).show();
                 }
 
-                if (WellLocation == null) {
-                    WellLocation = ((MapFragment) getFragmentManager().findFragmentById(R.id.MapFragment))
-                            .getMap();
-
-                }
-                CameraUpdate cameraUpdate = CameraUpdateFactory.newLatLngZoom(coordinate,17);
-                WellLocation.animateCamera(cameraUpdate);
-                WellLocation.addMarker(new MarkerOptions()
-                        .position(coordinate)
-                        .icon(BitmapDescriptorFactory.fromResource(R.drawable.oilpumpjack)));
                 /* Run Serial Heart Beat only if BT connection established */
                 Connected = true;
                 Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT)
@@ -548,15 +568,19 @@ public class MainActivity extends Activity implements
         registerReceiver(mReceiver, filter);
 
         //Location client
-        CurrentLocation = new LocationClient(this,this,this);
-        CurrentLocation.connect();
+        if (CurrentLocation == null){
+            CurrentLocation = new LocationClient(this,this,this);
+            CurrentLocation.connect();
+        }
 
         //Init Graphs
-        RuntimeTread = FormatTrend.format((XYPlot)findViewById(R.id.runtimeTrend));
+        RuntimeTrend = FormatTrend.format((XYPlot)findViewById(R.id.runtimeTrend));
         Dynagraph = FormatGraph.format((XYPlot)findViewById(R.id.dynagraph));
 
         /* Timer to update info from Petrolog */
-        SerialComHeartBeat = new Timer();
+        if (SerialComHeartBeat == null){
+            SerialComHeartBeat = new Timer();
+        }
         SerialComHeartBeat.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -568,16 +592,32 @@ public class MainActivity extends Activity implements
         }, 0, 200);
 
         /* Timer to Update UI */
-        All = (FrameLayout)findViewById(R.id.Main);
+        if (All == null){
+            All = (FrameLayout)findViewById(R.id.Main);
+        }
 
-        wellStatusPost = new wellStatus_post(this);
-        wellSettingsPost = new wellSettings_post(this);
-        wellRuntimePost = new wellRuntime_post(this);
-        wellDynagraphPost = new wellDynagraph_post(this);
-        wellHistoricalRuntimePost = new wellHistoricalRuntime_post(this);
-        wellFillagePost = new wellFillage_post(this);
+        if (wellStatusPost == null){
+            wellStatusPost = new wellStatus_post(this);
+        }
+        if (wellSettingsPost == null){
+            wellSettingsPost = new wellSettings_post(this);
+        }
+        if (wellRuntimePost == null){
+            wellRuntimePost = new wellRuntime_post(this);
+        }
+        if (wellDynagraphPost == null){
+            wellDynagraphPost = new wellDynagraph_post(this);
+        }
+        if (wellHistoricalRuntimePost == null){
+            wellHistoricalRuntimePost = new wellHistoricalRuntime_post(this);
+        }
+        if (wellFillagePost == null){
+            wellFillagePost = new wellFillage_post(this);
+        }
 
-        UIUpdate = new Timer();
+        if (UIUpdate == null){
+            UIUpdate = new Timer();
+        }
         UIUpdate.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -595,8 +635,9 @@ public class MainActivity extends Activity implements
                 }
             }
         }, 0, 400);
-
-        StaticDynaUpdate = new Timer();
+        if (StaticDynaUpdate == null){
+            StaticDynaUpdate = new Timer();
+        }
         StaticDynaUpdate.schedule(new TimerTask() {
             @Override
             public void run() {
@@ -612,11 +653,55 @@ public class MainActivity extends Activity implements
             }
         }, 0, 200);
 
+
+    }
+
+    private void Disconnect (){
+
+        try {
+            /* Close Cx */
+            PetrologSerialCom.Disconnect();
+            mBluetoothSocket.close();
+            mBluetoothSocket = null;
+            Connected = false;
+
+            /* Stop Timers */
+            UIUpdate.cancel();
+            UIUpdate.purge();
+            UIUpdate = null;
+            StaticDynaUpdate.cancel();
+            StaticDynaUpdate.purge();
+            StaticDynaUpdate = null;
+            SerialComHeartBeat.cancel();
+            SerialComHeartBeat.purge();
+            SerialComHeartBeat = null;
+
+            /* Clean UI */
+            wellDynagraphPost.clean();
+            wellMarker.remove();
+
+            /* Prepare Menu */
+            MyMenu.getItem(3).setVisible(true);  //Connect
+            MyMenu.getItem(4).setVisible(false); //Disconnect
+            MyMenu.getItem(0).setVisible(false); //Settings
+            MyMenu.getItem(1).setVisible(false); //Clean
+
+            /* Help */
+            helpDisconnected.setVisibility(View.VISIBLE);
+            helpConnected.setVisibility(View.INVISIBLE);
+        }
+        catch (IOException e) {
+            e.printStackTrace();
+        }
+        catch (NullPointerException e) {
+            e.printStackTrace();
+        }
+
     }
 
 
 
-}
+} /* Class */
 
 
 
