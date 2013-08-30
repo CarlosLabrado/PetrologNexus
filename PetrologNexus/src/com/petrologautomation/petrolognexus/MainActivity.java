@@ -1,7 +1,9 @@
 package com.petrologautomation.petrolognexus;
 
 import android.app.ActionBar;
+import android.app.Activity;
 import android.app.AlertDialog;
+import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
@@ -12,14 +14,18 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.graphics.Typeface;
 import android.location.Location;
+import android.nfc.NdefMessage;
+import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
-import android.app.Activity;
+import android.os.Parcelable;
+import android.provider.Settings;
 import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -44,6 +50,7 @@ import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.petrologautomation.petrolognexus.database.PetrologMarkerDataSource;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -95,6 +102,13 @@ public class MainActivity extends Activity implements
     private Marker tabletMarker = null;
     private Marker wellMarker = null;
 
+    private NfcAdapter mNfcAdapter;
+    private IntentFilter[] mNdefExchangeFilters;
+    private PendingIntent mNfcPendingIntent;
+    private final String NFC_PETROLOG_IDENTIFIER = "petr0l0g";
+
+    private PetrologMarkerDataSource dataSource;
+
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -144,6 +158,15 @@ public class MainActivity extends Activity implements
         helpConnected = (ImageView)findViewById(R.id.help_connectedIV);
         helpDisconnected = (ImageView)findViewById(R.id.help_disconnectedIV);
 
+        /* NFC */
+        mNfcAdapter = NfcAdapter.getDefaultAdapter(this);
+        mNfcPendingIntent = PendingIntent.getActivity(this, 0, new Intent(this,
+                getClass()).addFlags(Intent.FLAG_ACTIVITY_SINGLE_TOP
+                | Intent.FLAG_ACTIVITY_CLEAR_TOP), 0);
+
+        IntentFilter discovery = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
+        mNdefExchangeFilters = new IntentFilter[] { discovery };
+
 
     }
 
@@ -153,12 +176,106 @@ public class MainActivity extends Activity implements
         Disconnect();
         /* Disconnect Location Services */
         CurrentLocation.disconnect();
+        if(mNfcAdapter != null) mNfcAdapter.disableForegroundDispatch(this);
     }
 
     @Override
     protected void onResume (){
         super.onResume();
         myInit();
+        nfcCheck();
+    }
+
+    /**
+     * we check to see if the NFC adapter is enabled and we execute enableForegroundDispatch(), passing in our pending intent and filters.
+     */
+    private void nfcCheck() {
+        if(mNfcAdapter != null) {
+            mNfcAdapter.enableForegroundDispatch(this, mNfcPendingIntent,
+                    mNdefExchangeFilters, null);
+            if (!mNfcAdapter.isEnabled()){
+                LayoutInflater inflater = getLayoutInflater();
+                View dialoglayout = inflater.inflate(R.layout.activity_main,(ViewGroup) findViewById(R.id.Main));
+                new AlertDialog.Builder(this).setView(dialoglayout)
+                        .setPositiveButton("Update Settings", new DialogInterface.OnClickListener() {
+                            public void onClick(DialogInterface arg0, int arg1) {
+                                Intent setnfc = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                                startActivity(setnfc);
+                            }
+                        })
+                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
+                            public void onCancel(DialogInterface dialog) {
+                                finish(); // exit application if user cancels
+                            }
+                        }).create().show();
+            }
+        } else {
+            Toast.makeText(this, "Sorry, No NFC Adapter found.", Toast.LENGTH_SHORT).show();
+        }
+    }
+    /**
+     * This is where we get the intent once we've tapped the tag.
+     * Then we can use 'getParceableExtra()' to get the tag data and build an NDEF message array.
+     * @param intent
+     */
+    @Override
+    protected void onNewIntent(Intent intent) {
+        super.onNewIntent(intent);
+        if (NfcAdapter.ACTION_TAG_DISCOVERED.equals(intent.getAction())) {
+            NdefMessage[] messages = null;
+            Parcelable[] rawMsgs = intent.getParcelableArrayExtra(NfcAdapter.EXTRA_NDEF_MESSAGES);
+            if (rawMsgs != null) {
+                messages = new NdefMessage[rawMsgs.length];
+                for (int i = 0; i < rawMsgs.length; i++) {
+                    messages[i] = (NdefMessage) rawMsgs[i];
+                }
+            }
+            if (messages != null) {
+                if (messages[0] != null) {
+                    String result = "";
+                    byte[] payload = messages[0].getRecords()[0].getPayload();
+                    // this assumes that we get back am SOH followed by host/code
+                    for (int b = 1; b < payload.length; b++) { // skip SOH
+                        result += (char) payload[b];
+                    }
+                    Toast.makeText(this, "TAG found", Toast.LENGTH_SHORT).show();
+                    separateNFCMessage(result);
+                }
+            } else {
+                Toast.makeText(this, "The NFC tag appears to be empty", Toast.LENGTH_SHORT).show();
+            }
+        }
+    }
+
+
+    /**
+     * Since the nfc message is a Comma Separated Value type, we need to format it and save it to
+     * the DB
+     * @param nfcMessage
+     */
+    public void separateNFCMessage(String nfcMessage) {
+        String[] csv = nfcMessage.split(",");
+
+        // 8 is the number of fields that our NFC tags have
+        // And it must start with our Identifier
+        if (csv.length == 8 && csv[0].equals(NFC_PETROLOG_IDENTIFIER)) {
+            int serial = Integer.parseInt(csv[1]);
+            String comment = csv[2];
+            Double lat = Double.parseDouble(csv[3]);
+            Double lng = Double.parseDouble(csv[4]);
+            String bluetooth = csv[5];
+            String wifiAddress = csv[6];
+            String wifiPass = csv[7];
+
+            dataSource = new PetrologMarkerDataSource(this);
+            dataSource.open();
+            dataSource.createPetrologMarker(serial, comment, lat, lng, bluetooth, wifiAddress, wifiPass);
+            dataSource.close();
+
+            initiateBluetoothConnection();
+        } else {
+            Toast.makeText(this, "Sorry this NFC tag is not a Petrolog tag", Toast.LENGTH_SHORT).show();
+        }
     }
 
     /*
@@ -271,26 +388,8 @@ public class MainActivity extends Activity implements
 
         switch (item.getItemId()) {
             case R.id.connect:
-                /* Disable BT connect menu button */
-                MyMenu.getItem(3).setEnabled(false);
+                initiateBluetoothConnection();
 
-                mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
-                if (mBluetoothAdapter == null) {
-                    // Device does not support Bluetooth
-                    Toast.makeText(this, "Device does not support Bluetooth", Toast.LENGTH_SHORT)
-                            .show();
-                }
-                else {
-                    if (!mBluetoothAdapter.isEnabled()) {
-                        Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
-                        startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
-                    }
-                    else {
-                        Toast.makeText(this,"Bluetooth active",Toast.LENGTH_SHORT).show();
-                        mBluetoothAdapter.startDiscovery();
-                    }
-                }
-                myInit();
                 break;
 
             case R.id.disconnect:
@@ -449,6 +548,29 @@ public class MainActivity extends Activity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void initiateBluetoothConnection() {
+    /* Disable BT connect menu button */
+        MyMenu.getItem(3).setEnabled(false);
+
+        mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
+        if (mBluetoothAdapter == null) {
+            // Device does not support Bluetooth
+            Toast.makeText(this, "Device does not support Bluetooth", Toast.LENGTH_SHORT)
+                    .show();
+        }
+        else {
+            if (!mBluetoothAdapter.isEnabled()) {
+                Intent enableBtIntent = new Intent(BluetoothAdapter.ACTION_REQUEST_ENABLE);
+                startActivityForResult(enableBtIntent, REQUEST_ENABLE_BT);
+            }
+            else {
+                Toast.makeText(this,"Bluetooth active",Toast.LENGTH_SHORT).show();
+                mBluetoothAdapter.startDiscovery();
+            }
+        }
+        myInit();
     }
 
     public void onActivityResult (int request, int result, Intent data ) {
