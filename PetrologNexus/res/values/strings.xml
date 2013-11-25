@@ -47,7 +47,7 @@
         Current Status:\nRelevant data about the current status of the well.
     </string>
     <string name="runtime_h_s">
-        Run Time:\nToday\'s and yesterday\'s Run Time in hours and as a percentage.
+        Run Time:\nToday\'s / yesterday\'s Run Time in hours and as a percentage.
     </string>
     <string name="runtime_trend_h_s">
         Run Time Trend:\nLast 30 days of Run Time in hours.

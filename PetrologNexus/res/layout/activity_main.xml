@@ -753,11 +753,10 @@
             <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="100"
+                    android:layout_weight="50"
                     android:id="@+id/RuntimeTrendH"
                     android:background="@drawable/background_with_shadow"
-                    android:layout_marginBottom="@dimen/frame_margin"
-                    android:layout_marginTop="@dimen/frame_margin"
+                android:layout_marginTop="@dimen/frame_margin"
                     android:padding="0dp"
                     android:layout_marginRight="@dimen/frame_margin"
                     >
@@ -767,27 +766,6 @@
                         android:layout_height="fill_parent"
                         android:text="@string/runtime_trend_h_s"
                         android:id="@+id/runtime_trend_h"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:textStyle="bold"
-                        android:textSize="15dp"
-                        />
-            </FrameLayout>
-
-            <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="65"
-                    android:id="@+id/MapH"
-                    android:background="@drawable/background_with_shadow"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:padding="@dimen/frame_padding"
-                    android:layout_marginRight="@dimen/frame_margin">
-
-                <TextView
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:text="@string/map_h_s"
-                        android:id="@+id/map_h"
                         android:gravity="center_vertical|center_horizontal"
                         android:textStyle="bold"
                         android:textSize="15dp"

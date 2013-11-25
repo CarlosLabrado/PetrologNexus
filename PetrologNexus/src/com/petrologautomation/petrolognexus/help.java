@@ -24,8 +24,6 @@ public class help {
         runtime.setTypeface(helpFont);
         TextView runtime_trend = (TextView)myActivity.findViewById(R.id.runtime_trend_h);
         runtime_trend.setTypeface(helpFont);
-        TextView map = (TextView)myActivity.findViewById(R.id.map_h);
-        map.setTypeface(helpFont);
         TextView dyna = (TextView)myActivity.findViewById(R.id.dyna_h);
         dyna.setTypeface(helpFont);
         TextView settings = (TextView)myActivity.findViewById(R.id.settings_h);
