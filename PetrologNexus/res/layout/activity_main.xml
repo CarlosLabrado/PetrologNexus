@@ -78,18 +78,21 @@
                                     android:layout_height="fill_parent"
                                     android:id="@+id/current_v1TV"
                                     android:gravity="center_vertical"
-                                    android:layout_weight="300">
+                                    android:layout_weight="300"
+                                android:foregroundGravity="center_vertical|left">
                                     <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="fill_parent"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#b8b8b8"
+                                        android:gravity="center_vertical|left" />
                                     <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="fill_parent"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#b8b8b8"
+                                        android:gravity="center_vertical|left" />
                             </TextSwitcher>
                         </TableRow>
 
@@ -114,18 +117,21 @@
                                     android:layout_height="fill_parent"
                                     android:id="@+id/current_v2TV"
                                     android:gravity="center_vertical"
-                                    android:layout_weight="300">
+                                    android:layout_weight="300"
+                                android:foregroundGravity="center_vertical|left">
                                 <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="fill_parent"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#b8b8b8"
+                                    android:gravity="center_vertical|left" />
                                 <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="fill_parent"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#b8b8b8"
+                                    android:gravity="center_vertical|left" />
                             </TextSwitcher>
                         </TableRow>
 
@@ -150,18 +156,21 @@
                                     android:layout_height="fill_parent"
                                     android:id="@+id/current_v3TV"
                                     android:gravity="center_vertical"
-                                    android:layout_weight="300">
+                                    android:layout_weight="300"
+                                android:foregroundGravity="center_vertical|left">
                                 <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="fill_parent"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#b8b8b8"
+                                    android:gravity="center_vertical|left" />
                                 <TextView
-                                        android:layout_width="wrap_content"
-                                        android:layout_height="wrap_content"
+                                        android:layout_width="fill_parent"
+                                        android:layout_height="fill_parent"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#b8b8b8"
+                                    android:gravity="center_vertical|left" />
                             </TextSwitcher>
                         </TableRow>
 
@@ -309,14 +318,12 @@
             <FrameLayout
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_weight="100"
+                    android:layout_weight="50"
                     android:id="@+id/RuntimeTrend"
                     android:background="@drawable/background_with_shadow"
-                    android:layout_marginBottom="@dimen/frame_margin"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:padding="0dp"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    >
+                android:layout_marginTop="@dimen/frame_margin"
+                android:layout_marginRight="@dimen/frame_margin"
+                android:padding="@dimen/frame_padding">
 
                 <com.androidplot.xy.XYPlot
                         android:id="@+id/runtimeTrend"
@@ -330,27 +337,8 @@
                         androidPlot.GraphWidget.RangeOriginLablePaint.Color="#ff000000"
                         androidPlot.BackgroundPaint.Color="#fffdfdfe"
                         androidPlot.BorderStyle="Plot.BorderStyle.NONE|null|null"
-                        androidPlot.PlotMargins="-20|0|0|0"
-                        androidPlot.PlotPadding="0|0|20|0"
-                        />
-
-            </FrameLayout>
-
-            <FrameLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="65"
-                    android:id="@+id/Map"
-                    android:background="@drawable/background_with_shadow"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:padding="@dimen/frame_padding"
-                    android:layout_marginRight="@dimen/frame_margin">
-
-                <include
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:id="@+id/include"
-                        layout="@layout/map_fragment"/>
+                        androidPlot.PlotMargins="-40|-1|-1|-1"
+                        androidPlot.PlotPadding="10|0|20|0" />
 
             </FrameLayout>
 
@@ -384,7 +372,7 @@
                         androidPlot.GraphWidget.RangeOriginLabelPaint.Color="#ff000000"
                         androidPlot.BackgroundPaint.Color="#fffdfdfe"
                         androidPlot.BorderStyle="Plot.BorderStyle.NONE|null|null"
-                        androidPlot.PlotMargins="-20|-1|0|0"
+                        androidPlot.PlotMargins="-20|-1|-1|-1"
                         androidPlot.PlotPadding="1|1|20|0"
                         />
 

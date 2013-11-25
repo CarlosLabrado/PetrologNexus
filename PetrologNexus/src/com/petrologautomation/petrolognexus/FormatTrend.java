@@ -23,16 +23,16 @@ public class FormatTrend {
         myGraph.setDomainValueFormat(new DecimalFormat("0"));
 
         //Range
-        myGraph.setRangeBoundaries(0, 30, BoundaryMode.FIXED);
+        myGraph.setRangeBoundaries(0, 112, BoundaryMode.FIXED);
         myGraph.setRangeStep(XYStepMode.INCREMENT_BY_VAL, 30);
-        myGraph.setRangeStepValue(5);
+        myGraph.setRangeStepValue(7);
         myGraph.setRangeValueFormat(new DecimalFormat("0"));
 
         myGraph.getGraphWidget().getDomainLabelPaint().setColor(Color.BLACK);
-        myGraph.getGraphWidget().getRangeLabelPaint().setColor(Color.BLACK);
+        myGraph.getGraphWidget().getRangeLabelPaint().setColor(Color.WHITE);
 
         myGraph.getGraphWidget().getDomainOriginLabelPaint().setColor(Color.BLACK);
-        myGraph.getGraphWidget().getDomainOriginLinePaint().setColor(Color.BLACK);
+        myGraph.getGraphWidget().getDomainOriginLinePaint().setColor(Color.LTGRAY);
 
         return myGraph;
     }

@@ -20,7 +20,7 @@ public class G4Petrolog {
     InputStream Rx  = null;
     OutputStream Tx = null;
 
-    public boolean HeartBeatStopped = false;
+    private boolean HeartBeatStopped = false;
 
     private int Step = 0;
     private int countForDyna = 0;
@@ -52,6 +52,7 @@ public class G4Petrolog {
         try {
             Tx = socket.getOutputStream();
             Rx = socket.getInputStream();
+            HeartBeatStopped = false;
         } catch (IOException e) {
             e.printStackTrace();
             //Error!!
@@ -90,6 +91,8 @@ public class G4Petrolog {
 
         SendCommand("01E");
         SendCommand("01E");
+        SendCommand("01H");
+        SendCommand("01H");
         SendCommand("01F1");
         SendCommand("01F2");
         SendCommand("01F3");
@@ -99,7 +102,6 @@ public class G4Petrolog {
         SendCommand("01F7");
         SendCommand("01F8");
         SendCommand("01S?1");
-        SendCommand("01H");
     }
 
     /*
@@ -801,8 +803,8 @@ public class G4Petrolog {
 
         /* Time Out */
         if (to > 0 && to < 255){
-            SendCommand("01SP"+Integer.toHexString(256-to));
-            Log.i("PN - Settings", "TO: " + "01SP" + String.format("%02x", 256 - to));
+            SendCommand("01SP"+Integer.toHexString(256-to).toUpperCase());
+            Log.i("PN - Settings", "TO: " + "01SP" + String.format("%02x", 256 - to).toUpperCase());
 
         }
         else if (to < 0){
@@ -817,30 +819,51 @@ public class G4Petrolog {
         /* Auto TimeOut */
         if(ato){
             SendCommand("01SG01");
+            Log.i("PN - Settings", "AutoTimeOut: Auto " + "01SG01");
         }
         else{
             SendCommand("01SG00");
+            Log.i("PN - Settings", "AutoTimeOut: Fixed " + "01SG00");
         }
         /* Clock */
-        if(clock.matches("[0-2][0-9].[0-5][0-9].[0-5][0-9].[0-3][0-9].[0-1][0-9].[0-9][0-9]")){
-            SendCommand("01SH"+clock);
-            Log.i("PN - Settings", "Date: " + "01SH" + clock);
+        String time = null;
+        String day = null;
+        String month = null;
+        String year = null;
+        try {
+        /* US date format -> Mex date format */
+            String date = clock;
+            time = date.substring(0,9);
+            day = date.substring(12,15);
+            month = date.substring(9,12);
+            year = date.substring(15);
+        } catch (StringIndexOutOfBoundsException e) {
+            Log.i("PN - Settings", "Error: Clock Format");
+        }
+
+
+        if((clock.matches("[0-2][0-9].[0-5][0-9].[0-5][0-9].[0-1][0-9].[0-3][0-9].[0-9][0-9]")) &&
+                (Integer.valueOf(month.substring(0,2)) <= 12)){
+            SendCommand("01SH"+time+day+month+year);
+            Log.i("PN - Settings", "Date: " + "01SH" +time+day+month+year);
         }
         else{
+
             Calendar myDateTime = new GregorianCalendar();
+            Log.i("PN - Settings", "Month: "+ myDateTime.get(Calendar.MONTH));
 
             SendCommand("01SH"+String.format("%02d", myDateTime.get(Calendar.HOUR_OF_DAY))  +" "
                     +String.format("%02d", myDateTime.get(Calendar.MINUTE))       +" "
                     +String.format("%02d", myDateTime.get(Calendar.SECOND))       +" "
                     +String.format("%02d", myDateTime.get(Calendar.DAY_OF_MONTH)) +" "
-                    +String.format("%02d", myDateTime.get(Calendar.MONTH))        +" "
+                    +String.format("%02d", myDateTime.get(Calendar.MONTH)+1)      +" " /* Month starts @ 0 */
                     +String.format("%02d", myDateTime.get(Calendar.YEAR) % 2000)
             );
             Log.i("PN - Settings", "Date: " + "01SH" + String.format("%02d", myDateTime.get(Calendar.HOUR_OF_DAY)) + " "
                     + String.format("%02d", myDateTime.get(Calendar.MINUTE)) + " "
                     + String.format("%02d", myDateTime.get(Calendar.SECOND)) + " "
                     + String.format("%02d", myDateTime.get(Calendar.DAY_OF_MONTH)) + " "
-                    + String.format("%02d", myDateTime.get(Calendar.MONTH)) + " "
+                    + String.format("%02d", myDateTime.get(Calendar.MONTH)+1) + " " /* Month starts @ 0 */
                     + String.format("%02d", myDateTime.get(Calendar.YEAR) % 2000)
             );
         }
@@ -849,6 +872,8 @@ public class G4Petrolog {
 
         SendCommand("01S?1");
         Log.i("PN - Settings","S?1: "+"01S?1");
+        SendCommand("01H");
+        Log.i("PN - Settings","H: "+"01H");
 
 
         HeartBeatStopped = false;
