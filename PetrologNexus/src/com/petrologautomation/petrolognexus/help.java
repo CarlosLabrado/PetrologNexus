@@ -10,8 +10,9 @@ import android.widget.TextView;
  */
 public class help {
 
-    private ImageView helpConnected;
+    private ImageView helpConnectedStopped;
     private ImageView helpDisconnected;
+    private ImageView helpConnectedRunning;
 
 
     public help (MainActivity myActivity){
@@ -31,22 +32,33 @@ public class help {
         TextView fillage = (TextView)myActivity.findViewById(R.id.fillage_h);
         fillage.setTypeface(helpFont);
 
-        helpConnected = (ImageView)myActivity.findViewById(R.id.help_connectedIV);
+        helpConnectedStopped = (ImageView)myActivity.findViewById(R.id.help_connected_stoppedIV);
         helpDisconnected = (ImageView)myActivity.findViewById(R.id.help_disconnectedIV);
+        helpConnectedRunning =  (ImageView)myActivity.findViewById(R.id.help_connected_runningIV);
 
     }
 
-    public void setConnected (){
+    public void setConnectedStopped(){
 
         helpDisconnected.setVisibility(View.INVISIBLE);
-        helpConnected.setVisibility(View.VISIBLE);
+        helpConnectedStopped.setVisibility(View.VISIBLE);
+        helpConnectedRunning.setVisibility(View.INVISIBLE);
 
     }
 
     public void setDisconnected (){
 
         helpDisconnected.setVisibility(View.VISIBLE);
-        helpConnected.setVisibility(View.INVISIBLE);
+        helpConnectedStopped.setVisibility(View.INVISIBLE);
+        helpConnectedRunning.setVisibility(View.INVISIBLE);
+
+    }
+
+    public void setConnectedRunning (){
+
+        helpDisconnected.setVisibility(View.INVISIBLE);
+        helpConnectedStopped.setVisibility(View.INVISIBLE);
+        helpConnectedRunning.setVisibility(View.VISIBLE);
 
     }
 }

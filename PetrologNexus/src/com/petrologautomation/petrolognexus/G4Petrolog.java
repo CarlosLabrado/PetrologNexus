@@ -14,7 +14,7 @@ import java.util.GregorianCalendar;
  */
 public class G4Petrolog {
 
-    final static int TIMEOUT_VALUE = 10;
+    final static int TIMEOUT_VALUE = 3;
     final static int _12_BIT_MAX = 4096;
 
     InputStream Rx  = null;
@@ -61,6 +61,22 @@ public class G4Petrolog {
     }
 
     public void Disconnect(){
+        /* Reset all variables */
+        Result = "";
+        S_1 = "";
+        E = "";
+        MB = "";
+        H = "";
+        F1 = "";
+        F2 = "";
+        F3 = "";
+        F4 = "";
+        F5 = "";
+        F6 = "";
+        F7 = "";
+        F8 = "";
+        O = "";
+
         if (Tx == null || Rx == null){
             /* Already Disconnected */
         }
@@ -314,11 +330,12 @@ public class G4Petrolog {
      * */
     public String getWellStatus (){
         try {
-            int OnOff = Integer.valueOf(E.substring(24,25),16);
-            if((OnOff&0x08) == 0){
-               return "Running";
-            }else{
+            byte temp = Byte.valueOf(E.substring(24,25),16);
+            bitState bit = new bitState();
+            if(bit.getBitState(temp,3)){
                return "Stopped";
+            }else{
+               return "Running";
             }
         } catch (StringIndexOutOfBoundsException e){
             return "Empty - String Out of Bounds";
@@ -336,11 +353,12 @@ public class G4Petrolog {
      * */
     public String getPumpOffStatus (){
         try {
-            int OnOff = Integer.valueOf(E.substring(16,17),16);
-            if((OnOff&0x04) == 0){
-                return "No";
-            }else{
+            byte temp = Byte.valueOf(E.substring(16,17),16);
+            bitState bit = new bitState();
+            if(bit.getBitState(temp,2)){
                 return "Yes";
+            }else{
+                return "No";
             }
         } catch (StringIndexOutOfBoundsException e){
             return "Empty - String Out of Bounds";
@@ -563,12 +581,13 @@ public class G4Petrolog {
      * */
     public boolean getOverflowHrsToday (){
         try {
-            int temp = Integer.valueOf(E.substring(16,17),16);
-            if (temp%2 == 0) {
-                return false;
+            byte temp = Byte.valueOf(E.substring(16,17),16);
+            bitState bit = new bitState();
+            if (bit.getBitState(temp,1)) {
+                return true;
             }
             else {
-                return true;
+                return false;
             }
         } catch (StringIndexOutOfBoundsException e){
             return false;
@@ -882,4 +901,23 @@ public class G4Petrolog {
         return false;
 
     }
+    /*
+     * This method sets the POC to manual and back to auto to start the well.
+     * Author: CCR, JCC
+     *
+     * */
+    public void start (){
+        try {
+            HeartBeatStopped = true;
+
+            SendCommand("01A31");
+            Thread.sleep(200);
+            SendCommand("01A21");
+
+            HeartBeatStopped = false;
+        } catch (InterruptedException e){
+            //TODO
+        }
+    }
+
 }

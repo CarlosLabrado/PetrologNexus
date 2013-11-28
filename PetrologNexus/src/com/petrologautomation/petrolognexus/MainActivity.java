@@ -1,49 +1,24 @@
 package com.petrologautomation.petrolognexus;
 
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.graphics.Typeface;
-import android.location.Location;
 import android.os.AsyncTask;
 import android.os.Bundle;
 import android.app.Activity;
 import android.util.Log;
-import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.Window;
-import android.widget.ArrayAdapter;
-import android.widget.EditText;
 import android.widget.FrameLayout;
-import android.widget.ImageView;
 import android.widget.LinearLayout;
-import android.widget.Spinner;
-import android.widget.TextView;
 import android.widget.Toast;
-
-import com.androidplot.xy.XYPlot;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.GooglePlayServicesClient;
-import com.google.android.gms.location.LocationClient;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.maps.CameraUpdate;
-import com.google.android.gms.maps.CameraUpdateFactory;
-import com.google.android.gms.maps.GoogleMap;
-import com.google.android.gms.maps.MapFragment;
-import com.google.android.gms.maps.model.BitmapDescriptorFactory;
-import com.google.android.gms.maps.model.LatLng;
-import com.google.android.gms.maps.model.Marker;
-import com.google.android.gms.maps.model.MarkerOptions;
 
 import java.io.IOException;
 import java.util.Timer;
@@ -70,44 +45,79 @@ public class MainActivity extends Activity {
 
     private static wellSettings_edit wellSettingsEdit;
 
-    private static help Help;
+    public static help Help;
 
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket mBluetoothSocket;
-    boolean Connected = false;
+    public static boolean Connected = false;
     public static final int REQUEST_ENABLE_BT = 1;
     public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
     private String wellName;
 
-    private Menu MyMenu;
+    public static Menu MyMenu;
+
+    private Boolean petrologFound;
 
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
-        String action = intent.getAction();
-        // When discovery finds a device
-        if (BluetoothDevice.ACTION_FOUND.equals(action)) {
-            // Get the BluetoothDevice object from the Intent
-            BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
-            try {
-                if (device.getName().contains("Petrolog")) {
-                    device.fetchUuidsWithSdp();
-                    Log.i("PN - BT","Start UUID Discovery");
-                    mBluetoothAdapter.cancelDiscovery();
-                    new AsyncBluetoothConnect().execute(device);
-                }
-            } catch (NullPointerException e) {
-                e.printStackTrace();
-                Toast.makeText(MainActivity.this, "Error Finding Petrolog, Try Again", Toast.LENGTH_SHORT)
-                        .show();
+            String action = intent.getAction();
+            Log.i("PN - BT","BroadcastReceiver Action = "+action);
+
+            /* Bluetooth disconnect */
+            if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)){
+                Toast.makeText(MainActivity.this, "Petrolog disconnected", Toast.LENGTH_SHORT).show();
+                disconnect();
             }
-        }
+
+            /* Bluetooth Discovery Started */
+            if (BluetoothAdapter.ACTION_DISCOVERY_STARTED.equals(action)){
+                petrologFound = false;
+                removeAllMenuItems();
+                setProgressBarIndeterminateVisibility(true);
+            }
+
+            /* Bluetooth Discovery finds a device */
+            if (BluetoothDevice.ACTION_FOUND.equals(action)) {
+                // Get the BluetoothDevice object from the Intent
+                BluetoothDevice device = intent.getParcelableExtra(BluetoothDevice.EXTRA_DEVICE);
+                try {
+                    if (device.getName().contains("Petrolog")) {
+                        device.fetchUuidsWithSdp();
+                        Toast.makeText(MainActivity.this, "Petrolog found: Connecting", Toast.LENGTH_SHORT).show();
+                        petrologFound = true;
+                        mBluetoothAdapter.cancelDiscovery();
+                        new AsyncBluetoothConnect().execute(device);
+                    }
+                } catch (NullPointerException e) {
+                    e.printStackTrace();
+                    Toast.makeText(MainActivity.this, "Error, try again", Toast.LENGTH_SHORT)
+                            .show();
+                }
+            }
+
+            /* Bluetooth Discovery Finished */
+            if (BluetoothAdapter.ACTION_DISCOVERY_FINISHED.equals(action)){
+                if (!petrologFound){
+                    setMenuIconsDisconnected();
+                    /* Enable BT connect menu button */
+                    MyMenu.getItem(4).setEnabled(true);
+
+                    Toast.makeText(MainActivity.this, "Discovery finished: Petrolog not found, try again", Toast.LENGTH_SHORT)
+                            .show();
+                }
+                setProgressBarIndeterminateVisibility(false);
+            }
         }
     };
 
     @Override
 	protected void onCreate(Bundle savedInstanceState) {
 		super.onCreate(savedInstanceState);
+
+        /* Progress spinner on menu */
+        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
+
 		setContentView(R.layout.activity_main);
 
         Help = new help(this);
@@ -147,20 +157,16 @@ public class MainActivity extends Activity {
         MyMenu = menu;
 
         if (mBluetoothSocket == null){
-            MyMenu.getItem(4).setVisible(false); //Disconnect
-            MyMenu.getItem(0).setVisible(false); //Settings
-            MyMenu.getItem(1).setVisible(false); //Clean
+            /* Menu icons */
+            setMenuIconsDisconnected();
             /* help */
             Help.setDisconnected();
         }
         else {
             /* Menu icons */
-            MyMenu.getItem(3).setVisible(false); //Connect
-            MyMenu.getItem(4).setVisible(true); //Disconnect
-            MyMenu.getItem(0).setVisible(true); //Settings
-            MyMenu.getItem(1).setVisible(true); //Clean
+            setMenuIconsConnected();
             /* help */
-            Help.setConnected();
+            Help.setConnectedStopped();
         }
 
         return true;
@@ -172,7 +178,7 @@ public class MainActivity extends Activity {
         switch (item.getItemId()) {
             case R.id.connect:
                 /* Disable BT connect menu button */
-                MyMenu.getItem(3).setEnabled(false);
+                MyMenu.getItem(4).setEnabled(false);
 
                 mBluetoothAdapter = BluetoothAdapter.getDefaultAdapter();
                 if (mBluetoothAdapter == null) {
@@ -216,6 +222,10 @@ public class MainActivity extends Activity {
 
             case R.id.settings:
                 wellSettingsEdit.popup();
+                break;
+
+            case R.id.start_well:
+                PetrologSerialCom.start();
                 break;
 
             default:
@@ -284,16 +294,13 @@ public class MainActivity extends Activity {
 
         protected void onPostExecute(Boolean ok) {
             /* Enable BT connect menu button */
-            MyMenu.getItem(3).setEnabled(true);
+            MyMenu.getItem(4).setEnabled(true); //TODO
 
             if (ok) {
                 /* Menu icons */
-                MyMenu.getItem(3).setVisible(false); //Connect
-                MyMenu.getItem(4).setVisible(true); //Disconnect
-                MyMenu.getItem(0).setVisible(true); //Settings
-                MyMenu.getItem(1).setVisible(true); //Clean
+                setMenuIconsConnected();
                 /* help */
-                Help.setConnected();
+                Help.setConnectedStopped();
                 /* Post Petrolog last 30 days of history */
                 wellHistoricalRuntimePost.post();
                 /* Action bar title (Well Name) */
@@ -306,10 +313,7 @@ public class MainActivity extends Activity {
 
             }
             else {
-                MyMenu.getItem(3).setVisible(true); //Connect
-                MyMenu.getItem(4).setVisible(false); //Disconnect
-                MyMenu.getItem(0).setVisible(false); //Settings
-                MyMenu.getItem(1).setVisible(false); //Clean
+                setMenuIconsDisconnected();
                 //help
                 Help.setDisconnected();
                 Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT)
@@ -333,11 +337,10 @@ public class MainActivity extends Activity {
 
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
         registerReceiver(mReceiver, filter);
-
-        //Init Graphs
-        XYPlot RuntimeTrend = FormatTrend.format((XYPlot)findViewById(R.id.runtimeTrend));
-        XYPlot Dynagraph = FormatGraph.format((XYPlot)findViewById(R.id.dynagraph));
 
         /* Timer to update info from Petrolog */
         if (SerialComHeartBeat == null){
@@ -430,14 +433,9 @@ public class MainActivity extends Activity {
             SerialComHeartBeat = null;
 
             /* Clean UI */
-            wellDynagraphPost.clean();
-            wellHistoricalRuntimePost.clean();
-
+            cleanUI();
             /* Prepare Menu */
-            MyMenu.getItem(3).setVisible(true);  //Connect
-            MyMenu.getItem(4).setVisible(false); //Disconnect
-            MyMenu.getItem(0).setVisible(false); //Settings
-            MyMenu.getItem(1).setVisible(false); //Clean
+            setMenuIconsDisconnected();
 
             /* Help */
             Help.setDisconnected();
@@ -463,15 +461,9 @@ public class MainActivity extends Activity {
             mBluetoothSocket = null;
 
             /* Clean UI */
-            wellDynagraphPost.clean();
-            wellHistoricalRuntimePost.clean();
-
+            cleanUI();
             /* Prepare Menu */
-            MyMenu.getItem(3).setVisible(true);  //Connect
-            MyMenu.getItem(4).setVisible(false); //Disconnect
-            MyMenu.getItem(0).setVisible(false); //Settings
-            MyMenu.getItem(1).setVisible(false); //Clean
-
+            setMenuIconsDisconnected();
             /* Help */
             Help.setDisconnected();
         }
@@ -482,6 +474,53 @@ public class MainActivity extends Activity {
             e.printStackTrace();
         }
 
+    }
+
+    private void setMenuIconsConnected(){
+        MyMenu.getItem(4).setVisible(false); //Connect
+        MyMenu.getItem(5).setVisible(true); //Disconnect
+        MyMenu.getItem(1).setVisible(true); //Settings
+        MyMenu.getItem(2).setVisible(true); //Clean
+        MyMenu.getItem(0).setVisible(false); //Run
+        MyMenu.getItem(3).setVisible(true); //Help
+
+    }
+
+    private void setMenuIconsDisconnected(){
+        MyMenu.getItem(4).setVisible(true);  //Connect
+        MyMenu.getItem(5).setVisible(false); //Disconnect
+        MyMenu.getItem(1).setVisible(false); //Settings
+        MyMenu.getItem(2).setVisible(false); //Clean
+        MyMenu.getItem(0).setVisible(false); //Run
+        MyMenu.getItem(3).setVisible(true); //Help
+
+    }
+
+    private void removeAllMenuItems(){
+        MyMenu.getItem(4).setVisible(false); //Connect
+        MyMenu.getItem(5).setVisible(false); //Disconnect
+        MyMenu.getItem(1).setVisible(false); //Settings
+        MyMenu.getItem(2).setVisible(false); //Clean
+        MyMenu.getItem(0).setVisible(false); //Run
+        MyMenu.getItem(3).setVisible(false); //Help
+
+    }
+
+    private void cleanUI(){
+
+        wellDynagraphPost.clean();
+        wellHistoricalRuntimePost.clean();
+
+        /* Last Update to display N/A (all variables are cleared on Disconnect@G4Petrolog) */
+        All.post(new Runnable() {
+            @Override
+            public void run() {
+                wellStatusPost.post();
+                wellSettingsPost.post();
+                wellRuntimePost.post();
+                wellFillagePost.post();
+            }
+        });
     }
 
 

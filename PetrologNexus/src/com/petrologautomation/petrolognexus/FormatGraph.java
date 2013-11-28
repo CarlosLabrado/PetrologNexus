@@ -1,6 +1,8 @@
 package com.petrologautomation.petrolognexus;
 
 import android.graphics.Color;
+
+import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.XYPlot;
 import java.text.DecimalFormat;
 
@@ -14,9 +16,13 @@ public class FormatGraph {
 
         // Domain
         myGraph.setDomainValueFormat(new DecimalFormat("0"));
+        myGraph.setDomainBoundaries(1000, 4000, BoundaryMode.AUTO);
+
 
         // Range
         myGraph.setRangeValueFormat(new DecimalFormat("0"));
+        myGraph.setRangeBoundaries(1000, 4000, BoundaryMode.AUTO);
+
 
         myGraph.getGraphWidget().getDomainLabelPaint().setColor(Color.BLACK);
         myGraph.getGraphWidget().getRangeLabelPaint().setColor(Color.BLACK);

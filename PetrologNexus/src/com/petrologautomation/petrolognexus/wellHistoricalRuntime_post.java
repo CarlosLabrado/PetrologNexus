@@ -2,16 +2,25 @@ package com.petrologautomation.petrolognexus;
 
 
 import android.content.Context;
+import android.graphics.Canvas;
 import android.graphics.Color;
+import android.graphics.ColorFilter;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.Typeface;
+import android.graphics.drawable.Drawable;
+import android.graphics.drawable.PaintDrawable;
 import android.util.Log;
 import android.view.View;
 import android.widget.ImageView;
 import android.widget.TextView;
 
+import com.androidplot.ui.DynamicTableModel;
+import com.androidplot.ui.SizeLayoutType;
+import com.androidplot.ui.SizeMetrics;
+import com.androidplot.ui.XLayoutStyle;
+import com.androidplot.ui.YLayoutStyle;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
@@ -45,15 +54,21 @@ public class wellHistoricalRuntime_post {
 
     private Number[] serie = new Number[2];
 
-    private Number[] serieToday = new Number[6];
-
     public wellHistoricalRuntime_post(MainActivity myActivity){
 
         myAct = myActivity;
-        beforeToday = new SimpleXYSeries(Arrays.asList(serie),SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
-        today = new SimpleXYSeries(Arrays.asList(serie),SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
-        afterToday = new SimpleXYSeries(Arrays.asList(serie),SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
-        History = (XYPlot) myAct.findViewById(R.id.runtimeTrend);
+        beforeToday = new SimpleXYSeries(Arrays.asList(serie),
+                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "Current Month");
+        today = new SimpleXYSeries(Arrays.asList(serie),
+                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "Today");
+        afterToday = new SimpleXYSeries(Arrays.asList(serie),
+                SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "Last Month");
+
+        History = FormatTrend.format((XYPlot)myAct.findViewById(R.id.runtimeTrend));
+
+        ImageView lastMonthLegend = (ImageView)myAct.findViewById(R.id.last_month_color);
+        ImageView todayLegend = (ImageView)myAct.findViewById(R.id.today_color);
+        ImageView currentMonthLegend = (ImageView)myAct.findViewById(R.id.current_month_color);
 
         XYGraphWidget myWidget = History.getGraphWidget();
 
@@ -98,7 +113,28 @@ public class wellHistoricalRuntime_post {
         bTFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.RED, Shader.TileMode.REPEAT));
         bTLineFormat.setFillPaint(bTFillPaint);
 
-        History.getLayoutManager().remove(History.getLegendWidget());
+        currentMonthLegend.setBackground(new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.drawPaint(bTFillPaint);
+            }
+
+            @Override
+            public void setAlpha(int i) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return 0;
+            }
+        });
+
         History.addSeries(beforeToday,bTLineFormat);
 
         /* today paint */
@@ -114,7 +150,28 @@ public class wellHistoricalRuntime_post {
         TFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.REPEAT));
         TLineFormat.setFillPaint(TFillPaint);
 
-        History.getLayoutManager().remove(History.getLegendWidget());
+        todayLegend.setBackground(new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.drawPaint(TFillPaint);
+            }
+
+            @Override
+            public void setAlpha(int i) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return 0;
+            }
+        });
+
         History.addSeries(today,TLineFormat);
 
         /* after today paint */
@@ -130,9 +187,31 @@ public class wellHistoricalRuntime_post {
         aTFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.GREEN, Shader.TileMode.REPEAT));
         aTLineFormat.setFillPaint(aTFillPaint);
 
-        History.getLayoutManager().remove(History.getLegendWidget());
+        lastMonthLegend.setBackground(new Drawable() {
+            @Override
+            public void draw(Canvas canvas) {
+                canvas.drawPaint(aTFillPaint);
+            }
+
+            @Override
+            public void setAlpha(int i) {
+
+            }
+
+            @Override
+            public void setColorFilter(ColorFilter colorFilter) {
+
+            }
+
+            @Override
+            public int getOpacity() {
+                return 0;
+            }
+        });
+
         History.addSeries(afterToday,aTLineFormat);
 
+        History.getLegendWidget().setVisible(false);
 
     }
 
@@ -169,6 +248,16 @@ public class wellHistoricalRuntime_post {
         if(beforeToday.size()>0){
             for (int i=1;i<beforeToday.size();i++){
                 beforeToday.removeLast();
+            }
+        }
+        if(today.size()>0){
+            for (int i=1;i<today.size();i++){
+                today.removeLast();
+            }
+        }
+        if(afterToday.size()>0){
+            for (int i=1;i<afterToday.size();i++){
+                afterToday.removeLast();
             }
         }
         History.redraw();

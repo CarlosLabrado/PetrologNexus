@@ -91,6 +91,7 @@ public class wellRuntime_post {
         }
         else {
             todayRuntime.setText(StringFormatValue.format(myAct,"", Color.GRAY,1.2f,true));
+            TodayRuntimePB.setProgress(0);
             todayRuntimePercent.setText(StringFormatValue.format(myAct,"", Color.GRAY,1f,true));
         }
 

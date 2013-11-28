@@ -116,7 +116,7 @@ public class BlueRadios {
      * */
     public boolean CommandMode (){
         SendCommand("+++");
-        Log.i("PN - BlueRadius","CommandMode Rx ="+commandMode);
+        Log.i("PN - BlueRadios","CommandMode Rx ="+commandMode);
         if (commandMode.contains("OK")){
             return true;
         }
@@ -129,7 +129,7 @@ public class BlueRadios {
     * */
     public boolean Store (int index, String name){
         SendCommand("ATSTORE,"+index+","+name);
-        Log.i("PN - BlueRadius","store Rx ="+store);
+        Log.i("PN - BlueRadios","store Rx ="+store);
         if (store.contains("OK")){
             return true;
         }
@@ -142,7 +142,7 @@ public class BlueRadios {
     * */
     public String Read (int index){
         SendCommand("ATREAD,"+index);
-        Log.i("PN - BlueRadius","Read Rx ="+read);
+        Log.i("PN - BlueRadios","Read Rx ="+read);
         if (read.contains("OK")){
             return read.substring(7);
         }
@@ -155,7 +155,7 @@ public class BlueRadios {
     * */
     public boolean DataMode (){
         SendCommand("ATMD");
-        Log.i("PN - BlueRadius","DataMode Rx ="+dataMode);
+        Log.i("PN - BlueRadios","DataMode Rx ="+dataMode);
         if (dataMode.contains("OK")){
             return true;
         }

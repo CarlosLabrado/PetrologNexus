@@ -57,9 +57,12 @@ public class wellStatus_post {
         String title = myAct.getString(R.string.well_status);
         current_t1TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
         if (data.contains("Running")){
+            /* Start Well button invisible*/
+            MainActivity.MyMenu.getItem(0).setVisible(false);
+            MainActivity.Help.setConnectedRunning();
+
             TextView TempTV = (TextView)current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)){
-                Log.i("PN - TextSwitcher", TempTV.getText().toString());
                 current_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
             }
 
@@ -96,9 +99,14 @@ public class wellStatus_post {
             }
         }
         else if (data.contains("Stopped")){
+            /* Start Well button visible*/
+            if (MainActivity.Connected){
+                MainActivity.MyMenu.getItem(0).setVisible(true);
+                MainActivity.Help.setConnectedStopped();
+            }
+
             TextView TempTV = (TextView)current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)){
-                Log.i("PN - TextSwitcher", TempTV.getText().toString());
                 current_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
             }
 
@@ -137,7 +145,15 @@ public class wellStatus_post {
             data = myAct.getString(R.string.n_a);
             TextView TempTV = (TextView)current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)){
-                current_v1TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,true));
+                current_v1TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
+            }
+            TempTV = (TextView)current_v2TV.getCurrentView();
+            if (!TempTV.getText().toString().equals(data)){
+                current_v2TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
+            }
+            TempTV = (TextView)current_v3TV.getCurrentView();
+            if (!TempTV.getText().toString().equals(data)){
+                current_v3TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
             }
         }
     }

@@ -42,6 +42,11 @@
     <string name="percent_fillage_setting">Fillage Setting:</string>
     <string name="pump_off_distance">Pump Off Distance:</string>
 
+    <!--History Trend-->
+    <string name="current_month">Current Month</string>
+    <string name="today">Today</string>
+    <string name="last_month">Last Month</string>
+
     <!--Help-->
     <string name="current_h_s">
         Current Status:\nRelevant data about the current status of the well.
@@ -50,7 +55,7 @@
         Run Time:\nToday\'s / yesterday\'s Run Time in hours and as a percentage.
     </string>
     <string name="runtime_trend_h_s">
-        Run Time Trend:\nLast 30 days of Run Time in hours.
+        Run Time Trend:\nLast 30 days of Run Time in percentage.
     </string>
     <string name="map_h_s">
         Map:\nUpon connection to a Petrolog POC displays the current location.

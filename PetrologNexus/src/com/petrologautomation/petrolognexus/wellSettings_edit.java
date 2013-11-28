@@ -5,6 +5,7 @@ import android.app.Dialog;
 import android.content.DialogInterface;
 import android.view.LayoutInflater;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.Window;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
@@ -53,10 +54,15 @@ public class wellSettings_edit {
         String month = date.substring(12,15);
         String year = date.substring(15);
         settings_v0ET.setHint(time+month+day+year);
+        settings_v0ET.setText("");
         settings_v1ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getPumpUpSetting()));
+        settings_v1ET.setText("");
         settings_v2ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getPumpOffStrokesSetting()));
+        settings_v2ET.setText("");
         settings_v3ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getFillageSetting()));
+        settings_v3ET.setText("");
         settings_v4ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getCurrentTimeoutSetting()));
+        settings_v4ET.setText("");
 
         autoTimeOut = (Spinner) tempView.findViewById(R.id.automatic_time_out);
         ArrayAdapter<CharSequence> adapter = ArrayAdapter.createFromResource(
@@ -74,73 +80,80 @@ public class wellSettings_edit {
             autoTimeOut.setSelection(1);
         }
 
+        dialog.setOnCancelListener(new DialogInterface.OnCancelListener() {
+            @Override
+            public void onCancel(DialogInterface dialogInterface) {
+                ((ViewGroup) tempView.getParent()).removeView(tempView);
+            }
+        });
         dialog.setView(tempView);
         dialog.setPositiveButton("Ok",new DialogInterface.OnClickListener() {
             @Override
             public void onClick(DialogInterface dialogInterface, int i) {
-                String tempV0;
-                int tempV1;
-                int tempV2;
-                int tempV3;
-                int tempV4;
-                boolean temp;
+               String tempV0;
+               int tempV1;
+               int tempV2;
+               int tempV3;
+               int tempV4;
+               boolean temp;
 
-                // Remove notification bar
-                myAct.getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+               // Remove notification bar
+               myAct.getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
 
 
-                        /* Clock */
-                tempV0 = settings_v0ET.getText().toString();
-                        /* Pump Up */
-                if (settings_v1ET.getText().toString().equals("")) {
-                    tempV1 = Integer.valueOf(settings_v1ET.getHint().toString());
-                }
-                else {
-                    tempV1 = Integer.valueOf(settings_v1ET.getText().toString());
-                }
-                        /* Pump Off */
-                if (settings_v2ET.getText().toString().equals("")) {
-                    tempV2 = Integer.valueOf(settings_v2ET.getHint().toString());
-                }
-                else {
-                    tempV2 = Integer.valueOf(settings_v2ET.getText().toString());
-                }
-                        /* Fillage */
-                if (settings_v3ET.getText().toString().equals("")) {
-                    tempV3 = Integer.valueOf(settings_v3ET.getHint().toString());
-                }
-                else {
-                    tempV3 = Integer.valueOf(settings_v3ET.getText().toString());
-                }
-                        /* Time Out */
-                if (settings_v4ET.getText().toString().equals("")) {
-                    tempV4 = Integer.valueOf(settings_v4ET.getHint().toString());
-                }
-                else {
-                    tempV4 = Integer.valueOf(settings_v4ET.getText().toString());
-                }
+                       /* Clock */
+               tempV0 = settings_v0ET.getText().toString();
+                       /* Pump Up */
+               if (settings_v1ET.getText().toString().equals("")) {
+                   tempV1 = Integer.valueOf(settings_v1ET.getHint().toString());
+               }
+               else {
+                   tempV1 = Integer.valueOf(settings_v1ET.getText().toString());
+               }
+                       /* Pump Off */
+               if (settings_v2ET.getText().toString().equals("")) {
+                   tempV2 = Integer.valueOf(settings_v2ET.getHint().toString());
+               }
+               else {
+                   tempV2 = Integer.valueOf(settings_v2ET.getText().toString());
+               }
+                       /* Fillage */
+               if (settings_v3ET.getText().toString().equals("")) {
+                   tempV3 = Integer.valueOf(settings_v3ET.getHint().toString());
+               }
+               else {
+                   tempV3 = Integer.valueOf(settings_v3ET.getText().toString());
+               }
+                       /* Time Out */
+               if (settings_v4ET.getText().toString().equals("")) {
+                   tempV4 = Integer.valueOf(settings_v4ET.getHint().toString());
+               }
+               else {
+                   tempV4 = Integer.valueOf(settings_v4ET.getText().toString());
+               }
 
-                if (autoTimeOut.getSelectedItemPosition()==0){
-                    temp = true;
-                }
-                else {
-                    temp = false;
-                }
-                        /* Write values to Petrolog */
-                try {
-                    MainActivity.PetrologSerialCom.setSettings(
-                            tempV0,
-                            tempV1,
-                            tempV2,
-                            tempV3,
-                            tempV4,
-                            temp
-                    );
-                }
-                catch (NumberFormatException e){
+               if (autoTimeOut.getSelectedItemPosition()==0){
+                   temp = true;
+               }
+               else {
+                   temp = false;
+               }
+                       /* Write values to Petrolog */
+               try {
+                   MainActivity.PetrologSerialCom.setSettings(
+                           tempV0,
+                           tempV1,
+                           tempV2,
+                           tempV3,
+                           tempV4,
+                           temp
+                   );
+               }
+               catch (NumberFormatException e){
 
-                }
-                MainActivity.wellDynagraphPost.clean();
+               }
+               MainActivity.wellDynagraphPost.clean();
+               ((ViewGroup)tempView.getParent()).removeView(tempView);
             }
         });
         dialog.setNegativeButton("Cancel",new DialogInterface.OnClickListener() {
@@ -148,6 +161,8 @@ public class wellSettings_edit {
             public void onClick(DialogInterface dialogInterface, int i) {
                 // Remove notification bar
                 myAct.getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+                ((ViewGroup)tempView.getParent()).removeView(tempView);
+
             }
         });
 

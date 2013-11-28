@@ -48,17 +48,27 @@ public class wellFillage_post {
     public void post() {
         int fillSetting = MainActivity.PetrologSerialCom.getFillageSetting();
         int currentFill = MainActivity.PetrologSerialCom.getCurrentFillage();
-        if (currentFill>100){
-            return;
-        }
-        if (currentFill < 0){
+        if ((currentFill>100)||(currentFill < 0)){
+            String data = myAct.getString(R.string.n_a);
+
+            TextView TempTV = (TextView)currentFillage.getCurrentView();
+            if (!TempTV.getText().toString().equals(data)){
+                currentFillage.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
+            }
+            if (!fillageSetting.getText().equals(data)){
+                fillageSetting.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
+            }
+            TempTV = (TextView)pumpOffDistance.getCurrentView();
+            if (!TempTV.getText().toString().equals(data)){
+                pumpOffDistance.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
+            }
+
             return;
         }
         else {
 
             TextView TempTV = (TextView)currentFillage.getCurrentView();
             if (!TempTV.getText().toString().equals(String.valueOf(currentFill)+"%")){
-                Log.i("PN - TextSwitcher", TempTV.getText().toString());
                 currentFillage.setText(StringFormatValue.format(myAct,""+currentFill+"%", Color.BLUE, 1.2f, false));
             }
 
@@ -76,10 +86,8 @@ public class wellFillage_post {
         int pumpOffDis = currentFill-fillSetting;
         fillageSetting.setText(StringFormatValue.format(myAct,""+fillSetting+"%", Color.BLUE, 1.2f, false));
         if (pumpOffDis < 0) {
-
             TextView TempTV = (TextView)pumpOffDistance.getCurrentView();
             if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis)+"%")){
-                Log.i("PN - TextSwitcher", TempTV.getText().toString());
                 pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.RED, 1.2f, false));
             }
 
@@ -87,7 +95,6 @@ public class wellFillage_post {
         else {
             TextView TempTV = (TextView)pumpOffDistance.getCurrentView();
             if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis)+"%")){
-                Log.i("PN - TextSwitcher", TempTV.getText().toString());
                 pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.BLUE, 1.2f, false));
             }
         }
