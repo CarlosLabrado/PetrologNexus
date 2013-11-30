@@ -1,14 +1,18 @@
 package com.petrologautomation.petrolognexus;
 
 import android.app.ActionBar;
+import android.app.Activity;
+import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
+import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.location.Location;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
@@ -16,6 +20,7 @@ import android.os.Bundle;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
+import android.view.LayoutInflater;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
@@ -25,13 +30,26 @@ import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.Toast;
 
+import com.google.android.gms.common.ConnectionResult;
+import com.google.android.gms.common.GooglePlayServicesClient;
+import com.google.android.gms.location.LocationClient;
+import com.google.android.gms.location.LocationListener;
+import com.google.android.gms.location.LocationRequest;
+import com.google.android.gms.maps.MapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
+import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.MarkerOptions;
+import com.petrologautomation.petrolognexus.database.PetrologMarkerDataSource;
+
 import java.io.IOException;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
 
-public class MainActivity extends Activity {
+public class MainActivity extends Activity implements
+        GooglePlayServicesClient.ConnectionCallbacks,
+        GooglePlayServicesClient.OnConnectionFailedListener {
 
     public static G4Petrolog PetrologSerialCom;
 
@@ -60,6 +78,7 @@ public class MainActivity extends Activity {
     private String wellName;
 
     public static Menu MyMenu;
+    private LocationClient CurrentLocation;
 
     private Boolean petrologFound;
 
@@ -263,18 +282,8 @@ public class MainActivity extends Activity {
         LocationRequest myLocationRequest = LocationRequest.create();
         myLocationRequest.setFastestInterval(0);
         myLocationRequest.setInterval(0).setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY);
-        CurrentLocation.requestLocationUpdates(myLocationRequest, myLocationListener);
 
-        if (WellLocation == null) {
-            WellLocation = ((MapFragment) getFragmentManager().findFragmentById(R.id.MapFragment))
-                    .getMap();
-        }
-        LatLng foo = new LatLng(31.993518,-102.078835);
-        if (tabletMarker == null){
-            tabletMarker = WellLocation.addMarker(new MarkerOptions()
-                    .position(foo)
-                    .icon(BitmapDescriptorFactory.fromResource(R.drawable.ic_maps_indicator_current_position)));
-        }
+        CurrentLocation.requestLocationUpdates(myLocationRequest, myLocationListener);
 
     }
 
@@ -285,7 +294,6 @@ public class MainActivity extends Activity {
             try{
                 coordinate = new LatLng(CurrentLocation.getLastLocation().getLatitude(),
                         CurrentLocation.getLastLocation().getLongitude());
-                tabletMarker.setPosition(coordinate);
 
             }
             catch (NullPointerException e){

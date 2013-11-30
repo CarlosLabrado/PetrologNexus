@@ -48,7 +48,7 @@ public class wellFillage_post {
     public void post() {
         int fillSetting = MainActivity.PetrologSerialCom.getFillageSetting();
         int currentFill = MainActivity.PetrologSerialCom.getCurrentFillage();
-        if ((currentFill>100)||(currentFill < 0)){
+        if ((currentFill>100)||(currentFill <= 0)){
             String data = myAct.getString(R.string.n_a);
 
             TextView TempTV = (TextView)currentFillage.getCurrentView();

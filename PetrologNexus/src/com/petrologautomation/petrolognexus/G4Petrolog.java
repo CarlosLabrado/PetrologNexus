@@ -140,20 +140,21 @@ public class G4Petrolog {
             countForDyna++;
             if (countForDyna % 5 == 0) {
             /* One Sec @ 200ms HeartBeat */
+                Log.i("PN - E","-");
                 SendCommand("01E");
             }
-            if (countForDyna % 26 == 0){
-            /* 5.2 Sec @ 200ms HeartBeat */
+            if (countForDyna % 20 == 0){
                 switch (Step){
                     case 0:
-                /* H */
+                    /* H */
                         Step = 1;
                         SendCommand("01H");
                         break;
                     case 1:
-                /* O */
+                    /* O */
                         Step = 0;
                         SendCommand("01O");
+                        Log.i("PN - O","-");
                         break;
                     default:
                         break;
@@ -281,20 +282,21 @@ public class G4Petrolog {
                     break;
                 default:
                     if (Result.substring(12,14).equals(",,")) {
-                        O = Result;
                         try {
-                        /* Position */
-                            if (Integer.valueOf(O.substring(19,23),16) <= _12_BIT_MAX &&
-                                    Integer.valueOf(O.substring(19,23),16) > 0){
-                                PosLoad[0] = Integer.valueOf(O.substring(19,23),16);
-                            }
-                        /* Load */
-                            if (Integer.valueOf(O.substring(14,18),16) <= _12_BIT_MAX &&
-                                    Integer.valueOf(O.substring(14,18),16) > 0){
-                                PosLoad[1] = Integer.valueOf(O.substring(14,18),16);
-                            }
-                            if (Integer.valueOf(O.substring(8,12),16) < 200){
+                            if (Integer.valueOf(Result.substring(8,12),16) < 200){
+                                /* Valid Fillage Rx */
                                 stopO = true;
+                                O = Result;
+                                if (Integer.valueOf(O.substring(19,23),16) <= _12_BIT_MAX &&
+                                        Integer.valueOf(O.substring(19,23),16) > 0){
+                                /* Position */
+                                    PosLoad[0] = Integer.valueOf(O.substring(19,23),16);
+                                }
+                                if (Integer.valueOf(O.substring(14,18),16) <= _12_BIT_MAX &&
+                                        Integer.valueOf(O.substring(14,18),16) > 0){
+                                /* Load */
+                                    PosLoad[1] = Integer.valueOf(O.substring(14,18),16);
+                                }
                             }
                         } catch (StringIndexOutOfBoundsException e){
                             Log.i("PN - Rx","O Error 1 = "+Result);
