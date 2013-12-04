@@ -85,13 +85,13 @@
                                         android:layout_height="fill_parent"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"
+                                        android:textColor="#FFCCCCCC"
                                         android:gravity="center_vertical|left" />
                                     <TextView
                                         android:layout_width="fill_parent"
                                         android:layout_height="fill_parent"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"
+                                        android:textColor="#FFCCCCCC"
                                         android:gravity="center_vertical|left" />
                             </TextSwitcher>
                         </TableRow>
@@ -124,13 +124,13 @@
                                         android:layout_height="fill_parent"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"
+                                        android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left" />
                                 <TextView
                                         android:layout_width="fill_parent"
                                         android:layout_height="fill_parent"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"
+                                        android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left" />
                             </TextSwitcher>
                         </TableRow>
@@ -163,13 +163,13 @@
                                         android:layout_height="fill_parent"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"
+                                        android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left" />
                                 <TextView
                                         android:layout_width="fill_parent"
                                         android:layout_height="fill_parent"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"
+                                        android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left" />
                             </TextSwitcher>
                         </TableRow>
@@ -217,7 +217,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:textAppearance="?android:attr/textAppearanceSmall"
-                                    android:text="0%"
+                                    android:text="N/A"
                                     android:id="@+id/today_runtime_percentTV"
                                     android:gravity="center|center_vertical"/>
                         </FrameLayout>
@@ -243,7 +243,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:textAppearance="?android:attr/textAppearanceMedium"
-                                    android:text="00:00:00"
+                                    android:text="N/A"
                                     android:id="@+id/today_runtime_time"
                                     android:layout_weight="70"
                                     android:gravity="right"/>
@@ -279,7 +279,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:textAppearance="?android:attr/textAppearanceSmall"
-                                    android:text="0%"
+                                    android:text="N/A"
                                     android:id="@+id/yesterday_runtime_percentTV"
                                     android:gravity="center|center_vertical"/>
                         </FrameLayout>
@@ -305,7 +305,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:textAppearance="?android:attr/textAppearanceMedium"
-                                    android:text="00:00:00"
+                                    android:text="N/A"
                                     android:id="@+id/yesterday_runtime_time"
                                     android:layout_weight="70"
                                     android:gravity="right"/>
@@ -505,7 +505,7 @@
                                     android:id="@+id/settings_v1TV"
                                     android:layout_weight="100"
                                     android:gravity="center_vertical"
-                                    android:textColor="#b8b8b8"/>
+                                    android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
                         <TableRow
@@ -530,7 +530,7 @@
                                     android:id="@+id/settings_v2TV"
                                     android:layout_weight="100"
                                     android:gravity="center_vertical"
-                                    android:textColor="#b8b8b8"/>
+                                    android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
                         <TableRow
@@ -555,7 +555,7 @@
                                     android:id="@+id/settings_v3TV"
                                     android:layout_weight="100"
                                     android:gravity="center_vertical"
-                                    android:textColor="#b8b8b8"/>
+                                    android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
                         <TableRow
@@ -580,7 +580,7 @@
                                     android:id="@+id/settings_v4TV"
                                     android:layout_weight="100"
                                     android:gravity="center_vertical"
-                                    android:textColor="#b8b8b8"/>
+                                    android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
                         <TableRow
@@ -605,7 +605,7 @@
                                     android:id="@+id/settings_v5TV"
                                     android:layout_weight="100"
                                     android:gravity="center_vertical"
-                                    android:textColor="#b8b8b8"/>
+                                    android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
                     </TableLayout>
@@ -671,12 +671,12 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#FFCCCCCC"/>
                                 <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#FFCCCCCC"/>
                             </TextSwitcher>
 
                             <TextView
@@ -699,7 +699,7 @@
                                     android:gravity="center_vertical|left"
                                     android:paddingLeft="10dp"
                                     android:textSize="18dp"
-                                    android:textColor="#b8b8b8"/>
+                                    android:textColor="#FFCCCCCC"/>
 
 
                             <TextView
@@ -725,12 +725,12 @@
                                         android:layout_height="wrap_content"
                                         android:text="@string/n_a"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#FFCCCCCC"/>
                                 <TextView
                                         android:layout_width="wrap_content"
                                         android:layout_height="wrap_content"
                                         android:textSize="18dp"
-                                        android:textColor="#b8b8b8"/>
+                                        android:textColor="#FFCCCCCC"/>
                             </TextSwitcher>
 
                         </LinearLayout>

@@ -701,6 +701,10 @@ public class MainActivity extends Activity implements
         wellDynagraphPost.clean();
         wellHistoricalRuntimePost.clean();
 
+        ActionBar bar = getActionBar();
+        bar.setTitle(getString(R.string.app_title));
+
+
         /* Last Update to display N/A (all variables are cleared on Disconnect@G4Petrolog) */
         All.post(new Runnable() {
             @Override

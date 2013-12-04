@@ -61,22 +61,6 @@ public class G4Petrolog {
     }
 
     public void Disconnect(){
-        /* Reset all variables */
-        Result = "";
-        S_1 = "";
-        E = "";
-        MB = "";
-        H = "";
-        F1 = "";
-        F2 = "";
-        F3 = "";
-        F4 = "";
-        F5 = "";
-        F6 = "";
-        F7 = "";
-        F8 = "";
-        O = "";
-
         if (Tx == null || Rx == null){
             /* Already Disconnected */
         }
@@ -84,6 +68,21 @@ public class G4Petrolog {
             HeartBeatStopped = true;
             try {
                 Thread.sleep(1000);
+                /* Reset all variables */
+                Result = "";
+                S_1 = "";
+                E = "";
+                MB = "";
+                H = "";
+                F1 = "";
+                F2 = "";
+                F3 = "";
+                F4 = "";
+                F5 = "";
+                F6 = "";
+                F7 = "";
+                F8 = "";
+                O = "";
             } catch (InterruptedException e) {
                 e.printStackTrace();
             }

@@ -28,6 +28,7 @@ import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
 
 import java.util.Arrays;
+import java.util.NoSuchElementException;
 
 /**
  * Created by Cesar on 7/22/13.
@@ -110,7 +111,7 @@ public class wellHistoricalRuntime_post {
         bTFillPaint = new Paint();
         bTFillPaint.setStyle(Paint.Style.FILL);
         bTFillPaint.setAlpha(150);
-        bTFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.RED, Shader.TileMode.REPEAT));
+        bTFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.BLUE, Shader.TileMode.REPEAT));
         bTLineFormat.setFillPaint(bTFillPaint);
 
         currentMonthLegend.setBackground(new Drawable() {
@@ -147,7 +148,7 @@ public class wellHistoricalRuntime_post {
         TFillPaint = new Paint();
         TFillPaint.setStyle(Paint.Style.FILL);
         TFillPaint.setAlpha(150);
-        TFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.BLACK, Shader.TileMode.REPEAT));
+        TFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.RED, Shader.TileMode.REPEAT));
         TLineFormat.setFillPaint(TFillPaint);
 
         todayLegend.setBackground(new Drawable() {
@@ -184,7 +185,7 @@ public class wellHistoricalRuntime_post {
         aTFillPaint = new Paint();
         aTFillPaint.setStyle(Paint.Style.FILL);
         aTFillPaint.setAlpha(150);
-        aTFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.GREEN, Shader.TileMode.REPEAT));
+        aTFillPaint.setShader(new LinearGradient(0, 600, 0, 0, Color.WHITE, Color.GRAY, Shader.TileMode.REPEAT));
         aTLineFormat.setFillPaint(aTFillPaint);
 
         lastMonthLegend.setBackground(new Drawable() {
@@ -245,21 +246,32 @@ public class wellHistoricalRuntime_post {
 
     public void clean() {
         History.clear();
-        if(beforeToday.size()>0){
-            for (int i=1;i<beforeToday.size();i++){
+
+        try {
+            while (true){
                 beforeToday.removeLast();
             }
         }
-        if(today.size()>0){
-            for (int i=1;i<today.size();i++){
+        catch (NoSuchElementException e){
+            /* End of Series */
+        }
+        try {
+            while (true){
                 today.removeLast();
             }
         }
-        if(afterToday.size()>0){
-            for (int i=1;i<afterToday.size();i++){
+        catch (NoSuchElementException e){
+            /* End of Series */
+        }
+        try {
+            while (true){
                 afterToday.removeLast();
             }
         }
+        catch (NoSuchElementException e){
+            /* End of Series */
+        }
+
         History.redraw();
     }
 }

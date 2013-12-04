@@ -16,8 +16,8 @@ public class StringFormatValue {
         if (err){
             /* Error */
             SpannableString e = new SpannableString(myContext.getString(R.string.n_a));
-            e.setSpan(new ForegroundColorSpan(Color.GRAY),0,myContext.getString(R.string.n_a).length(),0);
-            e.setSpan(new RelativeSizeSpan(size),0,myContext.getString(R.string.n_a).length(), 0);
+            e.setSpan(new ForegroundColorSpan(Color.LTGRAY),0,myContext.getString(R.string.n_a).length(),0);
+            e.setSpan(new RelativeSizeSpan(1),0,myContext.getString(R.string.n_a).length(), 0);
             return e;
 
         }
