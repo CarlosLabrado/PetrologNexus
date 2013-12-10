@@ -16,8 +16,6 @@ public class wellSettings_post {
     TextView settings_v1TV;
     TextView settings_t2TV;
     TextView settings_v2TV;
-    TextView settings_t3TV;
-    TextView settings_v3TV;
     TextView settings_t4TV;
     TextView settings_v4TV;
     TextView settings_t5TV;
@@ -30,8 +28,6 @@ public class wellSettings_post {
         settings_v1TV = (TextView)myAct.findViewById(R.id.settings_v1TV);
         settings_t2TV = (TextView)myAct.findViewById(R.id.settings_t2TV);
         settings_v2TV = (TextView)myAct.findViewById(R.id.settings_v2TV);
-        settings_t3TV = (TextView)myAct.findViewById(R.id.settings_t3TV);
-        settings_v3TV = (TextView)myAct.findViewById(R.id.settings_v3TV);
         settings_t4TV = (TextView)myAct.findViewById(R.id.settings_t4TV);
         settings_v4TV = (TextView)myAct.findViewById(R.id.settings_v4TV);
         settings_t5TV = (TextView)myAct.findViewById(R.id.settings_t5TV);
@@ -67,20 +63,6 @@ public class wellSettings_post {
         else {
             /* Data error */
             settings_v2TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
-        }
-
-        /* Format % Fillage Setting*/
-        tempInt = MainActivity.PetrologSerialCom.getFillageSetting();
-        data = String.valueOf(tempInt)+"%";
-        title = myAct.getString(R.string.fillage_setting);
-        settings_t3TV.setText(StringFormatTitle.format(title,Color.BLACK,1f));
-        if (tempInt > 0) {
-            /* No error found */
-            settings_v3TV.setText(StringFormatValue.format(myAct,data,Color.BLUE,1.2f,false));
-        }
-        else {
-            /* Data error */
-            settings_v3TV.setText(StringFormatValue.format(myAct,data,Color.GRAY,1.2f,true));
         }
 
         /* Format Current Timeout Setting*/

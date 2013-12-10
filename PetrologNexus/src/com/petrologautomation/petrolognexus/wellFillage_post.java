@@ -21,7 +21,6 @@ public class wellFillage_post {
     TextSwitcher currentFillage;
     TextView fillageSetting;
     TextSwitcher pumpOffDistance;
-    ProgressBar pumpFillage;
 
     public wellFillage_post(MainActivity myActivity){
 
@@ -30,7 +29,6 @@ public class wellFillage_post {
         currentFillage = (TextSwitcher)myAct.findViewById(R.id.fillage_v1TV);
         fillageSetting = (TextView)myAct.findViewById(R.id.fillage_v2TV);
         pumpOffDistance = (TextSwitcher)myAct.findViewById(R.id.fillage_v3TV);
-        pumpFillage = (ProgressBar)myAct.findViewById(R.id.tank);
 
         Animation in = AnimationUtils.loadAnimation(myAct, R.anim.push_down_in);
         Animation out = AnimationUtils.loadAnimation(myAct,R.anim.push_down_out);
@@ -48,6 +46,14 @@ public class wellFillage_post {
     public void post() {
         int fillSetting = MainActivity.PetrologSerialCom.getFillageSetting();
         int currentFill = MainActivity.PetrologSerialCom.getCurrentFillage();
+
+        if ((fillSetting < 0)||(fillSetting > 90)){
+            fillageSetting.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
+        }
+        else{
+            fillageSetting.setText(StringFormatValue.format(myAct,""+fillSetting+"%", Color.BLUE, 1.2f, false));
+        }
+
         if ((currentFill>100)||(currentFill <= 0)){
             String data = myAct.getString(R.string.n_a);
 
@@ -55,49 +61,31 @@ public class wellFillage_post {
             if (!TempTV.getText().toString().equals(data)){
                 currentFillage.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
             }
-            if (!fillageSetting.getText().equals(data)){
-                fillageSetting.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
-            }
             TempTV = (TextView)pumpOffDistance.getCurrentView();
             if (!TempTV.getText().toString().equals(data)){
                 pumpOffDistance.setText(StringFormatValue.format(myAct,"", Color.GRAY, 1.2f, true));
             }
-
-            return;
         }
         else {
-
             TextView TempTV = (TextView)currentFillage.getCurrentView();
             if (!TempTV.getText().toString().equals(String.valueOf(currentFill)+"%")){
                 currentFillage.setText(StringFormatValue.format(myAct,""+currentFill+"%", Color.BLUE, 1.2f, false));
             }
 
-            if (currentFill < fillSetting){
-                pumpFillage.setProgressDrawable(myAct.getResources().getDrawable(R.drawable.progress_bar_vertical_below));
-                pumpFillage.setProgress(currentFill);
-                pumpFillage.setSecondaryProgress(fillSetting);
+            int pumpOffDis = currentFill-fillSetting;
+            if (pumpOffDis < 0) {
+                TempTV = (TextView)pumpOffDistance.getCurrentView();
+                if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis)+"%")){
+                    pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.RED, 1.2f, false));
+                }
+
             }
             else {
-                pumpFillage.setProgressDrawable(myAct.getResources().getDrawable(R.drawable.progress_bar_vertical_above));
-                pumpFillage.setProgress(fillSetting);
-                pumpFillage.setSecondaryProgress(currentFill);
+                TempTV = (TextView)pumpOffDistance.getCurrentView();
+                if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis)+"%")){
+                    pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.BLUE, 1.2f, false));
+                }
             }
         }
-        int pumpOffDis = currentFill-fillSetting;
-        fillageSetting.setText(StringFormatValue.format(myAct,""+fillSetting+"%", Color.BLUE, 1.2f, false));
-        if (pumpOffDis < 0) {
-            TextView TempTV = (TextView)pumpOffDistance.getCurrentView();
-            if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis)+"%")){
-                pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.RED, 1.2f, false));
-            }
-
-        }
-        else {
-            TextView TempTV = (TextView)pumpOffDistance.getCurrentView();
-            if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis)+"%")){
-                pumpOffDistance.setText(StringFormatValue.format(myAct,""+pumpOffDis+"%", Color.BLUE, 1.2f, false));
-            }
-        }
-
     }
 }

@@ -98,10 +98,10 @@ public class G4Petrolog {
     }
 
     /*
- * This method should be called by the user every time the historical info is needed.
- * Author: CCR, JCC
- *
- * */
+     * This method should be called by the user every time the historical info is needed.
+     * Author: CCR, JCC
+     *
+     * */
     public void requestPetrologHistory (){
 
         SendCommand("01E");
@@ -137,12 +137,10 @@ public class G4Petrolog {
             SendCommand("01MB");
 
             countForDyna++;
-            if (countForDyna % 5 == 0) {
-            /* One Sec @ 200ms HeartBeat */
-                Log.i("PN - E","-");
+            if (countForDyna % 10 == 0) {
                 SendCommand("01E");
             }
-            if (countForDyna % 20 == 0){
+            if (countForDyna % 30 == 0){
                 switch (Step){
                     case 0:
                     /* H */
@@ -151,9 +149,13 @@ public class G4Petrolog {
                         break;
                     case 1:
                     /* O */
-                        Step = 0;
+                        Step = 2;
                         SendCommand("01O");
-                        Log.i("PN - O","-");
+                        break;
+                    case 2:
+                    /* S?1 */
+                        Step = 0;
+                        SendCommand("01S?1");
                         break;
                     default:
                         break;

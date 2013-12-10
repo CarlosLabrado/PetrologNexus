@@ -544,7 +544,7 @@ public class MainActivity extends Activity implements
                 PetrologSerialCom.HeartBeat();
             }
             }
-        }, 0, 200);
+        }, 0, 100);
 
         /* Settings PopUp */
         wellSettingsEdit = new wellSettings_edit(this);
@@ -575,7 +575,7 @@ public class MainActivity extends Activity implements
                 });
             }
             }
-        }, 0, 400);
+        }, 0, 200);
 
         /* Timer to Update Dyna */
         if (StaticDynaUpdate == null){
@@ -594,7 +594,7 @@ public class MainActivity extends Activity implements
                 });
             }
             }
-        }, 0, 200);
+        }, 0, 100);
 
 
     }
