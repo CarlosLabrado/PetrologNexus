@@ -3,7 +3,7 @@
 
     <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
 
-            android:layout_width="200dp"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content">
 
         <TableLayout
@@ -13,8 +13,8 @@
                 android:layout_gravity="center">
 
             <TableRow
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
                     android:layout_weight="100"
                     android:id="@+id/settings_R0">
 
@@ -23,7 +23,7 @@
                         android:layout_height="fill_parent"
                         android:text="@string/clock_setting"
                         android:id="@+id/settings_t0TV"
-                        android:layout_weight="100"
+                        android:layout_weight="1"
                         android:paddingRight="5dp"
                         android:gravity="center_vertical|right"/>
 
@@ -48,7 +48,7 @@
                         android:layout_height="fill_parent"
                         android:text="@string/pump_up_setting"
                         android:id="@+id/settings_t1TV"
-                        android:layout_weight="100"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|right"
                         android:paddingRight="5dp"/>
 
@@ -72,7 +72,7 @@
                         android:layout_height="fill_parent"
                         android:text="@string/pump_off_setting"
                         android:id="@+id/settings_t2TV"
-                        android:layout_weight="100"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|right"
                         android:paddingRight="5dp"/>
 
@@ -96,7 +96,7 @@
                         android:layout_height="fill_parent"
                         android:text="@string/fillage_setting"
                         android:id="@+id/settings_t3TV"
-                        android:layout_weight="100"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|right"
                         android:paddingRight="5dp"/>
 
@@ -120,7 +120,7 @@
                         android:layout_height="fill_parent"
                         android:text="@string/timeout_setting"
                         android:id="@+id/settings_t4TV"
-                        android:layout_weight="100"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|right"
                         android:paddingRight="5dp"/>
 
@@ -144,7 +144,7 @@
                         android:layout_height="fill_parent"
                         android:text="@string/auto_timeout_setting"
                         android:id="@+id/settings_t5TV"
-                        android:layout_weight="100"
+                        android:layout_weight="1"
                         android:gravity="center_vertical|right"
                         android:paddingRight="5dp"/>
 

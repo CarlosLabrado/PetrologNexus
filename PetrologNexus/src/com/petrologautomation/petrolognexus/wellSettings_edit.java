@@ -169,10 +169,6 @@ public class wellSettings_edit {
         AlertDialog temp = dialog.create();
         temp.show();
 
-        Window myWin = temp.getWindow();
-        myWin.setLayout(500,700);
-
-
     }
 
 }

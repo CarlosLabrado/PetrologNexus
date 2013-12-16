@@ -77,17 +77,14 @@ public class wellRuntime_post {
                 totalSecToday = Integer.valueOf(InternalClock.substring(0,2))*3600 +
                         Integer.valueOf(InternalClock.substring(3,5))*60   +
                         Integer.valueOf(InternalClock.substring(6,8));
+                data = String.valueOf((secToday*100)/totalSecToday)+"%";
+                todayRuntimePercent.setText(StringFormatValue.format(myAct,data, Color.BLUE,1f,false));
+                TodayRuntimePB.setProgress((float)secToday/totalSecToday);
             } catch (NumberFormatException e){
                 Log.i("PN - H","Empty - Number Format - "+totalSecToday);
-            }
-            try {
-                data = String.valueOf((secToday*100)/totalSecToday)+"%";
-
             } catch (ArithmeticException e) {
                 Log.i("PN - H","Divide by Zero - "+totalSecToday);
             }
-            todayRuntimePercent.setText(StringFormatValue.format(myAct,data, Color.BLUE,1f,false));
-            TodayRuntimePB.setProgress((float)secToday/totalSecToday);
         }
         else {
             todayRuntime.setText(StringFormatValue.format(myAct,"", Color.GRAY,1.2f,true));
