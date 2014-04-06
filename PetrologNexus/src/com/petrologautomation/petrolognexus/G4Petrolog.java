@@ -2,11 +2,17 @@ package com.petrologautomation.petrolognexus;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;
+
+import com.androidplot.xy.SimpleXYSeries;
+import com.androidplot.xy.XYPlot;
+
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
+import java.util.List;
 
 
 /**
@@ -25,7 +31,8 @@ public class G4Petrolog {
     private int Step = 0;
     private int countForDyna = 0;
 
-    private int[] PosLoad = new int[2];
+    private XYPlot Dynagraph;
+
     private boolean stopO = false;
 
     private String Result;
@@ -33,6 +40,7 @@ public class G4Petrolog {
     private String E;
     private String MB;
     private String H;
+    private String L;
     private String F1;
     private String F2;
     private String F3;
@@ -148,9 +156,9 @@ public class G4Petrolog {
                         SendCommand("01H");
                         break;
                     case 1:
-                    /* O */
+                    /* L */
                         Step = 2;
-                        SendCommand("01O");
+                        SendCommand("01L");
                         break;
                     case 2:
                     /* S?1 */
@@ -227,27 +235,12 @@ public class G4Petrolog {
                     break;
                 case 'M':
                     MB = Result;
-                    try {
-                    /* Position */
-                        if (Integer.valueOf(MB.substring(59,63),16) <= _12_BIT_MAX &&
-                                Integer.valueOf(MB.substring(59,63),16) > 0   ){
-                            PosLoad[0] = Integer.valueOf(MB.substring(59,63),16);
-                        }
-                    /* Load */
-                        if (Integer.valueOf(MB.substring(55,59),16) <= _12_BIT_MAX &&
-                                Integer.valueOf(MB.substring(55,59),16) > 0   ){
-                            PosLoad[1] = Integer.valueOf(MB.substring(55,59),16);
-                        }
-                    } catch (StringIndexOutOfBoundsException e){
-                        PosLoad [0] = -1;
-                    } catch (NullPointerException e){
-                        PosLoad [0] = -2;
-                    } catch (NumberFormatException e){
-                        PosLoad [0] = -3;
-                    }
                     break;
                 case 'H':
                     H = Result;
+                    break;
+                case 'L':
+                    L = Result;
                     break;
                 case 'F':
                     char [] tempF = new char[1];
@@ -282,38 +275,7 @@ public class G4Petrolog {
                     }
                     break;
                 default:
-                    if (Result.substring(12,14).equals(",,")) {
-                        try {
-                            if (Integer.valueOf(Result.substring(8,12),16) < 200){
-                                /* Valid Fillage Rx */
-                                stopO = true;
-                                O = Result;
-                                if (Integer.valueOf(O.substring(19,23),16) <= _12_BIT_MAX &&
-                                        Integer.valueOf(O.substring(19,23),16) > 0){
-                                /* Position */
-                                    PosLoad[0] = Integer.valueOf(O.substring(19,23),16);
-                                }
-                                if (Integer.valueOf(O.substring(14,18),16) <= _12_BIT_MAX &&
-                                        Integer.valueOf(O.substring(14,18),16) > 0){
-                                /* Load */
-                                    PosLoad[1] = Integer.valueOf(O.substring(14,18),16);
-                                }
-                            }
-                        } catch (StringIndexOutOfBoundsException e){
-                            Log.i("PN - Rx","O Error 1 = "+Result);
-                            PosLoad [0] = -1;
-                        } catch (NullPointerException e){
-                            Log.i("PN - Rx","O Error 2 = "+Result);
-                            PosLoad [0] = -2;
-                        } catch (NumberFormatException e){
-                            Log.i("PN - Rx","O Error 3 = "+Result);
-                            PosLoad [0] = -3;
-                        }
-
-                    }
-                    else {
-                        Log.i("PN - Rx","Bad Response = "+Result);
-                    }
+                    Log.i("PN - Rx","Bad Response = "+Result);
                     break;
             }
 
@@ -625,13 +587,20 @@ public class G4Petrolog {
     }
 
     /*
-     * This method gets the latest Dyna.
+     * This method gets the latest Dyna from L command.
      * Author: CCR
      *
      * */
-    public int[] getLoadPositionPoint (){
+    public SimpleXYSeries getDynagraph (){
 
-        return PosLoad;
+        List<String> temp = Arrays.asList(L.split(","));
+        List<Integer> values = null;
+
+        for (String value:temp){
+            values.add(Integer.valueOf(value));
+        }
+
+        return new SimpleXYSeries(values,SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
 
     }
 
