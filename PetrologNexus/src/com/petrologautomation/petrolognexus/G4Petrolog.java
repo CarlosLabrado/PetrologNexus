@@ -9,7 +9,6 @@ import com.androidplot.xy.XYPlot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
-import java.util.Arrays;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
@@ -20,27 +19,31 @@ import java.util.List;
  */
 public class G4Petrolog {
 
-    final static int TIMEOUT_VALUE = 3;
+    final static int TIMEOUT_VALUE = 4;
     final static int _12_BIT_MAX = 4096;
 
-    InputStream Rx  = null;
+    final static int L_LENGHT   = 256;
+    final static int E_LENGHT   = 30;
+    final static int MB_LENGHT  = 66;
+    final static int H_LENGHT   = 23;
+    final static int S_1_LENGHT = 56;
+    final static int F__LENGHT  = 71;
+
+
+    InputStream Rx = null;
     OutputStream Tx = null;
+
 
     private boolean HeartBeatStopped = false;
 
     private int Step = 0;
-    private int countForDyna = 0;
 
     private XYPlot Dynagraph;
 
-    private boolean stopO = false;
-
-    private String Result;
     private String S_1;
     private String E;
     private String MB;
     private String H;
-    private String L;
     private String F1;
     private String F2;
     private String F3;
@@ -49,7 +52,7 @@ public class G4Petrolog {
     private String F6;
     private String F7;
     private String F8;
-    private String O;
+    private String L;
 
     /*
      * Constructor
@@ -60,51 +63,42 @@ public class G4Petrolog {
         try {
             Tx = socket.getOutputStream();
             Rx = socket.getInputStream();
-            HeartBeatStopped = false;
         } catch (IOException e) {
             e.printStackTrace();
-            //Error!!
-            return;
         }
+        HeartBeatStopped = false;
     }
 
-    public void Disconnect(){
+    public void Disconnect() {
         if (Tx == null || Rx == null){
             /* Already Disconnected */
-        }
-        else {
+        } else {
             HeartBeatStopped = true;
             try {
-                Thread.sleep(1000);
                 /* Reset all variables */
-                Result = "";
                 S_1 = "";
-                E = "";
-                MB = "";
-                H = "";
-                F1 = "";
-                F2 = "";
-                F3 = "";
-                F4 = "";
-                F5 = "";
-                F6 = "";
-                F7 = "";
-                F8 = "";
-                O = "";
-            } catch (InterruptedException e) {
-                e.printStackTrace();
-            }
-            try {
-                Tx.close();
+                E   = "";
+                MB  = "";
+                H   = "";
+                L   = "";
+                F1  = "";
+                F2  = "";
+                F3  = "";
+                F4  = "";
+                F5  = "";
+                F6  = "";
+                F7  = "";
+                F8  = "";
+                cleanUp();
                 Rx.close();
+                Rx = null;
+                Tx.close();
+                Tx = null;
             } catch (IOException e) {
                 e.printStackTrace();
             }
-            Tx = null;
-            Rx = null;
         }
     }
-
     /*
      * This method should be called by the user every time the historical info is needed.
      * Author: CCR, JCC
@@ -132,42 +126,34 @@ public class G4Petrolog {
      * Author: CCR, JCC
      *
      * */
-    public void HeartBeat (){
-        if (HeartBeatStopped){
+    public void HeartBeat () {
+        if (HeartBeatStopped) {
             return;
         }
         else {
-            if (stopO){
-                SendCommand("");
-                stopO = false;
-            }
-            /* MB */
             SendCommand("01MB");
-
-            countForDyna++;
-            if (countForDyna % 10 == 0) {
-                SendCommand("01E");
-            }
-            if (countForDyna % 30 == 0){
-                switch (Step){
-                    case 0:
-                    /* H */
-                        Step = 1;
-                        SendCommand("01H");
-                        break;
-                    case 1:
-                    /* L */
-                        Step = 2;
-                        SendCommand("01L");
-                        break;
-                    case 2:
-                    /* S?1 */
-                        Step = 0;
-                        SendCommand("01S?1");
-                        break;
-                    default:
-                        break;
-                }
+            switch (Step) {
+                case 0:
+                    Step = 1;
+                    SendCommand("01MB");
+                case 1:
+                    Step = 2;
+                    SendCommand("01E");
+                case 2:
+                    Step = 3;
+                    SendCommand("01H");
+                    break;
+                case 3:
+                    Step = 4;
+                    SendCommand("01L");
+                    break;
+                case 4:
+                    Step = 0;
+                    SendCommand("01S?1");
+                    break;
+                default:
+                    Step = 0;
+                    break;
             }
         }
     }
@@ -177,115 +163,237 @@ public class G4Petrolog {
      * Author: CCR, JCC
      *
      * */
-    private void SendCommand(String command){
+    private void SendCommand(String command) {
+        // Tx
+        try {
+            Tx.flush();
+            Tx.write(command.getBytes());
+            Tx.write(0x0D);
+        } catch (IOException e) {
+            Log.e("PN - Tx","Error! - "+e);
+        } catch (NullPointerException e) {
+            Log.e("PN - cleanUp", "Error! - "+e);
+        }
 
-        final int BUFFER_SIZE = 512;
-        char[] buffer = new char[BUFFER_SIZE];
-        int i = 1;
+        // Rx
+        char[] commandChars;
+        commandChars = command.toCharArray();
+        switch (commandChars[2]){
+            case 'S':
+                S_1 = readAsciiResponse(S_1_LENGHT);
+                Log.d("PN - Tx", "S?1 = " + S_1);
+                break;
+            case 'E':
+                E = readAsciiResponse(E_LENGHT);
+                Log.d("PN - Tx", "E   = " + E);
+                break;
+            case 'M':
+                MB = readAsciiResponse(MB_LENGHT);
+                Log.d("PN - Tx", "MB  = " + MB);
+                break;
+            case 'H':
+                H = readAsciiResponse(H_LENGHT);
+                Log.d("PN - Tx", "H   = " + H);
+                break;
+            case 'L':
+                L = processL(readBinaryResponse(L_LENGHT));
+                Log.d("PN - Tx","L   = "+L);
+                break;
+            case 'F':
+                switch (commandChars[3]){
+                    case '1':
+                        F1 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx", "F1  = " + F1);
+                        break;
+                    case '2':
+                        F2 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx", "F2  = " + F2);
+                        break;
+                    case '3':
+                        F3 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx", "F3  = " + F3);
+                        break;
+                    case '4':
+                        F4 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx", "F4  = " + F4);
+                        break;
+                    case '5':
+                        F5 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx", "F5  = " + F5);
+                        break;
+                    case '6':
+                        F6 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx","F6  = "+F6);
+                        break;
+                    case '7':
+                        F7 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx","F7  = "+F7);
+                        break;
+                    case '8':
+                        F8 = readAsciiResponse(F__LENGHT);
+                        Log.d("PN - Tx","F8  = "+F8);
+                        break;
+                    default:
+                        break;
+                }
+                break;
+            default:
+                Log.e("PN - Tx","Bad Command");
+                break;
+        }
 
-        Result = "";
+    }
+
+    /*
+     * Clears left over data on Rx stream. Stops messages until it is done.
+     * Author: CCR
+     *
+     * */
+    private void cleanUp() {
+        HeartBeatStopped = true;
+        try {
+            while (true){
+                if(Rx.available() != 0) {
+                    if (Rx.read() == 0x1A) {
+                        Log.e("PN - cleanUp", "Data left over!!! - cleanUp Done!");
+                        break;
+                    }
+                    try {
+                        Thread.sleep(10);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                } else {
+                    break;
+                }
+            }
+        } catch (IOException e) {
+            Log.e("PN - cleanUp", "Error! - "+e);
+        } catch (NullPointerException e) {
+            Log.e("PN - cleanUp", "Error! - "+e);
+        }
+        HeartBeatStopped = false;
+    }
+
+
+    /*
+     * This reads ASCII responses from input stream.
+     * Author: CCR
+     *
+     * */
+    private String readAsciiResponse(int bytesToRead) {
+
+        int[] buffer = new int[bytesToRead];
+        int bytesRead = 0;
         int timeout = 0;
 
         try {
-            try {
-                // Tx
-                if(Rx.available() != 0){
-                    byte[] flush = new byte[512];
-                    Rx.read(flush);
+            while (bytesRead < bytesToRead){
+                if (Rx.available() != 0) {
+                    buffer[bytesRead] = Rx.read();
+                    bytesRead++;
+                } else {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    timeout++;
+                    if (timeout >= TIMEOUT_VALUE){
+                        Log.e("PN - Rx (ASCII)", "Time Out!");
+                        break;
+                    }
                 }
-                Tx.flush();
-                Tx.write(command.getBytes());
-                Tx.write(0x0D);
-                do {
-                    // Rx
-                    if ( Rx.available() != 0 ) {
-                    /* Blocking until byte Rx */
-                        i++;
-                        buffer[i] = (char) Rx.read();
-                        Result = Result+ buffer[i];
-                        timeout = 0;
-                    }
-                    else {
-                        try {
-                            Thread.sleep(100);
-                        } catch (InterruptedException e) {
-                            e.printStackTrace();
-                        }
-                        timeout++;
-                        if (timeout >= TIMEOUT_VALUE){
-                            Result = "Time Out!";
-                            break;
-                        }
-                    }
-                } while (buffer[i] != 0x1A);
-            }
-            catch(NullPointerException e) {
-                Log.i("PN - Rx","Null Rx Stream");
             }
 
-            // Process Result
-            char [] tempCommand = new char [1];
-            Result.getChars(2, 3, tempCommand, 0);
-            switch (tempCommand[0]){
-                case 'S':
-                    S_1 = Result;
-                    break;
-                case 'E':
-                    E = Result;
-                    break;
-                case 'M':
-                    MB = Result;
-                    break;
-                case 'H':
-                    H = Result;
-                    break;
-                case 'L':
-                    L = Result;
-                    break;
-                case 'F':
-                    char [] tempF = new char[1];
-                    Result.getChars(3,4,tempF,0);
-                    switch (tempF[0]){
-                        case '1':
-                            F1 = Result;
-                            break;
-                        case '2':
-                            F2 = Result;
-                            break;
-                        case '3':
-                            F3 = Result;
-                            break;
-                        case '4':
-                            F4 = Result;
-                            break;
-                        case '5':
-                            F5 = Result;
-                            break;
-                        case '6':
-                            F6 = Result;
-                            break;
-                        case '7':
-                            F7 = Result;
-                            break;
-                        case '8':
-                            F8 = Result;
-                            break;
-                        default:
-                            break;
-                    }
-                    break;
-                default:
-                    Log.i("PN - Rx","Bad Response = "+Result);
-                    break;
+            String temp = "";
+            for (int i=0;i<buffer.length;i++){
+                temp = temp + (char)buffer[i];
             }
-
+            cleanUp();
+            return temp;
 
         } catch (IOException e) {
-            e.printStackTrace();
-        } catch (StringIndexOutOfBoundsException e) {
-            e.printStackTrace();
-            Log.i("PN - Rx","Bad Response = "+Result);
+            Log.e("PN - Rx (ASCII)", "Error! - "+e);
+        } catch (NullPointerException e) {
+            Log.e("PN - Rx (ASCII)", "Error! - "+e);
         }
+
+        return "";
+
+    }
+
+    /*
+     * This reads Binary responses from input stream.
+     * Author: CCR
+     *
+     * */
+    private int[] readBinaryResponse(int bytesToRead) {
+
+        int[] buffer = new int[bytesToRead];
+        int bytesRead = 0;
+        int timeout = 0;
+
+        try {
+            while (bytesRead < bytesToRead){
+                if (Rx.available() != 0) {
+                    buffer[bytesRead] = Rx.read();
+                    bytesRead++;
+                } else {
+                    try {
+                        Thread.sleep(100);
+                    } catch (InterruptedException e) {
+                        e.printStackTrace();
+                    }
+                    timeout++;
+                    if (timeout >= TIMEOUT_VALUE){
+                        Log.e("PN - Rx (Binary)", "Time Out!");
+                        break;
+                    }
+                }
+            }
+            cleanUp();
+            return buffer;
+
+        } catch (IOException e) {
+            Log.e("PN - Rx (Binary)", "Error! - "+e);
+        } catch (NullPointerException e) {
+            Log.e("PN - Rx (ASCII)", "Error! - "+e);
+        }
+
+        return new int[bytesRead];
+
+    }
+
+    /*
+     * This reads BinaryL array and creates a String [Load, Position][Load, Position]...
+     * Author: CCR
+     *
+     * */
+    private String processL(int[] binaryL) {
+
+        String temp = "";
+        int[] wordL = new int[L_LENGHT/2];
+
+        for (int i=0, j=0; i<binaryL.length; i+=2, j++){
+            try {
+                if ((binaryL[i] == 0xFF) && (binaryL[i+1] == 0xFF)) {
+                    break;
+                }
+                    wordL[j] = binaryL[i]*256 + binaryL[i+1];
+            } catch (ArrayIndexOutOfBoundsException e) {
+                Log.e("PN - processL", "Error! - "+e);
+            }
+        }
+        for (int i=0; i<wordL.length; i++) {
+            if (i%2 == 0){
+                temp = temp+"{"+Integer.toString(wordL[i],16)+",";
+            } else {
+                temp = temp+Integer.toString(wordL[i],16)+"}";
+            }
+        }
+
+        return temp;
     }
 
     /*
@@ -592,15 +700,15 @@ public class G4Petrolog {
      *
      * */
     public SimpleXYSeries getDynagraph (){
-
-        List<String> temp = Arrays.asList(L.split(","));
         List<Integer> values = null;
+        try {
 
-        for (String value:temp){
-            values.add(Integer.valueOf(value));
+            return new SimpleXYSeries(values,SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
+
+        } catch (NullPointerException e){
+            return new SimpleXYSeries(values,SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
         }
 
-        return new SimpleXYSeries(values,SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
 
     }
 
@@ -744,7 +852,7 @@ public class G4Petrolog {
      * */
     public int getCurrentFillage (){
         try {
-            return(Integer.valueOf(O.substring(8,12),16));
+            return(Integer.valueOf(E.substring(6,8),16));
         } catch (StringIndexOutOfBoundsException e){
             return -1;
         } catch (NullPointerException e){
