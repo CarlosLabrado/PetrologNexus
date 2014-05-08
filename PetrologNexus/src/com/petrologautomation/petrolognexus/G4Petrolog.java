@@ -9,9 +9,11 @@ import com.androidplot.xy.XYPlot;
 import java.io.IOException;
 import java.io.InputStream;
 import java.io.OutputStream;
+import java.util.ArrayList;
 import java.util.Calendar;
 import java.util.GregorianCalendar;
 import java.util.List;
+import java.util.NoSuchElementException;
 
 
 /**
@@ -38,7 +40,7 @@ public class G4Petrolog {
 
     private int Step = 0;
 
-    private XYPlot Dynagraph;
+    private SimpleXYSeries Dynagraph;
 
     private String S_1;
     private String E;
@@ -52,7 +54,6 @@ public class G4Petrolog {
     private String F6;
     private String F7;
     private String F8;
-    private String L;
 
     /*
      * Constructor
@@ -80,7 +81,6 @@ public class G4Petrolog {
                 E   = "";
                 MB  = "";
                 H   = "";
-                L   = "";
                 F1  = "";
                 F2  = "";
                 F3  = "";
@@ -196,8 +196,8 @@ public class G4Petrolog {
                 Log.d("PN - Tx", "H   = " + H);
                 break;
             case 'L':
-                L = processL(readBinaryResponse(L_LENGHT));
-                Log.d("PN - Tx","L   = "+L);
+                Dynagraph = processL(readBinaryResponse(L_LENGHT));
+                Log.d("PN - Tx","L   = "+Dynagraph);
                 break;
             case 'F':
                 switch (commandChars[3]){
@@ -366,13 +366,14 @@ public class G4Petrolog {
     }
 
     /*
-     * This reads BinaryL array and creates a String [Load, Position][Load, Position]...
+     * This reads BinaryL array and creates a SimpleXYSeries
      * Author: CCR
      *
      * */
-    private String processL(int[] binaryL) {
+    private SimpleXYSeries processL(int[] binaryL) {
 
-        String temp = "";
+        SimpleXYSeries temp = new SimpleXYSeries("Dyna");
+
         int[] wordL = new int[L_LENGHT/2];
 
         for (int i=0, j=0; i<binaryL.length; i+=2, j++){
@@ -385,12 +386,8 @@ public class G4Petrolog {
                 Log.e("PN - processL", "Error! - "+e);
             }
         }
-        for (int i=0; i<wordL.length; i++) {
-            if (i%2 == 0){
-                temp = temp+"{"+Integer.toString(wordL[i],16)+",";
-            } else {
-                temp = temp+Integer.toString(wordL[i],16)+"}";
-            }
+        for (int i=0; i<wordL.length; i+=2) {
+            temp.addLast(wordL[i],wordL[i+1]);
         }
 
         return temp;
@@ -700,16 +697,7 @@ public class G4Petrolog {
      *
      * */
     public SimpleXYSeries getDynagraph (){
-        List<Integer> values = null;
-        try {
-
-            return new SimpleXYSeries(values,SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
-
-        } catch (NullPointerException e){
-            return new SimpleXYSeries(values,SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
-        }
-
-
+        return Dynagraph;
     }
 
     /*

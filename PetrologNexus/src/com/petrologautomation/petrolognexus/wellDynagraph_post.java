@@ -61,7 +61,7 @@ public class wellDynagraph_post {
     }
 
     public void post() {
-        clean();
+        //clean();
         toDyna = MainActivity.PetrologSerialCom.getDynagraph();
         Dynagraph.redraw();
     }
