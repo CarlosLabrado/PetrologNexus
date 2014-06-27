@@ -1,8 +1,11 @@
 package com.petrologautomation.petrolognexus;
 
 import android.graphics.Color;
+import android.graphics.Paint;
 
 import com.androidplot.xy.BoundaryMode;
+import com.androidplot.xy.LineAndPointFormatter;
+import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.XYPlot;
 import java.text.DecimalFormat;
 
@@ -36,5 +39,69 @@ public class FormatGraph {
         myGraph.getLayoutManager().remove(myGraph.getLegendWidget());
 
         return myGraph;
+    }
+
+    public static LineAndPointFormatter getDynaFormatterByPlace(int place){
+        Paint myPaint = new Paint();
+
+        LineAndPointFormatter p0 = new LineAndPointFormatter(
+                Color.BLUE,
+                null,
+                null,
+                new PointLabelFormatter(Color.TRANSPARENT));
+        myPaint.setStyle(Paint.Style.STROKE);
+        myPaint.setStrokeWidth(5);
+        //myPaint.setColor(Color.BLUE);
+        myPaint.setAlpha(5);
+        p0.setLinePaint(myPaint);
+
+        LineAndPointFormatter p1 = new LineAndPointFormatter(
+                Color.BLUE,
+                null,
+                null,
+                new PointLabelFormatter (Color.TRANSPARENT));
+        myPaint.setStyle(Paint.Style.STROKE);
+        myPaint.setStrokeWidth(5);
+        myPaint.setColor(Color.BLUE);
+        myPaint.setAlpha(5);
+        p1.setLinePaint(myPaint);
+
+        LineAndPointFormatter p2 = new LineAndPointFormatter(
+                Color.BLUE,
+                null,
+                null,
+                new PointLabelFormatter(Color.TRANSPARENT));
+        myPaint.setStyle(Paint.Style.STROKE);
+        myPaint.setStrokeWidth(5);
+        myPaint.setColor(Color.BLUE);
+        myPaint.setAlpha(5);
+        p2.setLinePaint(myPaint);
+
+        LineAndPointFormatter p3 = new LineAndPointFormatter(
+                Color.BLUE,
+                null,
+                null,
+                new PointLabelFormatter (Color.TRANSPARENT));
+        myPaint.setStyle(Paint.Style.STROKE);
+        myPaint.setStrokeWidth(5);
+        myPaint.setColor(Color.BLUE);
+        myPaint.setAlpha(5);
+        p3.setLinePaint(myPaint);
+
+        LineAndPointFormatter p4 = new LineAndPointFormatter(
+                Color.BLUE,
+                null,
+                null,
+                new PointLabelFormatter(Color.TRANSPARENT));
+        myPaint.setStyle(Paint.Style.STROKE);
+        myPaint.setStrokeWidth(5);
+        myPaint.setColor(Color.BLUE);
+        myPaint.setAlpha(150);
+        p4.setLinePaint(myPaint);
+
+        LineAndPointFormatter arr[] = new LineAndPointFormatter[] {p0, p1, p2, p3, p4};
+
+        return arr[place];
+
     }
 }

@@ -381,14 +381,27 @@ public class G4Petrolog {
                 if ((binaryL[i] == 0xFF) && (binaryL[i+1] == 0xFF)) {
                     break;
                 }
-                    wordL[j] = binaryL[i]*256 + binaryL[i+1];
+                else if (binaryL[i] > 0x0F) {
+                    Log.d("PN - processL", "Value out of range");
+                }
+                else {
+                    wordL[j] = binaryL[i] * 256 + binaryL[i+1];
+                }
             } catch (ArrayIndexOutOfBoundsException e) {
                 Log.e("PN - processL", "Error! - "+e);
             }
         }
         for (int i=0; i<wordL.length; i+=2) {
-            temp.addLast(wordL[i],wordL[i+1]);
+            if ((wordL[i] == 0)||(wordL[i+1] == 0)){
+                Log.d("PN - processL", "Empty point");
+            }
+            else {
+                temp.addLast(wordL[i+1],wordL[i]);
+                Log.d("PN - processL", " L["+i+"] = "+wordL[i]+","+wordL[i+1]);
+            }
         }
+
+
 
         return temp;
     }

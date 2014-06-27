@@ -3,21 +3,15 @@ package com.petrologautomation.petrolognexus;
 
 import android.graphics.Color;
 import android.graphics.Paint;
-import android.util.Log;
-import android.util.Pair;
-import android.widget.ImageView;
 
-import com.androidplot.xy.BoundaryMode;
 import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
+import com.androidplot.xy.XYSeries;
 
-import java.util.ArrayList;
-import java.util.Arrays;
-import java.util.List;
-import java.util.NoSuchElementException;
+import java.util.Set;
 
 /**
  * Created by Cesar on 7/22/13.
@@ -26,8 +20,6 @@ public class wellDynagraph_post {
 
     MainActivity myAct;
     private XYPlot Dynagraph;
-    private Number[] serie = new Number[2];
-    private SimpleXYSeries toDyna;
     private LineAndPointFormatter lineFormat;
 
     public wellDynagraph_post(MainActivity myActivity){
@@ -55,26 +47,37 @@ public class wellDynagraph_post {
         myPaint.setColor(Color.BLUE);
         lineFormat.setLinePaint(myPaint);
 
-        toDyna = new SimpleXYSeries(Arrays.asList(serie),SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "");
-        Dynagraph.addSeries(toDyna, lineFormat);
-
     }
 
     public void post() {
-        //clean();
-        toDyna = MainActivity.PetrologSerialCom.getDynagraph();
+
+        SimpleXYSeries newDyna = MainActivity.PetrologSerialCom.getDynagraph();
+        Set<XYSeries> backup = Dynagraph.getSeriesSet();
+
+        if (newDyna != null) {
+            int count = 0;
+            for (XYSeries tempOld : backup) {
+                if (count >= 5) {
+                    backup.remove(tempOld);
+                }
+                count++;
+            }
+            clean();
+            for (XYSeries tempNew : backup) {
+                // TODO change line format to alpha function located in FormatGraph.java
+                Dynagraph.addSeries(tempNew, lineFormat);
+            }
+            // TODO change line format to alpha function located in FormatGraph.java
+            Dynagraph.addSeries(newDyna, lineFormat);
+        }
         Dynagraph.redraw();
     }
 
     public void clean() {
-        try {
-            while (true){
-                toDyna.removeLast();
-            }
+        for (XYSeries temp : Dynagraph.getSeriesSet()) {
+            Dynagraph.removeSeries(temp);
         }
-        catch (NoSuchElementException e){
-            /* End of Series */
-        }
+        Dynagraph.redraw();
     }
 
 }
