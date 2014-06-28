@@ -26,6 +26,7 @@
     <string name="strokes_last">Last Cycle:</string>
 
     <!--Settings-->
+    <string name="settings_title">POC Settings</string>
     <string name="clock_setting">POC Internal Clock:</string>
     <string name="pump_up_setting">Strokes @ Pump Up:</string>
     <string name="pump_off_setting">Strokes @ Pump Off:</string>

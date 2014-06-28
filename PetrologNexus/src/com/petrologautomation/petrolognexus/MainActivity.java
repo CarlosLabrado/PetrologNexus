@@ -465,6 +465,7 @@ public class MainActivity extends Activity implements
                     wellName = Device.getName();
                 }
                 if(!bluetooth.DataMode()){
+                    Log.e("PN - BT","Change to data mode failed");
                     return false;
                 }
                 /* Release!*/
@@ -474,9 +475,10 @@ public class MainActivity extends Activity implements
                 PetrologSerialCom.requestPetrologHistory();
                 return true;
             } catch (IOException e) {
+                Log.e("PN - BT","IO Exception - Android error?");
                 return false;
             } catch (NullPointerException e) {
-                Log.i("PN - BT","No device found?");
+                Log.e("PN - BT","Null Pointer - No device found?");
                 return false;
             }
 
@@ -498,16 +500,12 @@ public class MainActivity extends Activity implements
                 bar.setTitle(getString(R.string.app_title) + " - " + wellName);
                 /* Run Serial Heart Beat only if BT connection established */
                 Connected = true;
-                Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
 
             }
             else {
-                setMenuIconsDisconnected();
-                //help
-                Help.setDisconnected();
-                Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT)
-                        .show();
+                Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                disconnect();
             }
 
             Wait.setVisibility(View.INVISIBLE);
