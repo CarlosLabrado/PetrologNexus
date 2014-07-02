@@ -56,9 +56,13 @@ public class wellDynagraph_post {
 
         if (newDyna != null) {
             int count = 0;
+            XYSeries toErase = null;
             for (XYSeries tempOld : backup) {
+                if (count == 0) {
+                    toErase = tempOld;
+                }
                 if (count >= 5) {
-                    backup.remove(tempOld);
+                    backup.remove(toErase);
                 }
                 count++;
             }
