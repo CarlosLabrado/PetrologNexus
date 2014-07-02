@@ -135,8 +135,10 @@ public class wellSettings_edit {
                             tempV4,
                             temp
                     );
+                    removeDialog();
                 } catch (NumberFormatException e) {
                     Log.e("PN - Settings Dialog", "Number error!");
+                    removeDialog();
                 }
             }
         });
