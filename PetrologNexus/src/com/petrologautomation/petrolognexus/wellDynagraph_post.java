@@ -67,11 +67,11 @@ public class wellDynagraph_post {
                 count++;
             }
             clean();
+            int alphaCounter = 0;
             for (XYSeries tempNew : backup) {
-                // TODO change line format to alpha function located in FormatGraph.java
-                Dynagraph.addSeries(tempNew, lineFormat);
+                Dynagraph.addSeries(tempNew, FormatGraph.getDynaFormatterByPlace(alphaCounter));
+                alphaCounter++;
             }
-            // TODO change line format to alpha function located in FormatGraph.java
             Dynagraph.addSeries(newDyna, lineFormat);
         }
         Dynagraph.redraw();

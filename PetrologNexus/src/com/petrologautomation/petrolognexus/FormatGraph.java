@@ -51,8 +51,8 @@ public class FormatGraph {
                 new PointLabelFormatter(Color.TRANSPARENT));
         myPaint.setStyle(Paint.Style.STROKE);
         myPaint.setStrokeWidth(5);
-        //myPaint.setColor(Color.BLUE);
-        myPaint.setAlpha(5);
+        myPaint.setColor(Color.RED);
+        myPaint.setAlpha(250);
         p0.setLinePaint(myPaint);
 
         LineAndPointFormatter p1 = new LineAndPointFormatter(
@@ -62,8 +62,8 @@ public class FormatGraph {
                 new PointLabelFormatter (Color.TRANSPARENT));
         myPaint.setStyle(Paint.Style.STROKE);
         myPaint.setStrokeWidth(5);
-        myPaint.setColor(Color.BLUE);
-        myPaint.setAlpha(5);
+        myPaint.setColor(Color.RED);
+        myPaint.setAlpha(200);
         p1.setLinePaint(myPaint);
 
         LineAndPointFormatter p2 = new LineAndPointFormatter(
@@ -73,8 +73,8 @@ public class FormatGraph {
                 new PointLabelFormatter(Color.TRANSPARENT));
         myPaint.setStyle(Paint.Style.STROKE);
         myPaint.setStrokeWidth(5);
-        myPaint.setColor(Color.BLUE);
-        myPaint.setAlpha(5);
+        myPaint.setColor(Color.RED);
+        myPaint.setAlpha(150);
         p2.setLinePaint(myPaint);
 
         LineAndPointFormatter p3 = new LineAndPointFormatter(
@@ -84,8 +84,8 @@ public class FormatGraph {
                 new PointLabelFormatter (Color.TRANSPARENT));
         myPaint.setStyle(Paint.Style.STROKE);
         myPaint.setStrokeWidth(5);
-        myPaint.setColor(Color.BLUE);
-        myPaint.setAlpha(5);
+        myPaint.setColor(Color.RED);
+        myPaint.setAlpha(100);
         p3.setLinePaint(myPaint);
 
         LineAndPointFormatter p4 = new LineAndPointFormatter(
@@ -95,8 +95,8 @@ public class FormatGraph {
                 new PointLabelFormatter(Color.TRANSPARENT));
         myPaint.setStyle(Paint.Style.STROKE);
         myPaint.setStrokeWidth(5);
-        myPaint.setColor(Color.BLUE);
-        myPaint.setAlpha(150);
+        myPaint.setColor(Color.RED);
+        myPaint.setAlpha(50);
         p4.setLinePaint(myPaint);
 
         LineAndPointFormatter arr[] = new LineAndPointFormatter[] {p0, p1, p2, p3, p4};
