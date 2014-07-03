@@ -29,6 +29,12 @@ public class G4Petrolog {
     final static int MB_LENGHT  = 66;
     final static int H_LENGHT   = 23;
     final static int S_1_LENGHT = 56;
+    final static int SX_LENGHT = 9;
+    final static int ST_LENGHT = 9;
+    final static int SK_LENGHT = 9;
+    final static int SP_LENGHT = 9;
+    final static int SG_LENGHT = 9;
+    final static int SH_LENGHT = 24;
     final static int F__LENGHT  = 71;
 
 
@@ -43,6 +49,12 @@ public class G4Petrolog {
     private SimpleXYSeries Dynagraph;
 
     private String S_1;
+    private String SX;
+    private String ST;
+    private String SK;
+    private String SP;
+    private String SG;
+    private String SH;
     private String E;
     private String MB;
     private String H;
@@ -128,6 +140,7 @@ public class G4Petrolog {
      * */
     public void HeartBeat () {
         if (HeartBeatStopped) {
+            Log.w("PN - HeartBeat", "HeartBeat stopped");
             return;
         }
         else {
@@ -136,9 +149,11 @@ public class G4Petrolog {
                 case 0:
                     Step = 1;
                     SendCommand("01MB");
+                    break;
                 case 1:
                     Step = 2;
                     SendCommand("01E");
+                    break;
                 case 2:
                     Step = 3;
                     SendCommand("01H");
@@ -180,8 +195,38 @@ public class G4Petrolog {
         commandChars = command.toCharArray();
         switch (commandChars[2]){
             case 'S':
-                S_1 = readAsciiResponse(S_1_LENGHT);
-                Log.d("PN - Tx", "S?1 = " + S_1);
+                switch (commandChars[3]){
+                    case '?':
+                        S_1 = readAsciiResponse(S_1_LENGHT);
+                        Log.w("PN - Tx", "S?1 = " + S_1);
+                        break;
+                    case 'X':
+                        SX = readAsciiResponse(SX_LENGHT);
+                        Log.w("PN - Tx", "SX = " + SX);
+                        break;
+                    case 'T':
+                        ST = readAsciiResponse(ST_LENGHT);
+                        Log.w("PN - Tx", "ST = " + ST);
+                        break;
+                    case 'K':
+                        SK = readAsciiResponse(SK_LENGHT);
+                        Log.w("PN - Tx", "SK = " + SK);
+                        break;
+                    case 'P':
+                        SP = readAsciiResponse(SP_LENGHT);
+                        Log.w("PN - Tx", "SP = " + SP);
+                        break;
+                    case 'G':
+                        SG = readAsciiResponse(SG_LENGHT);
+                        Log.w("PN - Tx", "SG = " + SG);
+                        break;
+                    case 'H':
+                        SH = readAsciiResponse(SH_LENGHT);
+                        Log.w("PN - Tx", "SH = " + SH);
+                        break;
+                    default:
+                        break;
+                }
                 break;
             case 'E':
                 E = readAsciiResponse(E_LENGHT);
@@ -250,6 +295,7 @@ public class G4Petrolog {
      *
      * */
     private void cleanUp() {
+        Boolean HeartBeatStopped_previous = HeartBeatStopped;
         HeartBeatStopped = true;
         try {
             while (true){
@@ -272,7 +318,7 @@ public class G4Petrolog {
         } catch (NullPointerException e) {
             Log.e("PN - cleanUp", "Error! - "+e);
         }
-        HeartBeatStopped = false;
+        HeartBeatStopped = HeartBeatStopped_previous;
     }
 
 
@@ -301,7 +347,8 @@ public class G4Petrolog {
                     timeout++;
                     if (timeout >= TIMEOUT_VALUE){
                         Log.e("PN - Rx (ASCII)", "Time Out!");
-                        break;
+                        cleanUp();
+                        return "";
                     }
                 }
             }

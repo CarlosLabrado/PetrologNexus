@@ -186,20 +186,10 @@ public class MainActivity extends Activity implements
             mNfcAdapter.enableForegroundDispatch(this, mNfcPendingIntent,
                     mNdefExchangeFilters, null);
             if (!mNfcAdapter.isEnabled()){
-                LayoutInflater inflater = getLayoutInflater();
-                View dialoglayout = inflater.inflate(R.layout.activity_main,(ViewGroup) findViewById(R.id.Main));
-                new AlertDialog.Builder(this).setView(dialoglayout)
-                        .setPositiveButton("Update Settings", new DialogInterface.OnClickListener() {
-                            public void onClick(DialogInterface arg0, int arg1) {
-                                Intent setnfc = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
-                                startActivity(setnfc);
-                            }
-                        })
-                        .setOnCancelListener(new DialogInterface.OnCancelListener() {
-                            public void onCancel(DialogInterface dialog) {
-                                finish(); // exit application if user cancels
-                            }
-                        }).create().show();
+                Toast.makeText(this, "Please enable NFC Adapter and go back to PetrologNexus",
+                        Toast.LENGTH_LONG).show();
+                Intent setnfc = new Intent(Settings.ACTION_WIRELESS_SETTINGS);
+                startActivity(setnfc);
             }
         } else {
             Toast.makeText(this, "Sorry, No NFC Adapter found.", Toast.LENGTH_SHORT).show();

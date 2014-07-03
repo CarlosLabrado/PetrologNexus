@@ -33,9 +33,8 @@ public class wellSettings_edit {
         myAct = myActivity;
 
         LayoutInflater inflater = myAct.getLayoutInflater();
-        View t = inflater.inflate(R.layout.settings, null);
 
-        tempView = inflater.inflate(R.layout.settings, (ViewGroup)t.getRootView());
+        tempView = inflater.inflate(R.layout.settings, null);
         settings_v0ET = (EditText)tempView.findViewById(R.id.settings_v0ET);
         settings_v1ET = (EditText)tempView.findViewById(R.id.settings_v1ET);
         settings_v2ET = (EditText)tempView.findViewById(R.id.settings_v2ET);
@@ -47,8 +46,6 @@ public class wellSettings_edit {
     }
 
     public void popup () {
-
-        dialogBuilder.setView(tempView);
 
         /* Mex date format -> US date format */
         String date = MainActivity.PetrologSerialCom.getPetrologClock();
@@ -125,7 +122,7 @@ public class wellSettings_edit {
                 } else {
                     temp = false;
                 }
-                       /* Write values to Petrolog */
+                /* Write values to Petrolog */
                 try {
                     MainActivity.PetrologSerialCom.setSettings(
                             tempV0,
@@ -158,19 +155,20 @@ public class wellSettings_edit {
             }
         });
 
+        dialogBuilder.setView(tempView);
         dialog = dialogBuilder.create();
         dialog.show();
     }
 
     private void removeDialog(){
         Log.i ("PN - Settings Dialog", "removeDialog called");
+        ((ViewGroup)tempView.getParent()).removeView(tempView);
         dialog.dismiss();
         // Remove notification bar
         myAct.getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
         // Clean Dyna
         MainActivity.wellDynagraphPost.clean();
         // Remove View
-        ((ViewGroup)tempView.getParent()).removeAllViews();
 
     }
 
