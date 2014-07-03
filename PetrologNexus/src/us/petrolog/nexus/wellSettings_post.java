@@ -1,9 +1,7 @@
-package com.petrologautomation.petrolognexus;
+package us.petrolog.nexus;
 
 
 import android.graphics.Color;
-import android.util.Log;
-import android.widget.EditText;
 import android.widget.TextView;
 
 /**

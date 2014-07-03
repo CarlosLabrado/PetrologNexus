@@ -1,4 +1,4 @@
-package com.petrologautomation.petrolognexus.database;
+package us.petrolog.nexus.database;
 
 /**
  * Created by Carlos Labrado on 8/28/13.

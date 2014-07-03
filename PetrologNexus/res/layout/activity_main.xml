@@ -1,7 +1,7 @@
 
 <FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
-    xmlns:circular_p_b="http://schemas.android.com/apk/res/com.petrologautomation.petrolognexus"
+    xmlns:circular_p_b="http://schemas.android.com/apk/res/us.petrolog.nexus"
 
 
     android:layout_width="fill_parent"

@@ -1,10 +1,11 @@
-package com.petrologautomation.petrolognexus;
+package us.petrolog.nexus;
 
 import android.content.Context;
 import android.graphics.Color;
 import android.text.SpannableString;
 import android.text.style.ForegroundColorSpan;
 import android.text.style.RelativeSizeSpan;
+
 
 /**
  * Created by Cesar on 7/23/13.

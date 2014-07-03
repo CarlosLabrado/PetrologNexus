@@ -1,4 +1,4 @@
-package com.petrologautomation.petrolognexus.database;
+package us.petrolog.nexus.database;
 
 
 import android.content.Context;

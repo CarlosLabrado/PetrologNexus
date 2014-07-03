@@ -1,4 +1,4 @@
-package com.petrologautomation.petrolognexus;
+package us.petrolog.nexus;
 
 /**
  * Created by Cesar on 7/9/13.

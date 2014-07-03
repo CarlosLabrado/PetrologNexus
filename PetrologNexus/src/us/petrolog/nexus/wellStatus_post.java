@@ -1,12 +1,11 @@
-package com.petrologautomation.petrolognexus;
+package us.petrolog.nexus;
 
-import android.content.Context;
 import android.graphics.Color;
-import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
+
 
 /**
  * Created by Cesar on 7/22/13.

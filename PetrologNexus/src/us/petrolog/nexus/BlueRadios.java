@@ -1,4 +1,4 @@
-package com.petrologautomation.petrolognexus;
+package us.petrolog.nexus;
 
 import android.bluetooth.BluetoothSocket;
 import android.util.Log;

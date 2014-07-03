@@ -1,4 +1,4 @@
-package com.petrologautomation.petrolognexus;
+package us.petrolog.nexus;
 
 import android.content.Context;
 import android.graphics.Color;
