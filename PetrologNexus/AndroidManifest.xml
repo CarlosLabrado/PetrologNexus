@@ -29,6 +29,12 @@
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
 
+    <compatible-screens>
+        <screen
+            android:screenDensity="xhdpi"
+            android:screenSize="large"/>
+    </compatible-screens>
+
     <application
         android:allowBackup="true"
         android:icon="@drawable/petrolog_android_icon"
