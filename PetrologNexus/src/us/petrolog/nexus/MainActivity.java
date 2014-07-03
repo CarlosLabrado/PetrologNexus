@@ -576,7 +576,7 @@ public class MainActivity extends Activity implements
                 });
             }
             }
-        }, 0, 5000);
+        }, 0, 10000);
 
 
     }
