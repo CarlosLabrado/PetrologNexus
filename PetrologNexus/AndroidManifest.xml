@@ -3,8 +3,8 @@
 <!--Keep versionName and versionCode the same!!!!-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="us.petrolog.nexus"
-    android:versionCode="7"
-    android:versionName="7" >
+    android:versionCode="10"
+    android:versionName="10" >
 
     <uses-sdk
         android:minSdkVersion="16"
@@ -30,12 +30,6 @@
     <uses-permission android:name="com.google.android.providers.gsf.permission.READ_GSERVICES"/>
     <uses-permission android:name="android.permission.ACCESS_COARSE_LOCATION"/>
     <uses-permission android:name="android.permission.ACCESS_FINE_LOCATION"/>
-
-    <compatible-screens>
-        <screen
-            android:screenDensity="xhdpi"
-            android:screenSize="large"/>
-    </compatible-screens>
 
     <application
         android:allowBackup="true"
