@@ -10,6 +10,7 @@ import android.content.BroadcastReceiver;
 import android.content.Context;
 import android.content.Intent;
 import android.content.IntentFilter;
+import android.content.pm.PackageManager;
 import android.location.Location;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
@@ -367,6 +368,15 @@ public class MainActivity extends Activity implements
                 }
                 else{
                     help.setVisibility(View.VISIBLE);
+                    try {
+                        String version = this.getApplicationContext().getPackageManager()
+                                .getPackageInfo(this.getApplicationContext().getPackageName(), 0)
+                                .versionName;
+                        Toast.makeText(MainActivity.this, "PetrologNexus version: "+version,
+                                Toast.LENGTH_SHORT).show();
+                    } catch (PackageManager.NameNotFoundException e) {
+                        e.printStackTrace();
+                    }
                 }
 
 
