@@ -3,8 +3,8 @@
 <!--Keep versionName and versionCode the same!!!!-->
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
     package="us.petrolog.nexus"
-    android:versionCode="10"
-    android:versionName="10" >
+    android:versionCode="11"
+    android:versionName="11" >
 
     <uses-sdk
         android:minSdkVersion="16"

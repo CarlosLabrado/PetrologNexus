@@ -25,12 +25,14 @@ public class G4Petrolog {
     final static int MB_LENGHT  = 66;
     final static int H_LENGHT   = 23;
     final static int S_1_LENGHT = 56;
-    final static int SX_LENGHT = 9;
-    final static int ST_LENGHT = 9;
-    final static int SK_LENGHT = 9;
-    final static int SP_LENGHT = 9;
-    final static int SG_LENGHT = 9;
-    final static int SH_LENGHT = 24;
+    final static int SX_LENGHT  = 9;
+    final static int ST_LENGHT  = 9;
+    final static int SK_LENGHT  = 9;
+    final static int SP_LENGHT  = 9;
+    final static int SG_LENGHT  = 9;
+    final static int SH_LENGHT  = 24;
+    final static int A21_LENGHT = 8;
+    final static int A31_LENGHT = 8;
     final static int F__LENGHT  = 71;
 
 
@@ -51,6 +53,8 @@ public class G4Petrolog {
     private String SP;
     private String SG;
     private String SH;
+    private String A21;
+    private String A31;
     private String E;
     private String MB;
     private String H;
@@ -190,6 +194,18 @@ public class G4Petrolog {
         char[] commandChars;
         commandChars = command.toCharArray();
         switch (commandChars[2]){
+            case 'A':
+                switch (commandChars[3]){
+                    case '2':
+                        A21 = readAsciiResponse(A21_LENGHT);
+                        Log.w("PN Tx", "A21 = " + A21);
+                        break;
+                    case '3':
+                        A31 = readAsciiResponse(A31_LENGHT);
+                        Log.w("PN Tx", "A31 = " + A31);
+                        break;
+                }
+                break;
             case 'S':
                 switch (commandChars[3]){
                     case '?':
@@ -1033,7 +1049,7 @@ public class G4Petrolog {
     public void start (){
         try {
             HeartBeatStopped = true;
-
+            SendCommand("01E");
             SendCommand("01A31");
             Thread.sleep(200);
             SendCommand("01A21");
