@@ -210,7 +210,7 @@ public class G4Petrolog {
                 switch (commandChars[3]){
                     case '?':
                         S_1 = readAsciiResponse(S_1_LENGHT);
-                        Log.w("PN - Tx", "S?1 = " + S_1);
+                        Log.i("PN - Tx", "S?1 = " + S_1);
                         break;
                     case 'X':
                         SX = readAsciiResponse(SX_LENGHT);

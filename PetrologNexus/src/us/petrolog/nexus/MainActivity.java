@@ -634,9 +634,12 @@ public class MainActivity extends Activity implements
     private void disconnect (){
 
         try {
-            /* Close Cx */
-            PetrologSerialCom.Disconnect();
-            Connected = false;
+
+            if (PetrologSerialCom != null) {
+                /* Close Cx */
+                PetrologSerialCom.Disconnect();
+                Connected = false;
+            }
 
             /* Close BT */
             mBluetoothSocket.close();
@@ -648,6 +651,7 @@ public class MainActivity extends Activity implements
             setMenuIconsDisconnected();
             /* Help */
             Help.setDisconnected();
+
         }
         catch (IOException e) {
             e.printStackTrace();
