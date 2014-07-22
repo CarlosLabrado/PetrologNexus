@@ -334,6 +334,31 @@ public class G4Petrolog {
     }
 
 
+ /*
+ * Clears left over data on Rx stream. Stops messages until it is done.
+ * Author: CCR
+ *
+ * */
+    private void cleanUpBinary() {
+        Boolean HeartBeatStopped_previous = HeartBeatStopped;
+        HeartBeatStopped = true;
+        try {
+            if (Rx.available() != 0) {
+                byte[] trash = new byte[512];
+                Thread.sleep(500);
+                Rx.read(trash);
+                Log.e("PN - cleanUpBinary", "Data left over!!! - cleanUpBinary Done!");
+            }
+        } catch (InterruptedException e) {
+            Log.e("PN - cleanUp", "Error! - "+e);
+        } catch (IOException e) {
+            Log.e("PN - cleanUp", "Error! - "+e);
+        } catch (NullPointerException e) {
+            Log.e("PN - cleanUp", "Error! - "+e);
+        }
+        HeartBeatStopped = HeartBeatStopped_previous;
+    }
+
     /*
      * This reads ASCII responses from input stream.
      * Author: CCR
@@ -411,7 +436,7 @@ public class G4Petrolog {
                     }
                 }
             }
-            cleanUp();
+            cleanUpBinary();
             return buffer;
 
         } catch (IOException e) {
@@ -936,7 +961,11 @@ public class G4Petrolog {
     public boolean setSettings (String clock, int pu, int po, int fillage, int to, boolean ato){
 
         HeartBeatStopped = true;
-
+        try {
+            Thread.sleep(200);
+        } catch (InterruptedException e) {
+            e.printStackTrace();
+        }
         SendCommand("01E");
 
         /* Pump Off */
@@ -967,12 +996,10 @@ public class G4Petrolog {
 
         }
         else if (to < 0){
-            SendCommand("01SP"+Integer.toHexString(256-1));
-            Log.i("PN - Settings", "TO: " + "01SP" + String.format("%02x", 256 - 1));
+            Log.e("PN - Settings", "Error: TimeOut < 0");
         }
         else {
-            /* error */
-            return true;
+            Log.e("PN - Settings", "Error: TimeOut > 255");
         }
 
         /* Auto TimeOut */

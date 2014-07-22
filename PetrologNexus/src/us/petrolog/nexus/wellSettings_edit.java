@@ -9,6 +9,7 @@ import android.view.ViewGroup;
 import android.widget.ArrayAdapter;
 import android.widget.EditText;
 import android.widget.Spinner;
+import android.widget.Toast;
 
 
 /**
@@ -123,6 +124,9 @@ public class wellSettings_edit {
                 }
                 /* Write values to Petrolog */
                 try {
+                    removeDialog();
+                    Toast.makeText(myAct, "Writing new settings to POC", Toast.LENGTH_LONG)
+                            .show();
                     MainActivity.PetrologSerialCom.setSettings(
                             tempV0,
                             tempV1,
@@ -131,7 +135,6 @@ public class wellSettings_edit {
                             tempV4,
                             temp
                     );
-                    removeDialog();
                 } catch (NumberFormatException e) {
                     Log.e("PN - Settings Dialog", "Number error!");
                     removeDialog();
