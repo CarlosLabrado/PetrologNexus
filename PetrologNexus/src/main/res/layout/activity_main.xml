@@ -68,7 +68,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
                                 android:text="@string/well_status"
-                                android:textSize="16dp"
+                                android:textSize="@dimen/text16sp"
                                 android:paddingRight="10dp"/>
 
                             <TextSwitcher
@@ -83,14 +83,14 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
                             </TextSwitcher>
@@ -109,7 +109,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
                                 android:paddingRight="10dp"
-                                android:textSize="16dp"
+                                android:textSize="@dimen/text16sp"
                                 android:text="@string/next_start"/>
 
                             <TextSwitcher
@@ -124,14 +124,14 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
                             </TextSwitcher>
@@ -150,7 +150,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
                                 android:paddingRight="10dp"
-                                android:textSize="16dp"
+                                android:textSize="@dimen/text16sp"
                                 android:text="@string/strokes_last"/>
 
                             <TextSwitcher
@@ -165,14 +165,14 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
                             </TextSwitcher>
@@ -234,7 +234,7 @@
                                 android:id="@+id/labelYRP"
                                 android:textAlignment="gravity"
                                 android:gravity="center_vertical|right"
-                                android:textSize="13dp"
+                                android:textSize="@dimen/text13sp"
                                 android:layout_weight="100"/>
 
 
@@ -289,7 +289,7 @@
                                 android:layout_height="fill_parent"
                                 android:id="@+id/labelYRP"
                                 android:text="Yesterday's Runtime:"
-                                android:textSize="13dp"
+                                android:textSize="@dimen/text13sp"
                                 android:textAlignment="gravity"
                                 android:layout_gravity="center"
                                 android:gravity="center_vertical|right"
@@ -363,7 +363,7 @@
                             android:text="@string/current_month"
                             android:id="@+id/current_month"
                             android:layout_weight="100"
-                            android:textSize="13dp"
+                            android:textSize="@dimen/text13sp"
                             android:gravity="center_vertical|center_horizontal"/>
 
                     </FrameLayout>
@@ -389,7 +389,7 @@
                             android:text="@string/today"
                             android:id="@+id/today"
                             android:layout_weight="100"
-                            android:textSize="13dp"
+                            android:textSize="@dimen/text13sp"
                             android:gravity="center_vertical|center_horizontal"/>
                     </FrameLayout>
 
@@ -411,7 +411,7 @@
                             android:text="@string/last_month"
                             android:id="@+id/last_month"
                             android:layout_weight="100"
-                            android:textSize="13dp"
+                            android:textSize="@dimen/text13sp"
                             android:gravity="center_vertical|center_horizontal"/>
                     </FrameLayout>
 
@@ -627,14 +627,14 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"/>
                             </TextSwitcher>
                         </TableRow>
@@ -662,7 +662,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|left"
                                 android:paddingLeft="10dp"
-                                android:textSize="18dp"
+                                android:textSize="@dimen/text18sp"
                                 android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
@@ -695,14 +695,14 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
-                                    android:textSize="18dp"
+                                    android:textSize="@dimen/text18sp"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
                             </TextSwitcher>
@@ -743,6 +743,7 @@
         android:layout_width="fill_parent"
         android:layout_height="fill_parent"
         android:id="@+id/Help"
+        tools:visibility="gone"
         android:visibility="invisible">
 
         <LinearLayout
@@ -783,7 +784,7 @@
                         android:id="@+id/current_h"
                         android:gravity="center_vertical|center_horizontal"
                         android:textStyle="bold"
-                        android:textSize="15dp"
+                        android:textSize="@dimen/text15sp"
                         />
                 </FrameLayout>
 
@@ -806,7 +807,7 @@
                         android:id="@+id/runtime_h"
                         android:gravity="center_vertical|center_horizontal"
                         android:textStyle="bold"
-                        android:textSize="15dp"
+                        android:textSize="@dimen/text15sp"
                         />
                 </FrameLayout>
 
@@ -830,7 +831,7 @@
                     android:id="@+id/runtime_trend_h"
                     android:gravity="center_vertical|center_horizontal"
                     android:textStyle="bold"
-                    android:textSize="15dp"
+                    android:textSize="@dimen/text15sp"
                     />
             </FrameLayout>
 
@@ -893,7 +894,7 @@
                         android:id="@+id/dyna_h"
                         android:gravity="center_vertical|center_horizontal"
                         android:textStyle="bold"
-                        android:textSize="15dp"
+                        android:textSize="@dimen/text15sp"
                         android:layout_weight="100"/>
 
                 </LinearLayout>
@@ -925,7 +926,7 @@
                         android:id="@+id/settings_h"
                         android:gravity="center_vertical|center_horizontal"
                         android:textStyle="bold"
-                        android:textSize="15dp"
+                        android:textSize="@dimen/text15sp"
                         />
                 </FrameLayout>
 
@@ -946,7 +947,7 @@
                         android:id="@+id/fillage_h"
                         android:gravity="center_vertical|center_horizontal"
                         android:textStyle="bold"
-                        android:textSize="15dp"
+                        android:textSize="@dimen/text15sp"
                         />
                 </FrameLayout>
 

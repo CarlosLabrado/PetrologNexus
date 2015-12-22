@@ -7,5 +7,9 @@
     <!-- Petrolog Design guidelines. -->
     <dimen name="frame_margin">5dp</dimen>
     <dimen name="frame_padding">5dp</dimen>
+    <dimen name="text16sp">16sp</dimen>
+    <dimen name="text18sp">18sp</dimen>
+    <dimen name="text15sp">15sp</dimen>
+    <dimen name="text13sp">13sp</dimen>
 
 </resources>
