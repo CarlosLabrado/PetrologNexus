@@ -1,0 +1,156 @@
+<?xml version="1.0" encoding="utf-8"?>
+
+
+<FrameLayout xmlns:android="http://schemas.android.com/apk/res/android"
+
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent">
+
+    <LinearLayout
+        android:orientation="vertical"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:textAppearance="?android:attr/textAppearanceMedium"
+            android:text="@string/settings_title"
+            android:id="@+id/textView"
+            android:layout_weight="115"
+            android:gravity="center_vertical|center_horizontal"
+            android:textColor="@color/common_action_bar_splitter"
+            android:fontFamily="@string/common_google_play_services_enable_title"/>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="100">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/pump_up_setting"
+                android:id="@+id/settings_t1TV"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:textSize="12dp"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/settings_v1ET"
+                android:layout_weight="100"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/clock_setting"
+                android:id="@+id/settings_t0TV"
+                android:layout_weight="99"
+                android:paddingRight="5dp"
+                android:gravity="center_vertical|right"
+                android:textSize="12dp"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/settings_v0ET"
+                android:layout_weight="99"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="text"
+                android:textSize="12dp"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="100">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/pump_off_setting"
+                android:id="@+id/settings_t2TV"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:textSize="12dp"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/settings_v2ET"
+                android:layout_weight="100"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/fillage_setting"
+                android:id="@+id/settings_t3TV"
+                android:layout_weight="99"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:textSize="12dp"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/settings_v3ET"
+                android:layout_weight="99"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="number"/>
+        </LinearLayout>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:layout_weight="100">
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/timeout_setting"
+                android:id="@+id/settings_t4TV"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:textSize="12dp"/>
+
+            <EditText
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/settings_v4ET"
+                android:layout_weight="100"
+                android:gravity="center_vertical|center_horizontal"
+                android:inputType="number"/>
+
+            <TextView
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:text="@string/auto_timeout_setting"
+                android:id="@+id/settings_t5TV"
+                android:layout_weight="99"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:textSize="12dp"/>
+
+            <Spinner
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:id="@+id/automatic_time_out"
+                android:layout_weight="99"
+                android:spinnerMode="dropdown"/>
+        </LinearLayout>
+
+    </LinearLayout>
+</FrameLayout>

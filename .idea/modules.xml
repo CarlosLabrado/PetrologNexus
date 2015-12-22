@@ -2,10 +2,8 @@
 <project version="4">
   <component name="ProjectModuleManager">
     <modules>
-      <module fileurl="file://$PROJECT_DIR$/PetrologNexus/libs/HoloCircularProgressBar/HoloCircularProgressBar.iml" filepath="$PROJECT_DIR$/PetrologNexus/libs/HoloCircularProgressBar/HoloCircularProgressBar.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PetrologNexus/PetrologNexus.iml" filepath="$PROJECT_DIR$/PetrologNexus/PetrologNexus.iml" />
-      <module fileurl="file://$PROJECT_DIR$/PetrologNexus/libs/google-play-services_lib/google-play-services_lib.iml" filepath="$PROJECT_DIR$/PetrologNexus/libs/google-play-services_lib/google-play-services_lib.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PetrologNexus.iml" filepath="$PROJECT_DIR$/PetrologNexus.iml" />
+      <module fileurl="file://$PROJECT_DIR$/PetrologNexus/petrologNexus.iml" filepath="$PROJECT_DIR$/PetrologNexus/petrologNexus.iml" />
     </modules>
   </component>
 </project>
-

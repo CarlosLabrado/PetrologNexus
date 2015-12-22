@@ -2,11 +2,6 @@
 <project version="4">
   <component name="CompilerConfiguration">
     <option name="DEFAULT_COMPILER" value="Javac" />
-    <excludeFromCompile>
-      <directory url="file://$PROJECT_DIR$/PetrologNexus/gen" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/PetrologNexus/libs/google-play-services_lib/gen" includeSubdirectories="true" />
-      <directory url="file://$PROJECT_DIR$/PetrologNexus/libs/HoloCircularProgressBar/gen" includeSubdirectories="true" />
-    </excludeFromCompile>
     <resourceExtensions />
     <wildcardResourcePatterns>
       <entry name="!?*.java" />
@@ -25,4 +20,3 @@
     </annotationProcessing>
   </component>
 </project>
-

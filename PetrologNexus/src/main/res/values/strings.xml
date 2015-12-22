@@ -1,0 +1,80 @@
+<?xml version="1.0" encoding="utf-8"?>
+<resources>
+
+    <string name="app_name">PetrologNexus</string>
+    <string name="app_title">PetrologNexus</string>
+
+    <!--Menu Items-->
+    <string name="action_connect">Connect</string>
+    <string name="action_disconnect">Disconnect</string>
+    <string name="action_login">Telemetry Login</string>
+    <string name="action_search">Find Well</string>
+    <string name="action_tutorial">Tutorial</string>
+
+    <!--Not Available -->
+    <string name="n_a">N/A</string>
+
+    <!--Current Status Titles -->
+    <string name="well_status">Well Status:</string>
+
+    <!--Current Status Titles (Well ON)-->
+    <string name="pump_off">Pump Off:</string>
+    <string name="strokes_this">Current Cycle:</string>
+
+    <!--Current Status Titles (Well OFF)-->
+    <string name="next_start">Next Start:</string>
+    <string name="strokes_last">Last Cycle:</string>
+
+    <!--Settings-->
+    <string name="settings_title">POC Settings</string>
+    <string name="clock_setting">POC Internal Clock:</string>
+    <string name="pump_up_setting">Strokes @ Pump Up:</string>
+    <string name="pump_off_setting">Strokes @ Pump Off:</string>
+    <string name="fillage_setting">Percent Fillage:</string>
+    <string name="timeout_setting">Current Time Out:</string>
+    <string name="auto_timeout_setting">Automatic Time Out:</string>
+    <string-array name="auto_timeout">
+        <item>Yes</item>
+        <item>No</item>
+    </string-array>
+
+    <!--Fillage-->
+    <string name="current_fillage">Current Fillage:</string>
+    <string name="percent_fillage_setting">Fillage Setting:</string>
+    <string name="pump_off_distance">Pump Off Distance:</string>
+
+    <!--History Trend-->
+    <string name="current_month">Current Month</string>
+    <string name="today">Today</string>
+    <string name="last_month">Last Month</string>
+
+    <!--Help-->
+    <string name="current_h_s">
+        Current Status:\nRelevant data about the current status of the well.
+    </string>
+    <string name="runtime_h_s">
+        Run Time:\nToday\'s / yesterday\'s Run Time in hours and as a percentage.
+    </string>
+    <string name="runtime_trend_h_s">
+        Run Time Trend:\nLast 30 days of Run Time in percentage.
+    </string>
+    <string name="map_h_s">
+        Map:\nUpon connection to a Petrolog POC displays the current location.
+    </string>
+    <string name="dyna_h_s">
+        Dynagraph:\nSurface card if the well is Running.
+    </string>
+    <string name="settings_h_s">
+        Settings:\nCurrent operational settings of the POC.
+    </string>
+    <string name="fillage_h_s">
+        Fillage:\nCurrent Pump Fillage and compares it with the Fillage Setting.
+    </string>
+
+    <!--gps misc-->
+    <string name="dialog_cancel">Cancel</string>
+    <string name="gps_network_not_enabled">GPS is not enabled</string>
+    <string name="gps_network_not_enabled_message">This application needs the location services to be enabled, please open the location settings and enable it</string>
+    <string name="open_location_settings">Open location settings</string>
+
+</resources>

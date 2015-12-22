@@ -1,0 +1,52 @@
+<!--http://www.jagsaund.com/blog/2011/11/25/vertical-progress-bar-for-android.html-->
+
+<layer-list xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <item android:id="@android:id/background">
+        <shape>
+            <corners android:radius="5dip"/>
+            <gradient
+                android:startColor="@android:color/darker_gray"
+                android:centerColor="@android:color/darker_gray"
+                android:centerY="0.75"
+                android:endColor="@android:color/darker_gray"
+                android:angle="180"
+                />
+        </shape>
+    </item>
+
+    <item android:id="@android:id/secondaryProgress">
+        <clip
+            android:clipOrientation="vertical"
+            android:gravity="bottom">
+            <shape>
+                <corners android:radius="5dip"/>
+                <gradient
+                    android:startColor="#ff10226f"
+                    android:centerColor="#ff1122ae"
+                    android:centerX="0.25"
+                    android:endColor="#ff142ef4"
+                    android:angle="180"
+                    />
+            </shape>
+        </clip>
+    </item>
+
+    <item android:id="@android:id/progress">
+        <clip
+            android:clipOrientation="vertical"
+            android:gravity="bottom">
+            <shape>
+                <corners android:radius="5dip"/>
+                <gradient
+                    android:startColor="#ff000000"
+                    android:centerColor="#ff3a3a3a"
+                    android:centerX="0.75"
+                    android:endColor="#ff808080"
+                    android:angle="180"
+                    />
+            </shape>
+        </clip>
+    </item>
+
+</layer-list>
