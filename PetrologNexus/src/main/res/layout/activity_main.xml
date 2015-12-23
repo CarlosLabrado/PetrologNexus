@@ -4,14 +4,11 @@
 
              android:layout_width="fill_parent"
              android:layout_height="fill_parent"
-             android:paddingBottom="@dimen/activity_vertical_margin"
-             android:paddingLeft="@dimen/activity_horizontal_margin"
-             android:paddingRight="@dimen/activity_horizontal_margin"
-             android:paddingTop="@dimen/activity_vertical_margin"
              tools:context=".MainActivity"
              android:orientation="horizontal"
              android:id="@+id/Main"
-             android:background="#e6e6e6">
+             android:background="#e6e6e6"
+             android:padding="8dp">
 
 
     <LinearLayout
@@ -68,7 +65,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
                                 android:text="@string/well_status"
-                                android:textSize="@dimen/text16sp"
+                                android:textSize="@dimen/abc_text_size_subhead_material"
                                 android:paddingRight="10dp"/>
 
                             <TextSwitcher
@@ -83,7 +80,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="@dimen/text18sp"
+                                    android:textSize="@dimen/abc_text_size_subhead_material"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
@@ -109,7 +106,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
                                 android:paddingRight="10dp"
-                                android:textSize="@dimen/text16sp"
+                                android:textSize="@dimen/abc_text_size_subhead_material"
                                 android:text="@string/next_start"/>
 
                             <TextSwitcher
@@ -124,7 +121,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="@dimen/text18sp"
+                                    android:textSize="@dimen/abc_text_size_subhead_material"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
@@ -150,7 +147,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
                                 android:paddingRight="10dp"
-                                android:textSize="@dimen/text16sp"
+                                android:textSize="@dimen/abc_text_size_subhead_material"
                                 android:text="@string/strokes_last"/>
 
                             <TextSwitcher
@@ -165,7 +162,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="@dimen/text18sp"
+                                    android:textSize="@dimen/abc_text_size_subhead_material"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
@@ -218,7 +215,8 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:text="N/A"
                                 android:id="@+id/today_runtime_percentTV"
-                                android:gravity="center|center_vertical"/>
+                                android:gravity="center|center_vertical"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
                         </FrameLayout>
 
                         <LinearLayout
@@ -231,10 +229,10 @@
                                 android:layout_width="fill_parent"
                                 android:layout_height="fill_parent"
                                 android:text="Today's Runtime:"
-                                android:id="@+id/labelYRP"
+                                android:id="@+id/labelTRP"
                                 android:textAlignment="gravity"
                                 android:gravity="center_vertical|right"
-                                android:textSize="@dimen/text13sp"
+                                android:textSize="@dimen/abc_text_size_caption_material"
                                 android:layout_weight="100"/>
 
 
@@ -245,7 +243,8 @@
                                 android:text="N/A"
                                 android:id="@+id/today_runtime_time"
                                 android:layout_weight="70"
-                                android:gravity="right"/>
+                                android:gravity="right"
+                                android:textSize="@dimen/abc_text_size_title_material"/>
                         </LinearLayout>
 
 
@@ -275,7 +274,8 @@
                                 android:textAppearance="?android:attr/textAppearanceSmall"
                                 android:text="N/A"
                                 android:id="@+id/yesterday_runtime_percentTV"
-                                android:gravity="center|center_vertical"/>
+                                android:gravity="center|center_vertical"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
                         </FrameLayout>
 
                         <LinearLayout
@@ -289,7 +289,7 @@
                                 android:layout_height="fill_parent"
                                 android:id="@+id/labelYRP"
                                 android:text="Yesterday's Runtime:"
-                                android:textSize="@dimen/text13sp"
+                                android:textSize="@dimen/abc_text_size_caption_material"
                                 android:textAlignment="gravity"
                                 android:layout_gravity="center"
                                 android:gravity="center_vertical|right"
@@ -302,7 +302,8 @@
                                 android:text="N/A"
                                 android:id="@+id/yesterday_runtime_time"
                                 android:layout_weight="70"
-                                android:gravity="right"/>
+                                android:gravity="right"
+                                android:textSize="@dimen/abc_text_size_title_material"/>
                         </LinearLayout>
                     </LinearLayout>
                 </LinearLayout>
@@ -363,7 +364,7 @@
                             android:text="@string/current_month"
                             android:id="@+id/current_month"
                             android:layout_weight="100"
-                            android:textSize="@dimen/text13sp"
+                            android:textSize="@dimen/abc_text_size_caption_material"
                             android:gravity="center_vertical|center_horizontal"/>
 
                     </FrameLayout>
@@ -389,7 +390,7 @@
                             android:text="@string/today"
                             android:id="@+id/today"
                             android:layout_weight="100"
-                            android:textSize="@dimen/text13sp"
+                            android:textSize="@dimen/abc_text_size_caption_material"
                             android:gravity="center_vertical|center_horizontal"/>
                     </FrameLayout>
 
@@ -411,7 +412,7 @@
                             android:text="@string/last_month"
                             android:id="@+id/last_month"
                             android:layout_weight="100"
-                            android:textSize="@dimen/text13sp"
+                            android:textSize="@dimen/abc_text_size_caption_material"
                             android:gravity="center_vertical|center_horizontal"/>
                     </FrameLayout>
 
@@ -490,7 +491,8 @@
                                 android:id="@+id/settings_t1TV"
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"/>
+                                android:paddingRight="5dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextView
                                 android:layout_width="fill_parent"
@@ -500,7 +502,8 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical"
                                 android:textColor="#FFCCCCCC"
-                                android:paddingLeft="10dp"/>
+                                android:paddingLeft="10dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
                         </TableRow>
 
                         <TableRow
@@ -516,7 +519,8 @@
                                 android:id="@+id/settings_t2TV"
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"/>
+                                android:paddingRight="5dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextView
                                 android:layout_width="fill_parent"
@@ -526,7 +530,8 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical"
                                 android:textColor="#FFCCCCCC"
-                                android:paddingLeft="10dp"/>
+                                android:paddingLeft="10dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
                         </TableRow>
 
                         <TableRow
@@ -542,7 +547,8 @@
                                 android:id="@+id/settings_t4TV"
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"/>
+                                android:paddingRight="5dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextView
                                 android:layout_width="fill_parent"
@@ -552,7 +558,8 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical"
                                 android:textColor="#FFCCCCCC"
-                                android:paddingLeft="10dp"/>
+                                android:paddingLeft="10dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
                         </TableRow>
 
                         <TableRow
@@ -568,7 +575,8 @@
                                 android:id="@+id/settings_t5TV"
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"/>
+                                android:paddingRight="5dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextView
                                 android:layout_width="fill_parent"
@@ -578,7 +586,8 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical"
                                 android:textColor="#FFCCCCCC"
-                                android:paddingLeft="10dp"/>
+                                android:paddingLeft="10dp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
                         </TableRow>
 
                     </TableLayout>
@@ -611,7 +620,8 @@
                                 android:text="@string/current_fillage"
                                 android:id="@+id/fillage_t1TV"
                                 android:layout_weight="100"
-                                android:gravity="center_vertical|right"/>
+                                android:gravity="center_vertical|right"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextSwitcher
                                 android:layout_width="fill_parent"
@@ -627,7 +637,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="@dimen/text18sp"
+                                    android:textSize="@dimen/abc_text_size_body_1_material"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
@@ -651,7 +661,8 @@
                                 android:text="@string/percent_fillage_setting"
                                 android:id="@+id/fillage_t2TV"
                                 android:layout_weight="100"
-                                android:gravity="center_vertical|right"/>
+                                android:gravity="center_vertical|right"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextView
                                 android:layout_width="fill_parent"
@@ -662,7 +673,7 @@
                                 android:layout_weight="100"
                                 android:gravity="center_vertical|left"
                                 android:paddingLeft="10dp"
-                                android:textSize="@dimen/text18sp"
+                                android:textSize="@dimen/abc_text_size_body_1_material"
                                 android:textColor="#FFCCCCCC"/>
                         </TableRow>
 
@@ -678,7 +689,8 @@
                                 android:text="@string/pump_off_distance"
                                 android:id="@+id/fillage_t3TV"
                                 android:layout_weight="110"
-                                android:gravity="center_vertical|right"/>
+                                android:gravity="center_vertical|right"
+                                android:textSize="@dimen/abc_text_size_body_1_material"/>
 
                             <TextSwitcher
                                 android:layout_width="fill_parent"
@@ -695,7 +707,7 @@
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
                                     android:text="@string/n_a"
-                                    android:textSize="@dimen/text18sp"
+                                    android:textSize="@dimen/abc_text_size_body_1_material"
                                     android:textColor="#FFCCCCCC"
                                     android:gravity="center_vertical|left"/>
 
@@ -722,6 +734,7 @@
         android:layout_weight="1"
         android:focusableInTouchMode="false"
         android:visibility="invisible"
+        tools:visibility="gone"
         android:background="@android:color/darker_gray"
         android:focusable="false"
         android:id="@+id/wait"
