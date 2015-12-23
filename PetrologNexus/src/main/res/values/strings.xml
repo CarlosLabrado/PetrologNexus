@@ -77,4 +77,11 @@
     <string name="gps_network_not_enabled_message">This application needs the location services to be enabled, please open the location settings and enable it</string>
     <string name="open_location_settings">Open location settings</string>
 
+    <string name="title_activity_temp">TempActivity</string>
+
+    <string name="title_runtime">Runtime</string>
+    <string name="desc_today_runtime">Today</string>
+    <string name="desc_N_A">N/A</string>
+    <string name="desc_yesterday_runtime">Yesterday</string>
+
 </resources>
