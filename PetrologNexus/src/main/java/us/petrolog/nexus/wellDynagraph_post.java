@@ -37,14 +37,14 @@ public class wellDynagraph_post {
         myWidget.setDrawMarkersEnabled(false);
 
         lineFormat = new LineAndPointFormatter(
-                Color.BLUE,
+                myAct.getResources().getColor(R.color.mainBlue),
                 null,
                 null,
                 new PointLabelFormatter(Color.TRANSPARENT));
         Paint myPaint = new Paint();
         myPaint.setStyle(Paint.Style.STROKE);
         myPaint.setStrokeWidth(5);
-        myPaint.setColor(Color.BLUE);
+        myPaint.setColor(myAct.getResources().getColor(R.color.mainBlue));
         lineFormat.setLinePaint(myPaint);
 
     }

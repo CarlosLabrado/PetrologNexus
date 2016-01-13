@@ -89,7 +89,7 @@
                                     android:layout_height="fill_parent"
                                     android:gravity="center_vertical|left"
                                     android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/text18sp"/>
+                                    android:textSize="@dimen/abc_text_size_caption_material"/>
                             </TextSwitcher>
                         </TableRow>
 
@@ -130,7 +130,7 @@
                                     android:layout_height="fill_parent"
                                     android:gravity="center_vertical|left"
                                     android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/text18sp"/>
+                                    android:textSize="@dimen/abc_text_size_caption_material"/>
                             </TextSwitcher>
                         </TableRow>
 
@@ -171,7 +171,7 @@
                                     android:layout_height="fill_parent"
                                     android:gravity="center_vertical|left"
                                     android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/text18sp"/>
+                                    android:textSize="@dimen/abc_text_size_caption_material"/>
                             </TextSwitcher>
                         </TableRow>
 

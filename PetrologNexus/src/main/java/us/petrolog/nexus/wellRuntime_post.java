@@ -1,7 +1,6 @@
 package us.petrolog.nexus;
 
 
-import android.graphics.Color;
 import android.util.Log;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
@@ -48,15 +47,15 @@ public class wellRuntime_post {
         if (secYesterday > 0) {
             /* Time */
             String data = getDurationString(secYesterday);
-            yesterdayRuntime.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+            yesterdayRuntime.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             /* % */
             YesterdayRuntimePB.setProgress((int) secYesterday / 86400);
             data = String.valueOf((secYesterday * 100) / 86400) + "%";
-            yesterdayRuntimePercent.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1f, false));
+            yesterdayRuntimePercent.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1f, false));
         } else {
-            yesterdayRuntime.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1.2f, true));
+            yesterdayRuntime.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             YesterdayRuntimePB.setProgress(0);
-            yesterdayRuntimePercent.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1f, true));
+            yesterdayRuntimePercent.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1f, true));
         }
 
 
@@ -65,7 +64,7 @@ public class wellRuntime_post {
         if (secToday > 0) {
             /* Time */
             String data = getDurationString(secToday);
-            todayRuntime.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+            todayRuntime.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             /* % */
             String InternalClock = MainActivity.PetrologSerialCom.getPetrologClock();
             int totalSecToday = 0;
@@ -74,7 +73,7 @@ public class wellRuntime_post {
                         Integer.valueOf(InternalClock.substring(3, 5)) * 60 +
                         Integer.valueOf(InternalClock.substring(6, 8));
                 data = String.valueOf((secToday * 100) / totalSecToday) + "%";
-                todayRuntimePercent.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1f, false));
+                todayRuntimePercent.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1f, false));
                 TodayRuntimePB.setProgress((int) secToday / totalSecToday);
             } catch (NumberFormatException e) {
                 Log.i("PN - H", "Empty - Number Format - " + totalSecToday);
@@ -82,9 +81,9 @@ public class wellRuntime_post {
                 Log.i("PN - H", "Divide by Zero - " + totalSecToday);
             }
         } else {
-            todayRuntime.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1.2f, true));
+            todayRuntime.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             TodayRuntimePB.setProgress(0);
-            todayRuntimePercent.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1f, true));
+            todayRuntimePercent.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1f, true));
         }
 
     }

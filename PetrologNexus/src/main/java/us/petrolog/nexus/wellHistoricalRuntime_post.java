@@ -57,16 +57,6 @@ public class wellHistoricalRuntime_post {
         mCurrAlpha = -1;
 
         mHandler = new Handler();
-//
-//        mHandler.postDelayed(new Runnable() {
-//            @Override
-//            public void run() {
-//
-//                    animateInvitationTextFadeIn();
-//
-//            }
-//        }, 500);
-
 
     }
 
@@ -87,22 +77,28 @@ public class wellHistoricalRuntime_post {
 
         Point point;
         Point dummyPoint;
+
+        /** The logic behind the dummyPoint is that, for this charts we can't just put a chart
+         * that is not the same size that the other ones, so we fill it with dummy transparent
+         * points and only when is "his turn" we fill it with an actual reading
+         */
+
         for (int i = 1; i < 32; i++) {
             int petrologHistoricalRuntimeReading = (MainActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400;
 
             point = new Point(String.valueOf(i), petrologHistoricalRuntimeReading);
             dummyPoint = new Point(String.valueOf(i), 0);
-            dummyPoint.setColor(myAct.getResources().getColor(R.color.trans));
+            dummyPoint.setColor(myAct.getResources().getColor(R.color.transparent));
             dummyPoint.setRadius(2);
 
-            if (i < day) { //Before Today
+            if (i < day) { // Before Today
 
                 dataSetBeforeToday.addPoint(point);
 
                 dataSetAfterToday.addPoint(dummyPoint);
                 dataSetToday.addPoint(dummyPoint);
             }
-            if (i == day) {
+            if (i == day) { // Today
                 dataSetToday.addPoint(point);
 
                 dataSetBeforeToday.addPoint(dummyPoint);
@@ -168,10 +164,10 @@ public class wellHistoricalRuntime_post {
 
         mChart.animateSet(0, new DashAnimation());
 
-        mChart.show(getAnimation(true).setEndAction(null));
+        mChart.show(getAnimation().setEndAction(null));
     }
 
-    private Animation getAnimation(boolean newAnim) {
+    private Animation getAnimation() {
             return new Animation()
                     .setAlpha(mCurrAlpha)
                     .setEasing(mCurrEasing)
@@ -185,30 +181,5 @@ public class wellHistoricalRuntime_post {
         } catch (Exception e) {
             e.printStackTrace();
         }
-//        History.clear();
-//
-//        try {
-//            while (true) {
-//                beforeToday.removeLast();
-//            }
-//        } catch (NoSuchElementException e) {
-//            /* End of Series */
-//        }
-//        try {
-//            while (true) {
-//                today.removeLast();
-//            }
-//        } catch (NoSuchElementException e) {
-//            /* End of Series */
-//        }
-//        try {
-//            while (true) {
-//                afterToday.removeLast();
-//            }
-//        } catch (NoSuchElementException e) {
-//            /* End of Series */
-//        }
-//
-//        History.redraw();
     }
 }

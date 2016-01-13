@@ -62,7 +62,7 @@ public class wellStatus_post {
 
             TextView TempTV = (TextView) current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                current_v1TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+                current_v1TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             }
 
         /* Format Pump Off */
@@ -70,11 +70,11 @@ public class wellStatus_post {
             current_t2TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
             data = MainActivity.PetrologSerialCom.getPumpOffStatus();
             if (data.contains("No")) {
-                current_v2TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+                current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             } else if (data.contains("Yes")) {
-                current_v2TV.setText(StringFormatValue.format(myAct, data, Color.RED, 1.2f, false));
+                current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainRed), 1.2f, false));
             } else {
-                current_v2TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+                current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
 
         /* Format Strokes this Cycle */
@@ -85,12 +85,12 @@ public class wellStatus_post {
             if (dataInt > 0) {
                 TextView TempTVCC = (TextView) current_v3TV.getCurrentView();
                 if (!TempTVCC.getText().toString().equals(data)) {
-                    current_v3TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+                    current_v3TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
                 }
             } else {
                 TextView TempTVCC = (TextView) current_v3TV.getCurrentView();
                 if (!TempTVCC.getText().toString().equals(myAct.getString(R.string.n_a))) {
-                    current_v3TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, true));
+                    current_v3TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, true));
                 }
             }
         } else if (data.contains("Stopped")) {
@@ -102,7 +102,7 @@ public class wellStatus_post {
 
             TextView TempTV = (TextView) current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                current_v1TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+                current_v1TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             }
 
         /* Format Next Start */
@@ -112,9 +112,9 @@ public class wellStatus_post {
             int sec = MainActivity.PetrologSerialCom.getSecNextStart();
             if ((min >= 0 && min != 255) && (sec >= 0 && sec != 255)) {
                 data = String.format("%02d", min) + ":" + String.format("%02d", sec);
-                current_v2TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+                current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             } else {
-                current_v2TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+                current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
 
         /* Format Strokes last Cycle */
@@ -125,27 +125,27 @@ public class wellStatus_post {
             if (dataInt > 0) {
                 TextView TempTVCC = (TextView) current_v3TV.getCurrentView();
                 if (!TempTVCC.getText().toString().equals(data1)) {
-                    current_v3TV.setText(StringFormatValue.format(myAct, data1, Color.BLUE, 1.2f, false));
+                    current_v3TV.setText(StringFormatValue.format(myAct, data1, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
                 }
             } else {
                 TextView TempTVCC = (TextView) current_v3TV.getCurrentView();
                 if (!TempTVCC.getText().toString().equals(myAct.getString(R.string.n_a))) {
-                    current_v3TV.setText(StringFormatValue.format(myAct, data1, Color.GRAY, 1.2f, true));
+                    current_v3TV.setText(StringFormatValue.format(myAct, data1, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
                 }
             }
         } else {
             data = myAct.getString(R.string.n_a);
             TextView TempTV = (TextView) current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                current_v1TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+                current_v1TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
             TempTV = (TextView) current_v2TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                current_v2TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+                current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
             TempTV = (TextView) current_v3TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                current_v3TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+                current_v3TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
         }
     }

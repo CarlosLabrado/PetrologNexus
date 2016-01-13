@@ -42,10 +42,10 @@ public class wellSettings_post {
         settings_t1TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
         if (tempInt > 0) {
             /* No error found */
-            settings_v1TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+            settings_v1TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
         } else {
             /* Data error */
-            settings_v1TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+            settings_v1TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
         }
 
         /* Format Pump Off Strokes Setting*/
@@ -55,10 +55,10 @@ public class wellSettings_post {
         settings_t2TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
         if (tempInt > 0) {
             /* No error found */
-            settings_v2TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+            settings_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
         } else {
             /* Data error */
-            settings_v2TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+            settings_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
         }
 
         /* Format Current Timeout Setting*/
@@ -68,10 +68,10 @@ public class wellSettings_post {
         settings_t4TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
         if (tempInt > 0) {
             /* No error found */
-            settings_v4TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+            settings_v4TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
         } else {
             /* Data error */
-            settings_v4TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+            settings_v4TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
         }
 
         /* Format % Fillage Setting*/
@@ -80,10 +80,10 @@ public class wellSettings_post {
         settings_t5TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
         if (data.contains("Yes") || data.contains("No")) {
             /* No error found */
-            settings_v5TV.setText(StringFormatValue.format(myAct, data, Color.BLUE, 1.2f, false));
+            settings_v5TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
         } else {
             /* Data error */
-            settings_v5TV.setText(StringFormatValue.format(myAct, data, Color.GRAY, 1.2f, true));
+            settings_v5TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
         }
     }
 }

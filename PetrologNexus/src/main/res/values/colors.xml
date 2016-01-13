@@ -1,10 +1,14 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
 
-    <color name="trans">#00ffffff</color>
+    <color name="transparent">#00ffffff</color>
     <color name="fillRed">#9be53935</color>
     <color name="fillBlue">#a442a5f5</color>
     <color name="fillGrey">#a7494949</color>
+
+    <color name="mainBlue">@color/blue_300</color>
+    <color name="mainRed">@color/red_300</color>
+    <color name="mainGray">@color/grey_600</color>
 
     <!--Material design colors-->
     <color name="red_50">#ffebee</color>

@@ -1,7 +1,6 @@
 package us.petrolog.nexus;
 
 
-import android.graphics.Color;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.widget.TextSwitcher;
@@ -44,9 +43,9 @@ public class wellFillage_post {
         int currentFill = MainActivity.PetrologSerialCom.getCurrentFillage();
 
         if ((fillSetting < 0) || (fillSetting > 90)) {
-            fillageSetting.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1.2f, true));
+            fillageSetting.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
         } else {
-            fillageSetting.setText(StringFormatValue.format(myAct, "" + fillSetting + "%", Color.BLUE, 1.2f, false));
+            fillageSetting.setText(StringFormatValue.format(myAct, "" + fillSetting + "%", myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
         }
 
         if ((currentFill > 100) || (currentFill <= 0)) {
@@ -54,29 +53,29 @@ public class wellFillage_post {
 
             TextView TempTV = (TextView) currentFillage.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                currentFillage.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1.2f, true));
+                currentFillage.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
             TempTV = (TextView) pumpOffDistance.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
-                pumpOffDistance.setText(StringFormatValue.format(myAct, "", Color.GRAY, 1.2f, true));
+                pumpOffDistance.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1.2f, true));
             }
         } else {
             TextView TempTV = (TextView) currentFillage.getCurrentView();
             if (!TempTV.getText().toString().equals(String.valueOf(currentFill) + "%")) {
-                currentFillage.setText(StringFormatValue.format(myAct, "" + currentFill + "%", Color.BLUE, 1.2f, false));
+                currentFillage.setText(StringFormatValue.format(myAct, "" + currentFill + "%", myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             }
 
             int pumpOffDis = currentFill - fillSetting;
             if (pumpOffDis < 0) {
                 TempTV = (TextView) pumpOffDistance.getCurrentView();
                 if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis) + "%")) {
-                    pumpOffDistance.setText(StringFormatValue.format(myAct, "" + pumpOffDis + "%", Color.RED, 1.2f, false));
+                    pumpOffDistance.setText(StringFormatValue.format(myAct, "" + pumpOffDis + "%", myAct.getResources().getColor(R.color.mainRed), 1.2f, false));
                 }
 
             } else {
                 TempTV = (TextView) pumpOffDistance.getCurrentView();
                 if (!TempTV.getText().toString().equals(String.valueOf(pumpOffDis) + "%")) {
-                    pumpOffDistance.setText(StringFormatValue.format(myAct, "" + pumpOffDis + "%", Color.BLUE, 1.2f, false));
+                    pumpOffDistance.setText(StringFormatValue.format(myAct, "" + pumpOffDis + "%", myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
                 }
             }
         }
