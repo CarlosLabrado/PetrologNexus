@@ -319,7 +319,7 @@
 
             </LinearLayout>
 
-            <LinearLayout
+            <RelativeLayout
                 android:id="@+id/RuntimeTrend"
                 android:layout_width="fill_parent"
                 android:layout_height="fill_parent"
@@ -330,112 +330,62 @@
                 android:orientation="vertical"
                 android:padding="@dimen/frame_padding">
 
-                <com.androidplot.xy.XYPlot
-                    android:id="@+id/runtimeTrend"
-                    androidPlot.BackgroundPaint.Color="#fffdfdfe"
-                    androidPlot.BorderStyle="Plot.BorderStyle.NONE|null|null"
-                    androidPlot.GraphWidget.BackgroundPaint.Color="#fffdfdfe"
-                    androidPlot.GraphWidget.DomainOriginLablePaint.Color="#ff000000"
-                    androidPlot.GraphWidget.DomainOriginLinePaint.Color="#ff000000"
-                    androidPlot.GraphWidget.GridBackgroundPaint.Color="#fffdfdfe"
-                    androidPlot.GraphWidget.RangeOriginLablePaint.Color="#ff000000"
-                    androidPlot.GraphWidget.RangeOriginLinePaint.Color="#ff000000"
-                    androidPlot.PlotMargins="-40|-1|-1|-1"
-                    androidPlot.PlotPadding="10|0|20|-10"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="6"
-                    android:visibility="gone"/>
+                <TextView
+                    android:id="@+id/state_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignParentEnd="true"
+                    android:layout_alignParentRight="true"
+                    android:layout_alignParentTop="true"
+                    android:layout_marginRight="6dp"
+                    android:layout_marginTop="6dp"
+                    android:drawableLeft="@drawable/tip_before_today"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/tip_before_today"
+                    android:text="@string/current_month"
+                    android:textColor="#ff2b2b2b"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/state_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/state_one"
+                    android:layout_alignStart="@+id/state_one"
+                    android:layout_below="@+id/state_one"
+                    android:layout_marginTop="6dp"
+                    android:drawableLeft="@drawable/tip_today"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/tip_today"
+                    android:text="@string/today"
+                    android:textColor="#ff2b2b2b"
+                    android:textSize="12sp"/>
+                <TextView
+                    android:id="@+id/state_three"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_alignLeft="@+id/state_two"
+                    android:layout_alignStart="@+id/state_two"
+                    android:layout_below="@+id/state_two"
+                    android:layout_marginTop="6dp"
+                    android:drawableLeft="@drawable/tip_after_today"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/tip_after_today"
+                    android:text="@string/last_month"
+                    android:textColor="#ff2b2b2b"
+                    android:textSize="12sp"/>
+
 
                 <com.db.chart.view.LineChartView
                     android:id="@+id/linechart"
                     xmlns:chart="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
-                    android:layout_height="180dp"
+                    android:layout_height="match_parent"
+                    android:layout_centerHorizontal="true"
+                    android:layout_centerVertical="true"
                     android:visibility="visible"
                     chart:chart_fontSize="5dp"/>
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_weight="100"
-                    android:orientation="horizontal"
-                    android:paddingLeft="20dp"
-                    android:paddingRight="20dp">
-
-                    <FrameLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="100">
-
-                        <ImageView
-                            android:id="@+id/current_month_color"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="700"
-                            android:background="#ff2128"/>
-
-                        <TextView
-                            android:id="@+id/current_month"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:text="@string/current_month"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textSize="@dimen/textBottomRight"/>
-
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_marginLeft="@dimen/frame_margin"
-                        android:layout_marginRight="@dimen/frame_margin"
-                        android:layout_weight="100">
-
-                        <ImageView
-                            android:id="@+id/today_color"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="700"
-                            android:background="#1527ff"/>
-
-                        <TextView
-                            android:id="@+id/today"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:text="@string/today"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textSize="@dimen/textBottomRight"/>
-                    </FrameLayout>
-
-                    <FrameLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="100">
-
-                        <ImageView
-                            android:id="@+id/last_month_color"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="700"/>
-
-                        <TextView
-                            android:id="@+id/last_month"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100"
-                            android:gravity="center_vertical|center_horizontal"
-                            android:text="@string/last_month"
-                            android:textAppearance="?android:attr/textAppearanceSmall"
-                            android:textSize="@dimen/textBottomRight"/>
-                    </FrameLayout>
-
-                </LinearLayout>
-            </LinearLayout>
+            </RelativeLayout>
 
         </LinearLayout>
 
