@@ -4,11 +4,13 @@ package us.petrolog.nexus;
 import android.graphics.Canvas;
 import android.graphics.Color;
 import android.graphics.ColorFilter;
+import android.graphics.DashPathEffect;
 import android.graphics.LinearGradient;
 import android.graphics.Paint;
 import android.graphics.Shader;
 import android.graphics.Typeface;
 import android.graphics.drawable.Drawable;
+import android.util.Log;
 import android.widget.ImageView;
 
 import com.androidplot.xy.LineAndPointFormatter;
@@ -16,6 +18,15 @@ import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
 import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
+import com.db.chart.Tools;
+import com.db.chart.model.LineSet;
+import com.db.chart.model.Point;
+import com.db.chart.view.AxisController;
+import com.db.chart.view.LineChartView;
+import com.db.chart.view.Tooltip;
+import com.db.chart.view.YController;
+import com.db.chart.view.animation.Animation;
+import com.db.chart.view.animation.easing.BounceEase;
 
 import java.util.Arrays;
 import java.util.NoSuchElementException;
@@ -26,6 +37,8 @@ import java.util.NoSuchElementException;
 public class wellHistoricalRuntime_post {
 
     MainActivity myAct;
+    private LineChartView mChart;
+    private Tooltip mTip;
     private XYPlot History;
 
     private SimpleXYSeries beforeToday;
@@ -48,6 +61,9 @@ public class wellHistoricalRuntime_post {
     public wellHistoricalRuntime_post(MainActivity myActivity) {
 
         myAct = myActivity;
+
+        mChart = (LineChartView) myAct.findViewById(R.id.linechart);
+
         beforeToday = new SimpleXYSeries(Arrays.asList(serie),
                 SimpleXYSeries.ArrayFormat.XY_VALS_INTERLEAVED, "Current Month");
         today = new SimpleXYSeries(Arrays.asList(serie),
@@ -215,18 +231,48 @@ public class wellHistoricalRuntime_post {
             // TODO
         }
 
+        LineSet dataSetBeforeToday = new LineSet();
+        LineSet dataSetToday = new LineSet();
+        LineSet dataSetAfterToday = new LineSet();
+
+        int highestYValue = 0;
+
+        Point point;
+        Point dummyPoint;
         for (int i = 1; i < 32; i++) {
-            if (i < day) {
-                beforeToday.addLast(i, (MainActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400);
-                ;
+            int petrologHistoricalRuntimeReading = (MainActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400;
+
+            point = new Point(String.valueOf(i), petrologHistoricalRuntimeReading);
+            dummyPoint = new Point(String.valueOf(i), 0);
+            dummyPoint.setColor(myAct.getResources().getColor(R.color.trans));
+            dummyPoint.setRadius(2);
+//            dummyPoint.setStrokeColor(myAct.getResources().getColor(R.color.trans));
+//            dummyPoint.setStrokeThickness(1);
+
+            if (i < day) { //Before Today
+
+                dataSetBeforeToday.addPoint(point);
+
+                dataSetAfterToday.addPoint(dummyPoint);
+                dataSetToday.addPoint(dummyPoint);
+                beforeToday.addLast(i, petrologHistoricalRuntimeReading);
             }
-            if (i >= day - 1 && i <= day) {
-                today.addLast(i, (MainActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400);
-                ;
+            if (i == day) {
+                dataSetToday.addPoint(point);
+
+                dataSetBeforeToday.addPoint(dummyPoint);
+                dataSetAfterToday.addPoint(dummyPoint);
+                today.addLast(i, petrologHistoricalRuntimeReading);
             }
-            if (i >= day) {
-                afterToday.addLast(i, (MainActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400);
-                ;
+            if (i >day) { // After today
+                dataSetAfterToday.addPoint(point);
+
+                dataSetToday.addPoint(dummyPoint);
+                dataSetBeforeToday.addPoint(dummyPoint);
+                afterToday.addLast(i, petrologHistoricalRuntimeReading);
+            }
+            if (highestYValue <= petrologHistoricalRuntimeReading) {
+                highestYValue = petrologHistoricalRuntimeReading;
             }
         }
         History.addSeries(beforeToday, bTLineFormat);
@@ -234,6 +280,59 @@ public class wellHistoricalRuntime_post {
         History.addSeries(afterToday, aTLineFormat);
 
         History.redraw();
+
+        Paint mLineGridPaint = new Paint();
+        mLineGridPaint.setColor(myAct.getResources().getColor(R.color.blue_200));
+        mLineGridPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
+        mLineGridPaint.setStyle(Paint.Style.STROKE);
+        mLineGridPaint.setAntiAlias(true);
+        mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.5f));
+
+
+        Log.e("TIME", "Post ran");
+
+        dataSetBeforeToday.setColor(myAct.getResources().getColor(R.color.blue_600))
+                .setFill(myAct.getResources().getColor(R.color.fillBlue))
+                .setDotsRadius(Tools.fromDpToPx(2))
+//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+                .setDotsColor(myAct.getResources().getColor(R.color.blue_800))
+                .setThickness(Tools.fromDpToPx(2));
+        mChart.addData(dataSetBeforeToday);
+
+        dataSetToday.setColor(myAct.getResources().getColor(R.color.red_600))
+                .setFill(myAct.getResources().getColor(R.color.fillRed))
+                .setDotsRadius(Tools.fromDpToPx(2))
+//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+                .setDotsColor(myAct.getResources().getColor(R.color.red_600))
+                .setThickness(Tools.fromDpToPx(2));
+        mChart.addData(dataSetToday);
+
+        dataSetAfterToday.setColor(myAct.getResources().getColor(R.color.grey_600))
+                .setFill(myAct.getResources().getColor(R.color.fillGrey))
+                .setDotsRadius(Tools.fromDpToPx(2))
+//                .setDotsStrokeThickness(Tools.fromDpToPx(2))
+                .setDotsColor(myAct.getResources().getColor(R.color.grey_600))
+                .setThickness(Tools.fromDpToPx(2));
+        mChart.addData(dataSetAfterToday);
+
+
+
+        // Chart
+        mChart.setBorderSpacing(Tools.fromDpToPx(4))
+                .setStep(3)
+                .setGrid(LineChartView.GridType.FULL, mLineGridPaint)
+                .setAxisBorderValues(0, highestYValue, 1)
+                .setYLabels(AxisController.LabelPosition.NONE)
+                .setLabelsColor(myAct.getResources().getColor(R.color.grey_600))
+                .setYLabels(YController.LabelPosition.OUTSIDE)
+                .setXAxis(false)
+                .setYAxis(false);
+
+
+        Animation anim = new Animation()
+                .setEasing(new BounceEase());
+
+        mChart.show();
     }
 
     public void clean() {
