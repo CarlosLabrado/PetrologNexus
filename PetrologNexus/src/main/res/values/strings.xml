@@ -83,5 +83,7 @@
     <string name="desc_today_runtime">Today</string>
     <string name="desc_N_A">N/A</string>
     <string name="desc_yesterday_runtime">Yesterday</string>
+    <string name="legend_current">Current</string>
+    <string name="legend_past">Past</string>
 
 </resources>

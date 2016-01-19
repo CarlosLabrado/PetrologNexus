@@ -114,7 +114,7 @@ public class wellHistoricalRuntime_post {
             }
 
             Paint mLineGridPaint = new Paint();
-            mLineGridPaint.setColor(myAct.getResources().getColor(R.color.blue_200));
+            mLineGridPaint.setColor(myAct.getResources().getColor(R.color.gridBlue));
             mLineGridPaint.setPathEffect(new DashPathEffect(new float[]{4, 4}, 0));
             mLineGridPaint.setStyle(Paint.Style.STROKE);
             mLineGridPaint.setAntiAlias(true);
