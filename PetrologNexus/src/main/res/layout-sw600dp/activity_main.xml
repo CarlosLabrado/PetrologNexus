@@ -406,29 +406,6 @@
                 android:background="@drawable/background_with_shadow"
                 android:padding="@dimen/frame_padding">
 
-                <com.androidplot.xy.XYPlot
-                    android:id="@+id/dynagraph"
-                    androidPlot.BackgroundPaint.Color="#fffdfdfe"
-                    androidPlot.BorderStyle="Plot.BorderStyle.NONE|null|null"
-                    androidPlot.GraphWidget.BackgroundPaint.Color="#fffdfdfe"
-                    androidPlot.GraphWidget.DomainOriginLabelPaint.Color="#ff000000"
-                    androidPlot.GraphWidget.GridBackgroundPaint.Color="#fffdfdfe"
-                    androidPlot.GraphWidget.RangeOriginLabelPaint.Color="#ff000000"
-                    androidPlot.PlotMargins="-20|-1|-1|-1"
-                    androidPlot.PlotPadding="1|1|20|0"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    />
-                <com.db.chart.view.LineChartView
-                    android:id="@+id/linechartDyna"
-                    xmlns:chart="http://schemas.android.com/apk/res-auto"
-                    android:layout_width="match_parent"
-                    android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="gone"
-                    chart:chart_fontSize="5dp"/>
-
                 <com.github.mikephil.charting.charts.LineChart
                     android:id="@+id/linechartMP"
                     android:layout_width="match_parent"

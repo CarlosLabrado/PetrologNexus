@@ -1,18 +1,12 @@
 package us.petrolog.nexus;
 
 
-import android.content.res.Resources;
-import android.graphics.Color;
-import android.graphics.Paint;
 import android.os.AsyncTask;
 import android.util.Log;
 
 import com.androidplot.xy.LineAndPointFormatter;
-import com.androidplot.xy.PointLabelFormatter;
 import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYGraphWidget;
 import com.androidplot.xy.XYPlot;
-import com.androidplot.xy.XYSeries;
 import com.db.chart.Tools;
 import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
@@ -28,7 +22,6 @@ import java.util.ArrayList;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
-import java.util.Set;
 
 import us.petrolog.nexus.misc.IntegerComparator;
 import us.petrolog.nexus.misc.XYMerger;
@@ -57,36 +50,11 @@ public class wellDynagraph_post {
 
         mLineChartMP = (LineChart) myAct.findViewById(R.id.linechartMP);
 
-        Dynagraph = FormatGraph.format((XYPlot) myAct.findViewById(R.id.dynagraph));
-
-        XYGraphWidget myWidget = Dynagraph.getGraphWidget();
-
-        Paint originPaint = new Paint();
-        originPaint.setColor(Color.LTGRAY);
-        myWidget.setDomainOriginLinePaint(originPaint);
-        myWidget.setRangeOriginLinePaint(originPaint);
-        myWidget.setDrawMarkersEnabled(false);
-
-        lineFormat = new LineAndPointFormatter(
-                myAct.getResources().getColor(R.color.mainBlue),
-                null,
-                null,
-                new PointLabelFormatter(Color.TRANSPARENT));
-        Paint myPaint = new Paint();
-        myPaint.setStyle(Paint.Style.STROKE);
-        myPaint.setStrokeWidth(5);
-        myPaint.setColor(myAct.getResources().getColor(R.color.mainBlue));
-        lineFormat.setLinePaint(myPaint);
-
     }
 
     public void post() {
-
-
         try {
             SimpleXYSeries newDyna = MainActivity.PetrologSerialCom.getDynagraph();
-            Set<XYSeries> backup = Dynagraph.getSeriesSet();
-
 
             if (newDyna != null) {
 
@@ -94,36 +62,13 @@ public class wellDynagraph_post {
                 task.setListener(new MergeAndCalculateTaskListener() {
                     @Override
                     public void onComplete(ArrayList<ArrayList> chartValues, Exception e) {
-//                        Log.e("onComplete", "async task completed");
                         buildChart(chartValues);
                     }
                 }).execute(newDyna);
 
-                int count = 0;
-                XYSeries toErase = null;
-                for (XYSeries tempOld : backup) {
-                    if (count == 0) {
-                        toErase = tempOld;
-                    }
-                    if (count >= 5) {
-                        backup.remove(toErase);
-                    }
-                    count++;
-                }
-                clean();
-                int alphaCounter = 0;
-                for (XYSeries tempNew : backup) {
-                    Dynagraph.addSeries(tempNew, FormatGraph.getDynaFormatterByPlace(alphaCounter));
-                    alphaCounter++;
-                }
-                Dynagraph.addSeries(newDyna, lineFormat);
             }
 
-
-            Dynagraph.redraw();
-        } catch (NumberFormatException e) {
-            e.printStackTrace();
-        } catch (Resources.NotFoundException e) {
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
@@ -275,21 +220,20 @@ public class wellDynagraph_post {
                     new int[]{
                             myAct.getResources().getColor(R.color.mainBlue), myAct.getResources().getColor(R.color.mainRed)
                     }, new String[]{myAct.getString(R.string.legend_current), myAct.getString(R.string.legend_past)});
-            mLineChartMP.notifyDataSetChanged();
+//            mLineChartMP.notifyDataSetChanged();
             mLineChartMP.animateX(1000, Easing.getEasingFunctionFromOption(Easing.EasingOption.EaseOutQuart));
 
-        } catch (Resources.NotFoundException e) {
+        } catch (IllegalArgumentException ex) {
+            mLineChartMP.clear();
+        } catch (Exception e) {
             e.printStackTrace();
         }
     }
 
-
     public void clean() {
-        for (XYSeries temp : Dynagraph.getSeriesSet()) {
-            Dynagraph.removeSeries(temp);
-        }
-        Dynagraph.redraw();
+        mLineChartMP.clear();
     }
+
 
 
     public interface MergeAndCalculateTaskListener {
