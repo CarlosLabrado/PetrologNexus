@@ -629,6 +629,7 @@
                                 <TextView
                                     android:layout_width="fill_parent"
                                     android:layout_height="fill_parent"
+                                    android:gravity="center_vertical|left"
                                     android:textColor="#FFCCCCCC"
                                     android:textSize="@dimen/abc_text_size_body_1_material"/>
                             </TextSwitcher>

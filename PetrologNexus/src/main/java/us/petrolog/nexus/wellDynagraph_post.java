@@ -192,7 +192,7 @@ public class wellDynagraph_post {
                 LineDataSet set3 = new LineDataSet(mBackup.get(0), "Backup X ");
 
                 // set the line to be drawn like this "- - - - - -"
-                set3.enableDashedLine(15f, 15f, 0f);
+                set3.enableDashedLine(10f, 10f, 0f);
                 set3.setColor(myAct.getResources().getColor(R.color.mainRedAlpha));
                 set3.setCircleColor(myAct.getResources().getColor(R.color.mainRedAlpha));
                 set3.setLineWidth(Tools.fromDpToPx(1));
@@ -209,7 +209,7 @@ public class wellDynagraph_post {
                 LineDataSet set4 = new LineDataSet(mBackup.get(1), "Backup Y ");
 
                 // set the line to be drawn like this "- - - - - -"
-                set4.enableDashedLine(15f, 15f, 0f);
+                set4.enableDashedLine(10f, 10f, 0f);
                 set4.setColor(myAct.getResources().getColor(R.color.mainRedAlpha));
                 set4.setCircleColor(myAct.getResources().getColor(R.color.mainRedAlpha));
                 set4.setLineWidth(Tools.fromDpToPx(1));
@@ -252,17 +252,22 @@ public class wellDynagraph_post {
             YAxis rightAxis = mLineChartMP.getAxisRight();
             rightAxis.setDrawGridLines(false);
             rightAxis.setDrawLabels(false);
+            rightAxis.setAxisLineColor(myAct.getResources().getColor(R.color.gridBlue));
 
             YAxis leftAxis = mLineChartMP.getAxisLeft();
             leftAxis.setGridColor(myAct.getResources().getColor(R.color.gridBlue));
             leftAxis.enableGridDashedLine(4f, 4f, 0f);
             leftAxis.setTextColor(myAct.getResources().getColor(R.color.mainGray));
+            leftAxis.setAxisLineColor(myAct.getResources().getColor(R.color.gridBlue));
+
 
             XAxis xAxis = mLineChartMP.getXAxis();
             xAxis.setGridColor(myAct.getResources().getColor(R.color.gridBlue));
             xAxis.enableGridDashedLine(4f, 4f, 0f);
             xAxis.setTextColor(myAct.getResources().getColor(R.color.mainGray));
-            xAxis.setXOffset(20);
+            xAxis.setAxisLineColor(myAct.getResources().getColor(R.color.gridBlue));
+
+//            xAxis.setXOffset(20);
 
 
             Legend legend = mLineChartMP.getLegend();
