@@ -150,7 +150,7 @@ public class wellHistoricalRuntime_post {
 
 
             // Chart
-            mChart.setBorderSpacing(Tools.fromDpToPx(4))
+            mChart.setBorderSpacing(Tools.fromDpToPx(10))
                     .setStep(3)
                     .setGrid(LineChartView.GridType.FULL, mLineGridPaint)
                     .setAxisBorderValues(0, highestYValue, 1)
@@ -160,11 +160,13 @@ public class wellHistoricalRuntime_post {
                     .setXAxis(false)
                     .setYAxis(false);
 
+            mChart.setPadding(10,40,10,10);
+
             mChart.animateSet(0, new DashAnimation());
 
             mChart.show(getAnimation().setEndAction(null));
-        } catch (NumberFormatException e) {
-            // TODO
+        } catch (Exception e) {
+            e.printStackTrace();
         }
     }
 

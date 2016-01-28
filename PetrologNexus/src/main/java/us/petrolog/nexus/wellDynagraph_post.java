@@ -1,14 +1,13 @@
 package us.petrolog.nexus;
 
 
+import android.graphics.Color;
 import android.os.AsyncTask;
+import android.support.v4.graphics.ColorUtils;
 import android.util.Log;
 
-import com.androidplot.xy.LineAndPointFormatter;
 import com.androidplot.xy.SimpleXYSeries;
-import com.androidplot.xy.XYPlot;
 import com.db.chart.Tools;
-import com.github.mikephil.charting.animation.Easing;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -37,12 +36,10 @@ public class wellDynagraph_post {
     static int mMinY;
     static int mMaxY;
 
-    ArrayList<ArrayList> mBackup = new ArrayList<>();
+    static ArrayList<ArrayList<Entry>> mBackup = new ArrayList<>();
 
     MainActivity myAct;
     private LineChart mLineChartMP;
-    private XYPlot Dynagraph;
-    private LineAndPointFormatter lineFormat;
 
     public wellDynagraph_post(MainActivity myActivity) {
 
@@ -80,6 +77,8 @@ public class wellDynagraph_post {
      *                    x axis to be drawn into
      */
     private void buildChart(ArrayList<ArrayList> chartValues) {
+
+
 
         try {
             ArrayList<Entry> yVals = chartValues.get(0);
@@ -133,43 +132,52 @@ public class wellDynagraph_post {
 
 
             if (!mBackup.isEmpty()) {
-                // create a dataset and give it a type
-                LineDataSet set3 = new LineDataSet(mBackup.get(0), "Backup X ");
+                int alphaDecrement = 10;
+                Log.e("backup", "not empy");
+                for(int i = mBackup.size() -1; i >= 0; i = i - 2 ){
+                    // create a dataset and give it a type
+                    LineDataSet set3 = new LineDataSet(mBackup.get(i), "");
 
-                // set the line to be drawn like this "- - - - - -"
-                set3.enableDashedLine(10f, 10f, 0f);
-                set3.setColor(myAct.getResources().getColor(R.color.mainRedAlpha));
-                set3.setCircleColor(myAct.getResources().getColor(R.color.mainRedAlpha));
-                set3.setLineWidth(Tools.fromDpToPx(1));
-//                set3.setCircleRadius(Tools.fromDpToPx(1)/2);
-                set3.setDrawCircles(false);
+                    // set the line to be drawn like this "- - - - - -"
+//                    set3.enableDashedLine(10f, 10f, 0f);
+                    set3.setColor(ColorUtils.setAlphaComponent(Color.RED, 50-(alphaDecrement)));
+//                    set3.setCircleColor(myAct.getResources().getColor(R.color.mainRedAlpha));
+                    set3.setLineWidth(Tools.fromDpToPx(1));
+                    set3.setDrawCircles(false);
 
-                set3.setDrawCircleHole(false);
-                set3.setDrawValues(false);
-                set3.setDrawCubic(true);
-                set3.setFillAlpha(65);
-                set3.setFillColor(myAct.getResources().getColor(R.color.grey_50));
+                    set3.setDrawCircleHole(false);
+                    set3.setDrawValues(false);
+                    set3.setDrawCubic(true);
+                    set3.setFillAlpha(65+i);
+                    set3.setFillColor(myAct.getResources().getColor(R.color.grey_50));
 
-                // create a dataset and give it a type
-                LineDataSet set4 = new LineDataSet(mBackup.get(1), "Backup Y ");
+                    // create a dataset and give it a type
+                    LineDataSet set4 = new LineDataSet(mBackup.get(i-1), "");
 
-                // set the line to be drawn like this "- - - - - -"
-                set4.enableDashedLine(10f, 10f, 0f);
-                set4.setColor(myAct.getResources().getColor(R.color.mainRedAlpha));
-                set4.setCircleColor(myAct.getResources().getColor(R.color.mainRedAlpha));
-                set4.setLineWidth(Tools.fromDpToPx(1));
-//                set4.setCircleRadius(Tools.fromDpToPx(1)/2);
-                set4.setDrawCircles(false);
-                set4.setDrawCircleHole(false);
-                set4.setDrawValues(false);
-                set4.setDrawCubic(true);
-                set4.setFillAlpha(65);
-                set4.setFillColor(myAct.getResources().getColor(R.color.grey_50));
+                    // set the line to be drawn like this "- - - - - -"
+//                    set4.enableDashedLine(10f, 10f, 0f);
+                    set4.setColor(ColorUtils.setAlphaComponent(Color.RED, 50-(alphaDecrement)));
 
-                dataSets.add(set3);
-                dataSets.add(set4);
+//                    set4.setCircleColor(myAct.getResources().getColor(R.color.mainRedAlpha));
+                    set4.setLineWidth(Tools.fromDpToPx(1));
+                    set4.setDrawCircles(false);
+                    set4.setDrawCircleHole(false);
+                    set4.setDrawValues(false);
+                    set4.setDrawCubic(true);
+                    set4.setFillAlpha(65+i);
+                    set4.setFillColor(myAct.getResources().getColor(R.color.grey_50));
 
-                mBackup.clear();
+                    dataSets.add(set3);
+                    dataSets.add(set4);
+                    alphaDecrement = alphaDecrement + 5;
+                }
+
+                if (mBackup.size() > 10) {
+                    mBackup.remove(0);
+                    mBackup.remove(1);
+                }
+
+//                mBackup.clear();
             }
 
             dataSets.add(set1); // add the datasets
@@ -177,7 +185,6 @@ public class wellDynagraph_post {
 
             mBackup.add(yVals);
             mBackup.add(yVals2);
-            mBackup.add(xVals);
 
             // create a data object with the datasets
             LineData data = new LineData(xVals, dataSets);
@@ -209,19 +216,22 @@ public class wellDynagraph_post {
             XAxis xAxis = mLineChartMP.getXAxis();
             xAxis.setGridColor(myAct.getResources().getColor(R.color.gridBlue));
             xAxis.enableGridDashedLine(4f, 4f, 0f);
+            xAxis.setDrawAxisLine(true);
             xAxis.setTextColor(myAct.getResources().getColor(R.color.mainGray));
             xAxis.setAxisLineColor(myAct.getResources().getColor(R.color.gridBlue));
 
 //            xAxis.setXOffset(20);
 
 
+            mLineChartMP.setClickable(false);
+            mLineChartMP.setClipChildren(false);
             Legend legend = mLineChartMP.getLegend();
             legend.setCustom(
                     new int[]{
                             myAct.getResources().getColor(R.color.mainBlue), myAct.getResources().getColor(R.color.mainRed)
                     }, new String[]{myAct.getString(R.string.legend_current), myAct.getString(R.string.legend_past)});
 //            mLineChartMP.notifyDataSetChanged();
-            mLineChartMP.animateX(1000, Easing.getEasingFunctionFromOption(Easing.EasingOption.EaseOutQuart));
+//            mLineChartMP.animateX(1000, Easing.getEasingFunctionFromOption(Easing.EasingOption.EaseOutQuart));
 
         } catch (IllegalArgumentException ex) {
             mLineChartMP.clear();

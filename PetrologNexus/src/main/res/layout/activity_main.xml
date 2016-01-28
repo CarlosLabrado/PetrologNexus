@@ -1,935 +1,747 @@
-<FrameLayout android:id="@+id/Main"
-             xmlns:android="http://schemas.android.com/apk/res/android"
+<?xml version="1.0" encoding="utf-8"?>
+
+<android.support.v7.widget.GridLayout
+    xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="fill_parent"
+    android:layout_height="fill_parent"
+    >
 
 
-             xmlns:tools="http://schemas.android.com/tools"
-             android:layout_width="fill_parent"
-             android:layout_height="fill_parent"
-             android:background="#e6e6e6"
-             android:orientation="horizontal"
-             android:padding="8dp"
-             tools:context=".MainActivity">
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardWell"
+        android:layout_width="wrap_content"
 
+        android:layout_height="wrap_content"
 
-    <LinearLayout
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent">
+        android:layout_margin="4dp"
+        android:background="@color/red_400"
+        app:layout_column="0"
+        app:layout_columnSpan="2"
+        app:layout_columnWeight=".25"
+        app:layout_row="0"
+        app:layout_rowSpan="2"
+        app:layout_rowWeight=".2">
 
-        <LinearLayout
-            android:id="@+id/Left"
+        <android.support.v7.widget.GridLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="100"
-            android:background="@android:color/transparent"
-            android:orientation="vertical"
+            app:columnCount="3"
+            app:rowCount="3"
+            app:rowOrderPreserved="false"
             >
 
-            <LinearLayout
-                android:id="@+id/CurrentAndRuntime"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="100"
-                android:background="@android:color/transparent"
-                android:baselineAligned="false"
-                android:clickable="false"
-                android:orientation="horizontal"
-                >
+            <TextView
+                android:id="@+id/current_t1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:gravity="center_vertical|right"
+                android:text="@string/well_status"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
 
-                <FrameLayout
-                    android:id="@+id/Current"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginBottom="@dimen/frame_margin"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    android:layout_weight="100"
-                    android:background="@drawable/background_with_shadow"
-                    android:padding="@dimen/frame_padding"
-                    >
-
-                    <TableLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        >
-
-                        <TableRow
-                            android:id="@+id/current_R1"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100"
-                            >
-
-                            <TextView
-                                android:id="@+id/current_t1TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="10dp"
-                                android:text="@string/well_status"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                            <TextSwitcher
-                                android:id="@+id/current_v1TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="300"
-                                android:foregroundGravity="center_vertical|left"
-                                android:gravity="center_vertical">
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:text="@string/n_a"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/abc_text_size_caption_material"/>
-                            </TextSwitcher>
-                        </TableRow>
-
-                        <TableRow
-                            android:id="@+id/current_R2"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/current_t2TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="10dp"
-                                android:text="@string/next_start"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                            <TextSwitcher
-                                android:id="@+id/current_v2TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="300"
-                                android:foregroundGravity="center_vertical|left"
-                                android:gravity="center_vertical">
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:text="@string/n_a"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/abc_text_size_caption_material"/>
-                            </TextSwitcher>
-                        </TableRow>
-
-                        <TableRow
-                            android:id="@+id/current_R3"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/current_t3TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="10dp"
-                                android:text="@string/strokes_last"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                            <TextSwitcher
-                                android:id="@+id/current_v3TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="300"
-                                android:foregroundGravity="center_vertical|left"
-                                android:gravity="center_vertical">
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:text="@string/n_a"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/abc_text_size_caption_material"/>
-                            </TextSwitcher>
-                        </TableRow>
-
-                    </TableLayout>
-                </FrameLayout>
-
-                <LinearLayout
-                    android:id="@+id/Runtime"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginBottom="@dimen/frame_margin"
-                    android:layout_marginLeft="@dimen/frame_margin"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    android:layout_weight="125"
-                    android:background="@drawable/background_with_shadow"
-                    android:orientation="vertical"
-                    android:padding="@dimen/frame_padding">
-
-                    <TextView
-                        android:id="@+id/textView2"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_gravity="center_horizontal"
-                        android:text="@string/title_runtime"
-                        android:textSize="@dimen/abc_text_size_caption_material"/>
-
-                    <LinearLayout
-                        android:id="@+id/today"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_gravity="bottom"
-                        android:layout_weight="100">
-
-                        <FrameLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <ProgressBar
-                                android:id="@+id/runtime_today"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"/>
-
-
-                            <TextView
-                                android:id="@+id/today_runtime_percentTV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:gravity="center|center_vertical"
-                                android:text="@string/desc_N_A"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="50"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/labelTRP"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:text="@string/desc_today_runtime"
-                                android:textAlignment="gravity"
-                                android:textSize="@dimen/textBottomRight"/>
-
-
-                            <TextView
-                                android:id="@+id/today_runtime_time"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="70"
-                                android:gravity="right"
-                                android:text="@string/desc_N_A"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-                        </LinearLayout>
-
-
-                    </LinearLayout>
-
-                    <LinearLayout
-                        android:id="@+id/yesterday"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="100">
-
-                        <FrameLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <ProgressBar
-                                android:id="@+id/runtime_yesterday"
-                                android:layout_width="wrap_content"
-                                android:layout_height="wrap_content"
-                                android:layout_gravity="center"
-                                />
-
-                            <TextView
-                                android:id="@+id/yesterday_runtime_percentTV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:gravity="center|center_vertical"
-                                android:text="@string/desc_N_A"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-                        </FrameLayout>
-
-                        <LinearLayout
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="50"
-                            android:orientation="vertical">
-
-                            <TextView
-                                android:id="@+id/labelYRP"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_gravity="center"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:text="@string/desc_yesterday_runtime"
-                                android:textAlignment="gravity"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextView
-                                android:id="@+id/yesterday_runtime_time"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="70"
-                                android:gravity="right"
-                                android:text="@string/desc_N_A"
-                                android:textAppearance="?android:attr/textAppearanceMedium"
-                                android:textSize="@dimen/abc_text_size_caption_material"/>
-                        </LinearLayout>
-                    </LinearLayout>
-
-                </LinearLayout>
-
-            </LinearLayout>
-
-            <RelativeLayout
-                android:id="@+id/RuntimeTrend"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginRight="@dimen/frame_margin"
-                android:layout_marginTop="@dimen/frame_margin"
-                android:layout_weight="50"
-                android:background="@drawable/background_with_shadow"
-                android:orientation="vertical"
-                android:padding="@dimen/frame_padding">
+            <TextSwitcher
+                android:id="@+id/current_v1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1">
 
                 <TextView
-                    android:id="@+id/state_one"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true"
-                    android:layout_alignParentRight="true"
-                    android:layout_alignParentTop="true"
-                    android:layout_marginRight="6dp"
-                    android:layout_marginTop="6dp"
-                    android:drawableLeft="@drawable/tip_before_today"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/tip_before_today"
-                    android:text="@string/current_month"
-                    android:textColor="#ff2b2b2b"
-                    android:textSize="12sp"/>
-                <TextView
-                    android:id="@+id/state_two"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/state_one"
-                    android:layout_alignStart="@+id/state_one"
-                    android:layout_below="@+id/state_one"
-                    android:layout_marginTop="6dp"
-                    android:drawableLeft="@drawable/tip_today"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/tip_today"
-                    android:text="@string/today"
-                    android:textColor="#ff2b2b2b"
-                    android:textSize="12sp"/>
-                <TextView
-                    android:id="@+id/state_three"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignLeft="@+id/state_two"
-                    android:layout_alignStart="@+id/state_two"
-                    android:layout_below="@+id/state_two"
-                    android:layout_marginTop="6dp"
-                    android:drawableLeft="@drawable/tip_after_today"
-                    android:drawablePadding="4dp"
-                    android:drawableStart="@drawable/tip_after_today"
-                    android:text="@string/last_month"
-                    android:textColor="#ff2b2b2b"
-                    android:textSize="12sp"/>
-
-
-                <com.db.chart.view.LineChartView
-                    android:id="@+id/linechart"
-                    xmlns:chart="http://schemas.android.com/apk/res-auto"
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
-                    android:layout_centerVertical="true"
-                    android:visibility="visible"
-                    chart:chart_fontSize="5dp"/>
+                    android:gravity="center_vertical"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
 
-            </RelativeLayout>
-
-        </LinearLayout>
-
-        <LinearLayout
-            android:id="@+id/Right"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="100"
-            android:background="@android:color/transparent"
-            android:orientation="vertical">
-
-            <FrameLayout
-                android:id="@+id/Dyna"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="@dimen/frame_margin"
-                android:layout_marginLeft="@dimen/frame_margin"
-                android:layout_weight="50"
-                android:background="@drawable/background_with_shadow"
-                android:padding="@dimen/frame_padding">
-                <com.github.mikephil.charting.charts.LineChart
-                    android:id="@+id/linechartMP"
+                <TextView
                     android:layout_width="match_parent"
                     android:layout_height="match_parent"
-                    android:layout_centerHorizontal="true"
+                    android:gravity="center_vertical"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
+            </TextSwitcher>
 
-                    android:layout_centerVertical="true"
-                    android:visibility="visible">
+            <TextView
+                android:id="@+id/current_t2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:gravity="center_vertical|right"
+                android:text="@string/next_start"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
 
-                </com.github.mikephil.charting.charts.LineChart>
+            <TextSwitcher
+                android:id="@+id/current_v2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center_vertical|left"
+                android:gravity="center_vertical"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1">
 
-            </FrameLayout>
-
-            <LinearLayout
-                android:id="@+id/SettingsAndFillage"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="100"
-                android:background="@android:color/transparent">
-
-                <FrameLayout
-                    android:id="@+id/Settings"
+                <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginLeft="@dimen/frame_margin"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:layout_weight="80"
-                    android:background="@drawable/background_with_shadow"
-                    android:padding="@dimen/frame_padding">
+                    android:gravity="center_vertical|left"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
 
-                    <TableLayout
-                        android:id="@+id/tableLayout"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
-
-                        <TableRow
-                            android:id="@+id/settings_R1"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/settings_t1TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"
-                                android:text="@string/pump_up_setting"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextView
-                                android:id="@+id/settings_v1TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a"
-                                android:textColor="#FFCCCCCC"
-                                android:textSize="@dimen/textBottomRight"/>
-                        </TableRow>
-
-                        <TableRow
-                            android:id="@+id/settings_R2"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/settings_t2TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"
-                                android:text="@string/pump_off_setting"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextView
-                                android:id="@+id/settings_v2TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a"
-                                android:textColor="#FFCCCCCC"
-                                android:textSize="@dimen/textBottomRight"/>
-                        </TableRow>
-
-                        <TableRow
-                            android:id="@+id/settings_R4"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/settings_t4TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"
-                                android:text="@string/timeout_setting"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextView
-                                android:id="@+id/settings_v4TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a"
-                                android:textColor="#FFCCCCCC"
-                                android:textSize="@dimen/textBottomRight"/>
-                        </TableRow>
-
-                        <TableRow
-                            android:id="@+id/settings_R5"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/settings_t5TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:paddingRight="5dp"
-                                android:text="@string/auto_timeout_setting"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextView
-                                android:id="@+id/settings_v5TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a"
-                                android:textColor="#FFCCCCCC"
-                                android:textSize="@dimen/textBottomRight"/>
-                        </TableRow>
-
-                    </TableLayout>
-
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/Fillage"
+                <TextView
                     android:layout_width="fill_parent"
                     android:layout_height="fill_parent"
-                    android:layout_marginLeft="@dimen/frame_margin"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:layout_weight="100"
-                    android:background="@drawable/background_with_shadow"
-                    android:padding="@dimen/frame_padding">
+                    android:gravity="center_vertical|left"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
+            </TextSwitcher>
 
-                    <TableLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent">
 
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
+            <TextView
+                android:id="@+id/current_t3TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="4dp"
+                android:gravity="center_vertical|right"
+                android:text="@string/strokes_last"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
 
-                            <TextView
-                                android:id="@+id/fillage_t1TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:text="@string/current_fillage"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="@dimen/textBottomRight"/>
+            <TextSwitcher
+                android:id="@+id/current_v3TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:foregroundGravity="center_vertical|left"
+                android:gravity="center_vertical"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1">
 
-                            <TextSwitcher
-                                android:id="@+id/fillage_v1TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|left"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a">
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|left"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
 
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:text="@string/n_a"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/textBottomRight"/>
+                <TextView
+                    android:layout_width="match_parent"
+                    android:layout_height="match_parent"
+                    android:gravity="center_vertical|left"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
+            </TextSwitcher>
+        </android.support.v7.widget.GridLayout>
 
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/textBottomRight"/>
-                            </TextSwitcher>
-                        </TableRow>
+    </android.support.v7.widget.CardView>
 
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardRunTime"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
 
-                            <TextView
-                                android:id="@+id/fillage_t2TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|right"
-                                android:text="@string/percent_fillage_setting"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextView
-                                android:id="@+id/fillage_v2TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|left"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a"
-                                android:textColor="#FFCCCCCC"
-                                android:textSize="@dimen/textBottomRight"/>
-                        </TableRow>
-
-                        <TableRow
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:layout_weight="100">
-
-                            <TextView
-                                android:id="@+id/fillage_t3TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="110"
-                                android:gravity="center_vertical|right"
-                                android:text="@string/pump_off_distance"
-                                android:textAppearance="?android:attr/textAppearanceSmall"
-                                android:textSize="@dimen/textBottomRight"/>
-
-                            <TextSwitcher
-                                android:id="@+id/fillage_v3TV"
-                                android:layout_width="fill_parent"
-                                android:layout_height="fill_parent"
-                                android:layout_weight="100"
-                                android:gravity="center_vertical|left"
-                                android:paddingLeft="10dp"
-                                android:text="@string/n_a"
-                                android:textAlignment="gravity">
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:text="@string/n_a"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/textBottomRight"/>
-
-                                <TextView
-                                    android:layout_width="fill_parent"
-                                    android:layout_height="fill_parent"
-                                    android:gravity="center_vertical|left"
-                                    android:textColor="#FFCCCCCC"
-                                    android:textSize="@dimen/textBottomRight"/>
-                            </TextSwitcher>
-                        </TableRow>
-                    </TableLayout>
-
-                </FrameLayout>
-
-            </LinearLayout>
-
-        </LinearLayout>
-    </LinearLayout>
-
-    <FrameLayout
-        android:id="@+id/wait"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:layout_gravity="center_vertical"
-        android:layout_weight="1"
-        android:alpha=".7"
-        android:background="@android:color/darker_gray"
-        android:focusable="false"
-        android:focusableInTouchMode="false"
-        android:visibility="invisible"
-        tools:visibility="gone"
+        android:layout_margin="4dp"
+        android:background="@color/blue_500"
+        app:layout_column="2"
+        app:layout_columnSpan="2"
+        app:layout_columnWeight=".25"
+        app:layout_row="0"
+        app:layout_rowSpan="2"
         >
 
-        <ProgressBar
-            android:id="@+id/progressBar"
-            style="?android:attr/progressBarStyleLarge"
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_gravity="center"
-            android:background="@android:color/transparent"/>
-
-    </FrameLayout>
-
-    <LinearLayout
-        android:id="@+id/Help"
-        android:layout_width="fill_parent"
-        android:layout_height="fill_parent"
-        android:visibility="invisible"
-        tools:visibility="gone">
-
-        <LinearLayout
-            android:id="@+id/LeftH"
+        <android.support.v7.widget.GridLayout
             android:layout_width="fill_parent"
             android:layout_height="fill_parent"
-            android:layout_weight="100"
-            android:alpha=".8"
-            android:background="@android:color/transparent"
-            android:orientation="vertical">
+            android:layout_margin="2dp">
 
-            <LinearLayout
-                android:id="@+id/CurrentAndRuntimeH"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="100"
-                android:background="@android:color/transparent"
-                android:baselineAligned="false"
-                android:clickable="false"
-                android:orientation="horizontal"
-                >
 
-                <FrameLayout
-                    android:id="@+id/CurrentH"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginBottom="@dimen/frame_margin"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    android:layout_weight="100"
-                    android:background="@drawable/background_with_shadow"
-                    android:padding="@dimen/frame_padding"
-                    >
-
-                    <TextView
-                        android:id="@+id/current_h"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/current_h_s"
-                        android:textSize="@dimen/text15sp"
-                        android:textStyle="bold"
-                        />
-                </FrameLayout>
-
-                <FrameLayout
-                    android:id="@+id/RuntimeH"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginBottom="@dimen/frame_margin"
-                    android:layout_marginLeft="@dimen/frame_margin"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    android:layout_weight="125"
-                    android:background="@drawable/background_with_shadow"
-                    android:orientation="vertical"
-                    android:padding="@dimen/frame_padding">
-
-                    <TextView
-                        android:id="@+id/runtime_h"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/runtime_h_s"
-                        android:textSize="@dimen/text15sp"
-                        android:textStyle="bold"
-                        />
-                </FrameLayout>
-
-            </LinearLayout>
+            <TextView
+                android:id="@+id/textView2"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_runtime"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                app:layout_column="0"
+                app:layout_columnSpan="2"
+                app:layout_columnWeight="1"
+                app:layout_gravity="center_horizontal"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
 
             <FrameLayout
-                android:id="@+id/RuntimeTrendH"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginRight="@dimen/frame_margin"
-                android:layout_marginTop="@dimen/frame_margin"
-                android:layout_weight="50"
-                android:background="@drawable/background_with_shadow"
-                android:padding="0dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="2"
+                app:layout_rowWeight="1"
                 >
+
+                <ProgressBar
+                    android:id="@+id/runtime_today"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"/>
+
 
                 <TextView
-                    android:id="@+id/runtime_trend_h"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:gravity="center_vertical|center_horizontal"
-                    android:text="@string/runtime_trend_h_s"
-                    android:textSize="@dimen/text15sp"
-                    android:textStyle="bold"
-                    />
+                    android:id="@+id/today_runtime_percentTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center|center_vertical"
+                    android:text="@string/desc_N_A"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
             </FrameLayout>
 
-        </LinearLayout>
 
-        <LinearLayout
-            android:id="@+id/RightH"
-            android:layout_width="fill_parent"
-            android:layout_height="fill_parent"
-            android:layout_weight="100"
-            android:alpha=".8"
-            android:background="@android:color/transparent"
-            android:orientation="vertical">
+            <TextView
+                android:id="@+id/labelTRP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@string/desc_today_runtime"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_gravity="center"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+
+            <TextView
+                android:id="@+id/today_runtime_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:gravity="right"
+                android:text="@string/desc_N_A"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
 
             <FrameLayout
-                android:id="@+id/DynaH"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_marginBottom="@dimen/frame_margin"
-                android:layout_marginLeft="@dimen/frame_margin"
-                android:layout_weight="50"
-                android:background="@drawable/background_with_shadow">
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="3"
+                app:layout_rowSpan="2"
+                app:layout_rowWeight="1">
 
-                <LinearLayout
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:orientation="vertical">
+                <ProgressBar
+                    android:id="@+id/runtime_yesterday"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    />
 
-                    <FrameLayout
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="100">
-
-                        <ImageView
-                            android:id="@+id/help_disconnectedIV"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:src="@drawable/help_disconnected"
-                            android:visibility="visible"/>
-
-                        <ImageView
-                            android:id="@+id/help_connected_stoppedIV"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:cropToPadding="false"
-                            android:src="@drawable/help_connected_stopped"
-                            android:visibility="invisible"/>
-
-                        <ImageView
-                            android:id="@+id/help_connected_runningIV"
-                            android:layout_width="fill_parent"
-                            android:layout_height="fill_parent"
-                            android:src="@drawable/help_connected_running"/>
-                    </FrameLayout>
-
-                    <TextView
-                        android:id="@+id/dyna_h"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:layout_weight="100"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/dyna_h_s"
-                        android:textSize="@dimen/text15sp"
-                        android:textStyle="bold"/>
-
-                </LinearLayout>
-
+                <TextView
+                    android:id="@+id/yesterday_runtime_percentTV"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_gravity="center"
+                    android:gravity="center|center_vertical"
+                    android:text="@string/desc_N_A"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="@dimen/abc_text_size_caption_material"/>
             </FrameLayout>
 
-            <LinearLayout
-                android:id="@+id/SettingsAndFillageH"
-                android:layout_width="fill_parent"
-                android:layout_height="fill_parent"
-                android:layout_weight="100"
-                android:background="@android:color/transparent">
 
-                <FrameLayout
-                    android:id="@+id/SettingsH"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginLeft="@dimen/frame_margin"
-                    android:layout_marginRight="@dimen/frame_margin"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:layout_weight="100"
-                    android:background="@drawable/background_with_shadow"
-                    android:padding="@dimen/frame_padding">
+            <TextView
+                android:id="@+id/labelYRP"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@string/desc_yesterday_runtime"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_gravity="center"
+                app:layout_row="3"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"
+                />
 
-                    <TextView
-                        android:id="@+id/settings_h"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/settings_h_s"
-                        android:textSize="@dimen/text15sp"
-                        android:textStyle="bold"
-                        />
-                </FrameLayout>
+            <TextView
+                android:id="@+id/yesterday_runtime_time"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginRight="8dp"
+                android:gravity="right"
+                android:text="@string/desc_N_A"
+                android:textAppearance="?android:attr/textAppearanceMedium"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="4"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
 
-                <FrameLayout
-                    android:id="@+id/FillageH"
-                    android:layout_width="fill_parent"
-                    android:layout_height="fill_parent"
-                    android:layout_marginLeft="@dimen/frame_margin"
-                    android:layout_marginTop="@dimen/frame_margin"
-                    android:layout_weight="100"
-                    android:background="@drawable/background_with_shadow"
-                    android:padding="@dimen/frame_padding">
+        </android.support.v7.widget.GridLayout>
+    </android.support.v7.widget.CardView>
 
-                    <TextView
-                        android:id="@+id/fillage_h"
-                        android:layout_width="fill_parent"
-                        android:layout_height="fill_parent"
-                        android:gravity="center_vertical|center_horizontal"
-                        android:text="@string/fillage_h_s"
-                        android:textSize="@dimen/text15sp"
-                        android:textStyle="bold"
-                        />
-                </FrameLayout>
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardHistory"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="4dp"
+        app:layout_column="0"
+        app:layout_columnSpan="4"
+        app:layout_columnWeight=".5"
+        app:layout_row="2"
+        app:layout_rowSpan="4"
+        app:layout_rowWeight=".5"
+        >
 
-            </LinearLayout>
+        <LinearLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent"
+            android:gravity="center_horizontal"
+            android:orientation="horizontal">
 
+            <TextView
+                android:id="@+id/state_one"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="5dp"
+                android:drawableLeft="@drawable/tip_before_today"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/tip_before_today"
+                android:text="@string/current_month"
+                android:textColor="#ff2b2b2b"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/state_two"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:drawableLeft="@drawable/tip_today"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/tip_today"
+                android:text="@string/today"
+                android:textColor="#ff2b2b2b"
+                android:textSize="12sp"/>
+
+            <TextView
+                android:id="@+id/state_three"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginLeft="8dp"
+                android:drawableLeft="@drawable/tip_after_today"
+                android:drawablePadding="4dp"
+                android:drawableStart="@drawable/tip_after_today"
+                android:text="@string/last_month"
+                android:textColor="#ff2b2b2b"
+                android:textSize="12sp"/>
         </LinearLayout>
-    </LinearLayout>
 
 
-</FrameLayout>
+        <com.db.chart.view.LineChartView
+            android:id="@+id/linechart"
+            xmlns:chart="http://schemas.android.com/apk/res-auto"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible"
+            chart:chart_fontSize="5dp"/>
+
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+        android:id="@+id/cardDyna"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="4dp"
+
+        android:background="@color/pink_400"
+        app:layout_column="4"
+        app:layout_columnSpan="4"
+        app:layout_columnWeight=".5"
+        app:layout_row="0"
+        app:layout_rowSpan="4"
+        app:layout_rowWeight=".7">
+
+        <com.github.mikephil.charting.charts.LineChart
+            android:id="@+id/linechartMP"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:layout_centerHorizontal="true"
+            android:layout_centerVertical="true"
+            android:visibility="visible"/>
+
+        <ProgressBar
+            android:id="@+id/progressBarDyna"
+            style="?android:attr/progressBarStyleHorizontal"
+            android:layout_width="100dp"
+            android:layout_height="wrap_content"
+            android:layout_gravity="bottom|right"
+            android:indeterminate="false"
+            android:max="100"
+            android:paddingRight="20dp"
+            android:progressBackgroundTint="@color/mainGray"
+            android:progressBackgroundTintMode="src_in"
+            android:progressTint="@color/mainBlue"/>
+
+    </android.support.v7.widget.CardView>
+
+
+    <android.support.v7.widget.CardView
+
+        android:id="@+id/cardStrokes"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="4dp"
+
+        android:background="@color/green_600"
+        android:padding="@dimen/padding_frames"
+        app:layout_column="4"
+        app:layout_columnSpan="2"
+        app:layout_columnWeight=".25"
+        app:layout_row="4"
+        app:layout_rowSpan="2"
+        app:layout_rowWeight=".1">
+
+        <android.support.v7.widget.GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/settings_t1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:text="@string/pump_up_setting"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"
+                />
+
+            <TextView
+                android:id="@+id/settings_v1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                android:textColor="#FFCCCCCC"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/settings_t2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:text="@string/pump_off_setting"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/settings_v2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                android:textColor="#FFCCCCCC"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+
+            <TextView
+                android:id="@+id/settings_t4TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:text="@string/timeout_setting"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/settings_v4TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                android:textColor="#FFCCCCCC"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/settings_t5TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical|right"
+                android:paddingRight="5dp"
+                android:text="@string/auto_timeout_setting"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="3"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextView
+                android:id="@+id/settings_v5TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_weight="100"
+                android:gravity="center_vertical"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                android:textColor="#FFCCCCCC"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="3"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+        </android.support.v7.widget.GridLayout>
+    </android.support.v7.widget.CardView>
+
+    <android.support.v7.widget.CardView
+
+        android:id="@+id/cardFillage"
+
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+
+        android:layout_margin="4dp"
+
+        android:background="@color/yellow_400"
+        android:padding="@dimen/padding_frames"
+        app:layout_column="6"
+        app:layout_columnSpan="2"
+        app:layout_columnWeight=".25"
+        app:layout_row="4"
+        app:layout_rowSpan="2"
+        app:layout_rowWeight=".1">
+
+        <android.support.v7.widget.GridLayout
+            android:layout_width="fill_parent"
+            android:layout_height="fill_parent">
+
+            <TextView
+                android:id="@+id/fillage_t1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@string/current_fillage"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextSwitcher
+                android:id="@+id/fillage_v1TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="0"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical|left"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical|left"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"/>
+            </TextSwitcher>
+
+
+            <TextView
+                android:id="@+id/fillage_t2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@string/percent_fillage_setting"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"
+                />
+
+            <TextView
+                android:id="@+id/fillage_v2TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                android:textColor="#FFCCCCCC"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="1"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+
+            <TextView
+                android:id="@+id/fillage_t3TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|right"
+                android:text="@string/pump_off_distance"
+                android:textAppearance="?android:attr/textAppearanceSmall"
+                android:textSize="@dimen/textBottomRight"
+                app:layout_column="0"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1"/>
+
+            <TextSwitcher
+                android:id="@+id/fillage_v3TV"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:gravity="center_vertical|left"
+                android:paddingLeft="10dp"
+                android:text="@string/n_a"
+                app:layout_column="1"
+                app:layout_columnSpan="1"
+                app:layout_columnWeight="1"
+                app:layout_row="2"
+                app:layout_rowSpan="1"
+                app:layout_rowWeight="1">
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical|left"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"/>
+
+                <TextView
+                    android:layout_width="fill_parent"
+                    android:layout_height="fill_parent"
+                    android:gravity="center_vertical|left"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"/>
+            </TextSwitcher>
+
+        </android.support.v7.widget.GridLayout>
+
+    </android.support.v7.widget.CardView>
+
+</android.support.v7.widget.GridLayout>

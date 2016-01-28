@@ -1,5 +1,6 @@
 package us.petrolog.nexus;
 
+import android.animation.ObjectAnimator;
 import android.app.ActionBar;
 import android.app.Activity;
 import android.app.AlertDialog;
@@ -14,20 +15,23 @@ import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
 import android.content.pm.PackageManager;
+import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationManager;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
 import android.os.Bundle;
+import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.Settings;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
-import android.widget.FrameLayout;
+import android.view.animation.LinearInterpolator;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import com.google.android.gms.common.ConnectionResult;
@@ -51,50 +55,38 @@ public class MainActivity extends Activity implements
         GoogleApiClient.OnConnectionFailedListener, LocationListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
-
+    public static final int REQUEST_ENABLE_BT = 1;
+    public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
+    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static G4Petrolog PetrologSerialCom;
-
-    private static FrameLayout All;
-
-    private Timer UIUpdate;
-    private Timer StaticDynaUpdate;
-    private Timer SerialComHeartBeat;
-
+    public static wellDynagraph_post wellDynagraphPost;
+    public static help Help;
+    public static boolean Connected = false;
+    public static Menu MyMenu;
     private static wellStatus_post wellStatusPost;
     private static wellRuntime_post wellRuntimePost;
     private static wellHistoricalRuntime_post wellHistoricalRuntimePost;
-    public static wellDynagraph_post wellDynagraphPost;
     private static wellSettings_post wellSettingsPost;
     private static wellFillage_post wellFillagePost;
-
     private static wellSettings_edit wellSettingsEdit;
-
-    public static help Help;
-
+    private final String NFC_PETROLOG_IDENTIFIER = "petr0l0g";
+    private Timer UIUpdate;
+    private Timer StaticDynaUpdate;
+    private Timer SerialComHeartBeat;
     private BluetoothAdapter mBluetoothAdapter;
     private BluetoothSocket mBluetoothSocket;
-    public static boolean Connected = false;
-    public static final int REQUEST_ENABLE_BT = 1;
-    public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
     private String wellName;
-
-    public static Menu MyMenu;
     private LatLng mLatLng;
-
-
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
-
     private Boolean petrologFound;
-
     private NfcAdapter mNfcAdapter;
     private IntentFilter[] mNdefExchangeFilters;
     private PendingIntent mNfcPendingIntent;
-    private final String NFC_PETROLOG_IDENTIFIER = "petr0l0g";
-
     private PetrologMarkerDataSource dataSource;
-
+    private Handler mUpdateUIHandler;
+    private Handler mStaticDynaUpdateHandler;
+    private Handler mCleanUIHandler;
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -514,12 +506,230 @@ public class MainActivity extends Activity implements
                 Toast.makeText(this, "Bluetooth activation failed", Toast.LENGTH_SHORT).show();
     }
 
+    private void myInit() {
+
+        // Force call to onPrepareOptionsMenu()
+        invalidateOptionsMenu();
+
+        // Remove notification bar
+        getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+
+        // Register the BroadcastReceiver
+        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
+        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
+        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
+        registerReceiver(mReceiver, filter);
+
+        /* Timer to update info from Petrolog */
+        if (SerialComHeartBeat == null) {
+            SerialComHeartBeat = new Timer();
+        }
+        SerialComHeartBeat.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Serial
+                if (Connected) {
+                    PetrologSerialCom.HeartBeat();
+                }
+            }
+        }, 0, 500);
+
+        /* Settings PopUp */
+        wellSettingsEdit = new wellSettings_edit(this);
+
+        /* Timer to Update UI */
+        wellStatusPost = new wellStatus_post(this);
+        wellSettingsPost = new wellSettings_post(this);
+        wellRuntimePost = new wellRuntime_post(this);
+        wellDynagraphPost = new wellDynagraph_post(this);
+        wellHistoricalRuntimePost = new wellHistoricalRuntime_post(this);
+        wellFillagePost = new wellFillage_post(this);
+
+        if (mUpdateUIHandler == null) {
+            mUpdateUIHandler = new Handler();
+        }
+
+        UIUpdate = new Timer();
+        UIUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Serial
+                if (Connected) {
+                    mUpdateUIHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            wellStatusPost.post();
+                            wellSettingsPost.post();
+                            wellRuntimePost.post();
+                            wellFillagePost.post();
+                        }
+                    });
+                }
+            }
+        }, 0, 400);
+
+        if (mStaticDynaUpdateHandler == null) {
+            mStaticDynaUpdateHandler = new Handler();
+        }
+
+        /* Timer to Update Dyna */
+        if (StaticDynaUpdate == null) {
+            StaticDynaUpdate = new Timer();
+        }
+        StaticDynaUpdate.schedule(new TimerTask() {
+            @Override
+            public void run() {
+                // Serial
+                if (Connected) {
+                    mStaticDynaUpdateHandler.post(new Runnable() {
+                        @Override
+                        public void run() {
+                            startDynaLoadingBarAnimation();
+                            wellDynagraphPost.post();
+                        }
+                    });
+                }
+            }
+        }, 0, 10000);
+
+
+    }
+
+    private void startDynaLoadingBarAnimation(){
+        ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.progressBarDyna);
+        mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.mainBlue), PorterDuff.Mode.SRC_IN);
+
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(mProgressBar, "progress", 0, 100);
+        progressAnimator.setDuration(10000);
+        progressAnimator.setInterpolator(new LinearInterpolator());
+        progressAnimator.start();
+    }
+
+    private void prepareForExit() {
+
+        try {
+            /* Close Cx */
+            PetrologSerialCom.Disconnect();
+            Connected = false;
+
+            /* Close BT */
+            mBluetoothSocket.close();
+            mBluetoothSocket = null;
+            unregisterReceiver(mReceiver);
+
+            /* Stop Timers */
+            UIUpdate.cancel();
+            UIUpdate.purge();
+            UIUpdate = null;
+            StaticDynaUpdate.cancel();
+            StaticDynaUpdate.purge();
+            StaticDynaUpdate = null;
+            SerialComHeartBeat.cancel();
+            SerialComHeartBeat.purge();
+            SerialComHeartBeat = null;
+
+            /* Clean UI */
+            cleanUI();
+            /* Prepare Menu */
+            setMenuIconsDisconnected();
+
+            /* Help */
+            Help.setDisconnected();
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void disconnect() {
+
+        try {
+
+            if (PetrologSerialCom != null) {
+                /* Close Cx */
+                PetrologSerialCom.Disconnect();
+                Connected = false;
+            }
+
+            /* Close BT */
+            mBluetoothSocket.close();
+            mBluetoothSocket = null;
+
+            /* Clean UI */
+            cleanUI();
+            /* Prepare Menu */
+            setMenuIconsDisconnected();
+            /* Help */
+            Help.setDisconnected();
+
+        } catch (Exception e){
+            e.printStackTrace();
+        }
+
+    }
+
+    private void setMenuIconsConnected() {
+        MyMenu.getItem(4).setVisible(false); //Connect
+        MyMenu.getItem(5).setVisible(true); //Disconnect
+        MyMenu.getItem(1).setVisible(true); //Settings
+        MyMenu.getItem(2).setVisible(true); //Clean
+        MyMenu.getItem(0).setVisible(false); //Run
+        MyMenu.getItem(3).setVisible(true); //Help
+
+    }
+
+    private void setMenuIconsDisconnected() {
+        MyMenu.getItem(4).setVisible(true);  //Connect
+        MyMenu.getItem(5).setVisible(false); //Disconnect
+        MyMenu.getItem(1).setVisible(false); //Settings
+        MyMenu.getItem(2).setVisible(false); //Clean
+        MyMenu.getItem(0).setVisible(false); //Run
+        MyMenu.getItem(3).setVisible(true); //Help
+
+    }
+
+    private void removeAllMenuItems() {
+        MyMenu.getItem(4).setVisible(false); //Connect
+        MyMenu.getItem(5).setVisible(false); //Disconnect
+        MyMenu.getItem(1).setVisible(false); //Settings
+        MyMenu.getItem(2).setVisible(false); //Clean
+        MyMenu.getItem(0).setVisible(false); //Run
+        MyMenu.getItem(3).setVisible(false); //Help
+
+    }
+
+    private void cleanUI() {
+
+        wellDynagraphPost.clean();
+        wellHistoricalRuntimePost.clean();
+
+        ActionBar bar = getActionBar();
+        bar.setTitle(getString(R.string.app_title));
+
+
+        /* Last Update to display N/A (all variables are cleared on Disconnect@G4Petrolog) */
+
+        if (mCleanUIHandler == null) {
+            mCleanUIHandler = new Handler();
+        }
+        mCleanUIHandler.post(new Runnable() {
+            @Override
+            public void run() {
+                wellStatusPost.post();
+                wellSettingsPost.post();
+                wellRuntimePost.post();
+                wellFillagePost.post();
+            }
+        });
+    }
+
     public class AsyncBluetoothConnect extends AsyncTask<BluetoothDevice, Void, Boolean> {
         BluetoothDevice Device;
-        FrameLayout Wait = (FrameLayout) findViewById(R.id.wait);
+//        FrameLayout Wait = (FrameLayout) findViewById(R.id.wait);
 
         protected void onPreExecute() {
-            Wait.setVisibility(View.VISIBLE);
+//            Wait.setVisibility(View.VISIBLE);
         }
 
         protected Boolean doInBackground(BluetoothDevice... device) {
@@ -586,211 +796,11 @@ public class MainActivity extends Activity implements
                 disconnect();
             }
 
-            Wait.setVisibility(View.INVISIBLE);
+//            Wait.setVisibility(View.INVISIBLE);
 
 
         }
 
-    }
-
-    private void myInit() {
-
-        // Force call to onPrepareOptionsMenu()
-        invalidateOptionsMenu();
-
-        // Remove notification bar
-        getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
-
-        // Register the BroadcastReceiver
-        IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
-        filter.addAction(BluetoothDevice.ACTION_ACL_DISCONNECTED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_FINISHED);
-        filter.addAction(BluetoothAdapter.ACTION_DISCOVERY_STARTED);
-        registerReceiver(mReceiver, filter);
-
-        /* Timer to update info from Petrolog */
-        if (SerialComHeartBeat == null) {
-            SerialComHeartBeat = new Timer();
-        }
-        SerialComHeartBeat.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Serial
-                if (Connected) {
-                    PetrologSerialCom.HeartBeat();
-                }
-            }
-        }, 0, 500);
-
-        /* Settings PopUp */
-        wellSettingsEdit = new wellSettings_edit(this);
-
-        /* Timer to Update UI */
-        All = (FrameLayout) findViewById(R.id.Main);
-        wellStatusPost = new wellStatus_post(this);
-        wellSettingsPost = new wellSettings_post(this);
-        wellRuntimePost = new wellRuntime_post(this);
-        wellDynagraphPost = new wellDynagraph_post(this);
-        wellHistoricalRuntimePost = new wellHistoricalRuntime_post(this);
-        wellFillagePost = new wellFillage_post(this);
-
-        UIUpdate = new Timer();
-        UIUpdate.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Serial
-                if (Connected) {
-                    All.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            wellStatusPost.post();
-                            wellSettingsPost.post();
-                            wellRuntimePost.post();
-                            wellFillagePost.post();
-                        }
-                    });
-                }
-            }
-        }, 0, 400);
-
-        /* Timer to Update Dyna */
-        if (StaticDynaUpdate == null) {
-            StaticDynaUpdate = new Timer();
-        }
-        StaticDynaUpdate.schedule(new TimerTask() {
-            @Override
-            public void run() {
-                // Serial
-                if (Connected) {
-                    All.post(new Runnable() {
-                        @Override
-                        public void run() {
-                            wellDynagraphPost.post();
-                        }
-                    });
-                }
-            }
-        }, 0, 10000);
-
-
-    }
-
-    private void prepareForExit() {
-
-        try {
-            /* Close Cx */
-            PetrologSerialCom.Disconnect();
-            Connected = false;
-
-            /* Close BT */
-            mBluetoothSocket.close();
-            mBluetoothSocket = null;
-            unregisterReceiver(mReceiver);
-
-            /* Stop Timers */
-            UIUpdate.cancel();
-            UIUpdate.purge();
-            UIUpdate = null;
-            StaticDynaUpdate.cancel();
-            StaticDynaUpdate.purge();
-            StaticDynaUpdate = null;
-            SerialComHeartBeat.cancel();
-            SerialComHeartBeat.purge();
-            SerialComHeartBeat = null;
-
-            /* Clean UI */
-            cleanUI();
-            /* Prepare Menu */
-            setMenuIconsDisconnected();
-
-            /* Help */
-            Help.setDisconnected();
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void disconnect() {
-
-        try {
-
-            if (PetrologSerialCom != null) {
-                /* Close Cx */
-                PetrologSerialCom.Disconnect();
-                Connected = false;
-            }
-
-            /* Close BT */
-            mBluetoothSocket.close();
-            mBluetoothSocket = null;
-
-            /* Clean UI */
-            cleanUI();
-            /* Prepare Menu */
-            setMenuIconsDisconnected();
-            /* Help */
-            Help.setDisconnected();
-
-        } catch (IOException e) {
-            e.printStackTrace();
-        } catch (NullPointerException e) {
-            e.printStackTrace();
-        }
-
-    }
-
-    private void setMenuIconsConnected() {
-        MyMenu.getItem(4).setVisible(false); //Connect
-        MyMenu.getItem(5).setVisible(true); //Disconnect
-        MyMenu.getItem(1).setVisible(true); //Settings
-        MyMenu.getItem(2).setVisible(true); //Clean
-        MyMenu.getItem(0).setVisible(false); //Run
-        MyMenu.getItem(3).setVisible(true); //Help
-
-    }
-
-    private void setMenuIconsDisconnected() {
-        MyMenu.getItem(4).setVisible(true);  //Connect
-        MyMenu.getItem(5).setVisible(false); //Disconnect
-        MyMenu.getItem(1).setVisible(false); //Settings
-        MyMenu.getItem(2).setVisible(false); //Clean
-        MyMenu.getItem(0).setVisible(false); //Run
-        MyMenu.getItem(3).setVisible(true); //Help
-
-    }
-
-    private void removeAllMenuItems() {
-        MyMenu.getItem(4).setVisible(false); //Connect
-        MyMenu.getItem(5).setVisible(false); //Disconnect
-        MyMenu.getItem(1).setVisible(false); //Settings
-        MyMenu.getItem(2).setVisible(false); //Clean
-        MyMenu.getItem(0).setVisible(false); //Run
-        MyMenu.getItem(3).setVisible(false); //Help
-
-    }
-
-    private void cleanUI() {
-
-        wellDynagraphPost.clean();
-        wellHistoricalRuntimePost.clean();
-
-        ActionBar bar = getActionBar();
-        bar.setTitle(getString(R.string.app_title));
-
-
-        /* Last Update to display N/A (all variables are cleared on Disconnect@G4Petrolog) */
-        All.post(new Runnable() {
-            @Override
-            public void run() {
-                wellStatusPost.post();
-                wellSettingsPost.post();
-                wellRuntimePost.post();
-                wellFillagePost.post();
-            }
-        });
     }
 
 
