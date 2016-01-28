@@ -30,6 +30,7 @@ import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.animation.LinearInterpolator;
+import android.widget.FrameLayout;
 import android.widget.LinearLayout;
 import android.widget.ProgressBar;
 import android.widget.Toast;
@@ -726,10 +727,10 @@ public class MainActivity extends Activity implements
 
     public class AsyncBluetoothConnect extends AsyncTask<BluetoothDevice, Void, Boolean> {
         BluetoothDevice Device;
-//        FrameLayout Wait = (FrameLayout) findViewById(R.id.wait);
+        FrameLayout Wait = (FrameLayout) findViewById(R.id.wait);
 
         protected void onPreExecute() {
-//            Wait.setVisibility(View.VISIBLE);
+            Wait.setVisibility(View.VISIBLE);
         }
 
         protected Boolean doInBackground(BluetoothDevice... device) {
@@ -796,7 +797,7 @@ public class MainActivity extends Activity implements
                 disconnect();
             }
 
-//            Wait.setVisibility(View.INVISIBLE);
+            Wait.setVisibility(View.GONE);
 
 
         }
