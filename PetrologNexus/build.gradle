@@ -34,6 +34,8 @@ dependencies {
     compile files('libs/androidplot-core-0.6.0.jar')
 
     compile 'com.diogobernardino:williamchart:2.2'
+    // for the "help"
+    compile 'com.github.amlcurran.showcaseview:library:5.4.0'
 
     compile 'com.github.PhilJay:MPAndroidChart:v2.2.0'
 

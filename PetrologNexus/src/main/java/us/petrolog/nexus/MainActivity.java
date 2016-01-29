@@ -14,13 +14,13 @@ import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
 import android.content.IntentSender;
-import android.content.pm.PackageManager;
 import android.graphics.PorterDuff;
 import android.location.Location;
 import android.location.LocationManager;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
+import android.os.Build;
 import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
@@ -29,12 +29,15 @@ import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
+import android.view.ViewGroup;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
-import android.widget.LinearLayout;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.Toast;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
@@ -53,7 +56,9 @@ import us.petrolog.nexus.database.PetrologMarkerDataSource;
 
 public class MainActivity extends Activity implements
         ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener, LocationListener {
+        GoogleApiClient.OnConnectionFailedListener,
+        LocationListener,
+        View.OnClickListener {
 
     public static final String TAG = MainActivity.class.getSimpleName();
     public static final int REQUEST_ENABLE_BT = 1;
@@ -88,6 +93,10 @@ public class MainActivity extends Activity implements
     private Handler mUpdateUIHandler;
     private Handler mStaticDynaUpdateHandler;
     private Handler mCleanUIHandler;
+
+    private ShowcaseView mShowcaseView;
+    private int mShowCaseCounter = 0;
+
     // Create a BroadcastReceiver for ACTION_FOUND
     private final BroadcastReceiver mReceiver = new BroadcastReceiver() {
         public void onReceive(Context context, Intent intent) {
@@ -444,23 +453,25 @@ public class MainActivity extends Activity implements
 
             case R.id.help:
 
-                LinearLayout help = (LinearLayout) findViewById(R.id.Help);
+                showShowcaseHelp();
 
-                if (help.getVisibility() == View.VISIBLE) {
-                    help.setVisibility(View.INVISIBLE);
-                } else {
-                    help.setVisibility(View.VISIBLE);
-                    try {
-                        String version = this.getApplicationContext().getPackageManager()
-                                .getPackageInfo(this.getApplicationContext().getPackageName(), 0)
-                                .versionName;
-                        Toast.makeText(MainActivity.this, "PetrologNexus version: " + version,
-                                Toast.LENGTH_SHORT).show();
-                    } catch (PackageManager.NameNotFoundException e) {
-                        e.printStackTrace();
-                    }
-                }
-
+//                LinearLayout help = (LinearLayout) findViewById(R.id.Help);
+//
+//                if (help.getVisibility() == View.VISIBLE) {
+//                    help.setVisibility(View.INVISIBLE);
+//                } else {
+//                    help.setVisibility(View.VISIBLE);
+//                    try {
+//                        String version = this.getApplicationContext().getPackageManager()
+//                                .getPackageInfo(this.getApplicationContext().getPackageName(), 0)
+//                                .versionName;
+//                        Toast.makeText(MainActivity.this, "PetrologNexus version: " + version,
+//                                Toast.LENGTH_SHORT).show();
+//                    } catch (PackageManager.NameNotFoundException e) {
+//                        e.printStackTrace();
+//                    }
+//                }
+//
 
                 break;
 
@@ -477,6 +488,71 @@ public class MainActivity extends Activity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void showShowcaseHelp() {
+        mShowcaseView = new ShowcaseView.Builder(this)
+                .setTarget(new ViewTarget(findViewById(R.id.cardDyna)))
+                .setContentText(getResources().getString(R.string.dyna_h_s))
+                .setStyle(R.style.CustomShowcaseTheme4)
+                .setOnClickListener(this)
+                .build();
+        mShowcaseView.setButtonText(getString(R.string.next));
+        mShowcaseView.setHideOnTouchOutside(true);
+    }
+
+    private void setAlpha(float alpha, View... views) {
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.HONEYCOMB) {
+            for (View view : views) {
+                view.setAlpha(alpha);
+            }
+        }
+    }
+
+    @Override
+    public void onClick(View v) {
+
+        // this is to put the button on the left
+        RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        switch (mShowCaseCounter) {
+            case 0:
+                mShowcaseView.setShowcase(new ViewTarget(findViewById(R.id.cardWell)), true);
+                mShowcaseView.setContentText(getResources().getString(R.string.current_h_s));
+                break;
+
+            case 1:
+                mShowcaseView.setShowcase(new ViewTarget(findViewById(R.id.cardRunTime)), true);
+                mShowcaseView.setContentText(getResources().getString(R.string.runtime_h_s));
+                break;
+
+            case 2:
+                mShowcaseView.setShowcase(new ViewTarget(findViewById(R.id.cardHistory)), true);
+                mShowcaseView.setContentText(getResources().getString(R.string.runtime_trend_h_s));
+                break;
+
+            case 3:
+                mShowcaseView.setShowcase(new ViewTarget(findViewById(R.id.cardStrokes)), true);
+                mShowcaseView.setContentText(getResources().getString(R.string.settings_h_s));
+                mShowcaseView.setButtonPosition(lps);
+                break;
+            case 4:
+                mShowcaseView.setShowcase(new ViewTarget(findViewById(R.id.cardFillage)), true);
+                mShowcaseView.setContentText(getResources().getString(R.string.fillage_h_s));
+                mShowcaseView.setButtonPosition(lps);
+                break;
+
+            case 5:
+                mShowcaseView.hide();
+//                setAlpha(1.0f, textView1, textView2, textView3);
+                mShowCaseCounter = -1;
+                break;
+        }
+        mShowCaseCounter++;
     }
 
     private void initiateBluetoothConnection() {
@@ -597,7 +673,7 @@ public class MainActivity extends Activity implements
 
     }
 
-    private void startDynaLoadingBarAnimation(){
+    private void startDynaLoadingBarAnimation() {
         ProgressBar mProgressBar = (ProgressBar) findViewById(R.id.progressBarDyna);
         mProgressBar.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.mainBlue), PorterDuff.Mode.SRC_IN);
 
@@ -637,7 +713,7 @@ public class MainActivity extends Activity implements
 
             /* Help */
             Help.setDisconnected();
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -664,7 +740,7 @@ public class MainActivity extends Activity implements
             /* Help */
             Help.setDisconnected();
 
-        } catch (Exception e){
+        } catch (Exception e) {
             e.printStackTrace();
         }
 
@@ -724,6 +800,7 @@ public class MainActivity extends Activity implements
             }
         });
     }
+
 
     public class AsyncBluetoothConnect extends AsyncTask<BluetoothDevice, Void, Boolean> {
         BluetoothDevice Device;
