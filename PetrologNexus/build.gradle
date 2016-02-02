@@ -7,7 +7,7 @@ android {
     defaultConfig {
         applicationId "us.petrolog.nexus"
         minSdkVersion 16
-        targetSdkVersion 17
+        targetSdkVersion 22
     }
 
     buildTypes {

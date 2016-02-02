@@ -2,7 +2,6 @@ package us.petrolog.nexus;
 
 import android.animation.ObjectAnimator;
 import android.app.ActionBar;
-import android.app.Activity;
 import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
@@ -25,11 +24,15 @@ import android.os.Bundle;
 import android.os.Handler;
 import android.os.Parcelable;
 import android.provider.Settings;
+import android.support.v7.app.AppCompatActivity;
+import android.support.v7.widget.Toolbar;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.view.Window;
+import android.view.WindowManager;
 import android.view.animation.LinearInterpolator;
 import android.widget.FrameLayout;
 import android.widget.ProgressBar;
@@ -54,7 +57,7 @@ import java.util.UUID;
 import us.petrolog.nexus.database.PetrologMarkerDataSource;
 
 
-public class MainActivity extends Activity implements
+public class MainActivity extends AppCompatActivity implements
         ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
@@ -152,12 +155,18 @@ public class MainActivity extends Activity implements
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
-        super.onCreate(savedInstanceState);
 
+        requestWindowFeature(Window.FEATURE_NO_TITLE);
+
+        super.onCreate(savedInstanceState);
         /* Progress spinner on menu */
 //        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-
         setContentView(R.layout.activity_main);
+
+        getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
+
+        Toolbar toolbar = (Toolbar) findViewById(R.id.toolbar);
+        setSupportActionBar(toolbar);
 
         Help = new help(this);
         /* NFC */
@@ -589,7 +598,7 @@ public class MainActivity extends Activity implements
         invalidateOptionsMenu();
 
         // Remove notification bar
-        getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
+//        getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
 
         // Register the BroadcastReceiver
         IntentFilter filter = new IntentFilter(BluetoothDevice.ACTION_FOUND);
@@ -863,8 +872,7 @@ public class MainActivity extends Activity implements
                 /* Post Petrolog last 30 days of history */
                 wellHistoricalRuntimePost.post();
                 /* Action bar title (Well Name) */
-                ActionBar bar = getActionBar();
-                bar.setTitle(getString(R.string.app_title) + " - " + wellName);
+                getSupportActionBar().setTitle(getString(R.string.app_title) + " - " + wellName);
                 /* Run Serial Heart Beat only if BT connection established */
                 Connected = true;
                 Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
