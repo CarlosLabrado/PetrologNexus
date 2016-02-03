@@ -1,8 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <manifest xmlns:android="http://schemas.android.com/apk/res/android"
-          package="us.petrolog.nexus"
-          android:versionCode="12"
-          android:versionName="12">
+          package="us.petrolog.nexus">
 
     <uses-feature
         android:glEsVersion="0x00020000"
