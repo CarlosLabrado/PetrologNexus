@@ -4,16 +4,23 @@ import java.util.List;
 
 import retrofit2.Call;
 import retrofit2.http.GET;
-import retrofit2.http.Headers;
+import retrofit2.http.Path;
 import us.petrolog.nexus.rest.model.Device;
+import us.petrolog.nexus.rest.model.DeviceDetail;
+import us.petrolog.nexus.rest.model.DeviceGraph;
 
 /**
- * Created by carlos on 2/26/16.
+ * This interface holds the usable API methods
  */
 public interface ApiService {
 
-    @Headers({"Authorization: Basic aXNhYWMub2plZGFAaW50ZWxlY3RpeC5jb206MTIzNDU2,ApiKey=Q2VzYXJBbmRyb2lkQXBw",
-            "Content-Type: application/json"})
     @GET("/api/v2/devices")
-    public Call<List<Device>> getDevices();
+    Call<List<Device>> getDevices();
+
+    @GET("/api/v2/devices/{deviceId}")
+    Call<DeviceDetail> getDeviceDetail(@Path("deviceId") Integer deviceId);
+
+    @GET("/api/v2/graph/{deviceId}")
+    Call<DeviceGraph> getDeviceGraph(@Path("deviceId") Integer deviceId);
+
 }

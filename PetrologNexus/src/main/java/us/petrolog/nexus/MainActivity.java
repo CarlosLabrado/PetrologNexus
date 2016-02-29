@@ -61,6 +61,7 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import us.petrolog.nexus.database.PetrologMarkerDataSource;
 import us.petrolog.nexus.rest.model.Device;
+import us.petrolog.nexus.rest.model.DeviceDetail;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -514,12 +515,16 @@ public class MainActivity extends AppCompatActivity implements
         call.enqueue(new Callback<List<Device>>() {
             @Override
             public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
-                for (int i = 0; i < response.body().size(); i++) {
-                    devices.add(response.body().get(i));
-                    response.body();
-                }
+                if (response.body() != null) {
+                    for (int i = 0; i < response.body().size(); i++) {
+                        devices.add(response.body().get(i));
+                        response.body();
+                    }
 
-                Log.e(TAG, "Callback successfully returned");
+                    getDeviceDetail(devices.get(0).getRemoteDeviceId());
+
+                    Log.e(TAG, "Callback successfully returned");
+                }
 
             }
 
@@ -528,6 +533,27 @@ public class MainActivity extends AppCompatActivity implements
                 Log.e(TAG, "Callback failed");
             }
         });
+    }
+
+    private void getDeviceDetail(Integer remoteDeviceId) {
+
+        Call<DeviceDetail> call = FirstApp.getRestClient().getApiService().getDeviceDetail(remoteDeviceId);
+        call.enqueue(new Callback<DeviceDetail>() {
+            @Override
+            public void onResponse(Call<DeviceDetail> call, Response<DeviceDetail> response) {
+                if (response.body() != null) {
+                    Log.e(TAG, "Callback successfully returned");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<DeviceDetail> call, Throwable t) {
+                Log.e(TAG, "Callback failed");
+
+            }
+        });
+
     }
 
     private void showShowcaseHelp() {
