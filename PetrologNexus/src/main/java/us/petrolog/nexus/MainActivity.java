@@ -50,11 +50,17 @@ import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Timer;
 import java.util.TimerTask;
 import java.util.UUID;
 
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
 import us.petrolog.nexus.database.PetrologMarkerDataSource;
+import us.petrolog.nexus.rest.model.Device;
 
 
 public class MainActivity extends AppCompatActivity implements
@@ -449,7 +455,8 @@ public class MainActivity extends AppCompatActivity implements
 
         switch (item.getItemId()) {
             case R.id.connect:
-                initiateBluetoothConnection();
+//                initiateBluetoothConnection();
+                goToTheBackend();
                 break;
 
             case R.id.disconnect:
@@ -497,6 +504,30 @@ public class MainActivity extends AppCompatActivity implements
         }
 
         return super.onOptionsItemSelected(item);
+    }
+
+    private void goToTheBackend() {
+
+        final List<Device> devices = new ArrayList<>();
+
+        Call<List<Device>> call = FirstApp.getRestClient().getApiService().getDevices();
+        call.enqueue(new Callback<List<Device>>() {
+            @Override
+            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
+                for (int i = 0; i < response.body().size(); i++) {
+                    devices.add(response.body().get(i));
+                    response.body();
+                }
+
+                Log.e(TAG, "Callback successfully returned");
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Device>> call, Throwable t) {
+                Log.e(TAG, "Callback failed");
+            }
+        });
     }
 
     private void showShowcaseHelp() {
