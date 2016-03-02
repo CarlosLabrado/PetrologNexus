@@ -11,4 +11,9 @@ public class Constants {
     public static final String AUTH_HEADER = "Authorization: Basic aXNhYWMub2plZGFAaW50ZWxlY3RpeC5jb206MTIzNDU2";
     public static final String TYPE_HEADER = "Content-Type: application/json";
 
+    public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
+
+    public static final String ARG_DEVICE_ID = "arg_device_id";
+
+
 }

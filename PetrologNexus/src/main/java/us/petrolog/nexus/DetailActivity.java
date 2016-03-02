@@ -2,20 +2,15 @@ package us.petrolog.nexus;
 
 import android.animation.ObjectAnimator;
 import android.app.ActionBar;
-import android.app.AlertDialog;
 import android.app.PendingIntent;
 import android.bluetooth.BluetoothAdapter;
 import android.bluetooth.BluetoothDevice;
 import android.bluetooth.BluetoothSocket;
 import android.content.BroadcastReceiver;
 import android.content.Context;
-import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentFilter;
-import android.content.IntentSender;
 import android.graphics.PorterDuff;
-import android.location.Location;
-import android.location.LocationManager;
 import android.nfc.NdefMessage;
 import android.nfc.NfcAdapter;
 import android.os.AsyncTask;
@@ -41,12 +36,6 @@ import android.widget.Toast;
 
 import com.github.amlcurran.showcaseview.ShowcaseView;
 import com.github.amlcurran.showcaseview.targets.ViewTarget;
-import com.google.android.gms.common.ConnectionResult;
-import com.google.android.gms.common.api.GoogleApiClient;
-import com.google.android.gms.common.api.GoogleApiClient.ConnectionCallbacks;
-import com.google.android.gms.location.LocationListener;
-import com.google.android.gms.location.LocationRequest;
-import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
 import java.io.IOException;
@@ -58,15 +47,11 @@ import us.petrolog.nexus.database.PetrologMarkerDataSource;
 
 
 public class DetailActivity extends AppCompatActivity implements
-        ConnectionCallbacks,
-        GoogleApiClient.OnConnectionFailedListener,
-        LocationListener,
         View.OnClickListener {
 
     public static final String TAG = DetailActivity.class.getSimpleName();
     public static final int REQUEST_ENABLE_BT = 1;
     public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
     public static G4Petrolog PetrologSerialCom;
     public static wellDynagraph_post wellDynagraphPost;
     public static help Help;
@@ -86,8 +71,6 @@ public class DetailActivity extends AppCompatActivity implements
     private BluetoothSocket mBluetoothSocket;
     private String wellName;
     private LatLng mLatLng;
-    private GoogleApiClient mGoogleApiClient;
-    private LocationRequest mLocationRequest;
     private Boolean petrologFound;
     private NfcAdapter mNfcAdapter;
     private IntentFilter[] mNdefExchangeFilters;
@@ -177,22 +160,6 @@ public class DetailActivity extends AppCompatActivity implements
 
         IntentFilter discovery = new IntentFilter(NfcAdapter.ACTION_TAG_DISCOVERED);
         mNdefExchangeFilters = new IntentFilter[]{discovery};
-
-        checkForLocationServicesEnabled();
-
-
-        mGoogleApiClient = new GoogleApiClient.Builder(this)
-                .addConnectionCallbacks(this)
-                .addOnConnectionFailedListener(this)
-                .addApi(LocationServices.API)
-                .build();
-
-        // Create the LocationRequest object
-        mLocationRequest = LocationRequest.create()
-                .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
-                .setInterval(10 * 1000)        // 10 seconds, in milliseconds
-                .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-
 
     }
 
@@ -294,121 +261,6 @@ public class DetailActivity extends AppCompatActivity implements
             Toast.makeText(this, "Sorry this NFC tag is not a Petrolog tag", Toast.LENGTH_SHORT).show();
         }
     }
-
-    /********************************
-     * GPS BEGINS
-     *********************************/
-
-
-    /**
-     * checks for the GPS to be enabled
-     */
-    private void checkForLocationServicesEnabled() {
-        LocationManager lm = (LocationManager) getSystemService(Context.LOCATION_SERVICE);
-        boolean gps_enabled = false;
-        boolean network_enabled = false;
-
-        try {
-            gps_enabled = lm.isProviderEnabled(LocationManager.GPS_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        try {
-            network_enabled = lm.isProviderEnabled(LocationManager.NETWORK_PROVIDER);
-        } catch (Exception ex) {
-        }
-
-        if (!gps_enabled && !network_enabled) {
-            // notify user
-            AlertDialog.Builder dialog = new AlertDialog.Builder(this);
-            dialog.setTitle(getResources().getString(R.string.gps_network_not_enabled));
-            dialog.setMessage(getResources().getString(R.string.gps_network_not_enabled_message));
-            dialog.setPositiveButton(getResources().getString(R.string.open_location_settings), new DialogInterface.OnClickListener() {
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-                    Intent myIntent = new Intent(Settings.ACTION_LOCATION_SOURCE_SETTINGS);
-                    startActivity(myIntent);
-                    //get gps
-                }
-            });
-            dialog.setNegativeButton(getString(R.string.dialog_cancel), new DialogInterface.OnClickListener() {
-
-                @Override
-                public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                    // TODO Auto-generated method stub
-
-                }
-            });
-            dialog.show();
-        }
-    }
-
-    @Override
-    public void onConnected(Bundle bundle) {
-        Log.d(TAG, "Location services connected.");
-        Location location = LocationServices.FusedLocationApi.getLastLocation(mGoogleApiClient);
-        if (location == null) {
-            Log.d(TAG, "onConnected requesting Loc");
-            LocationServices.FusedLocationApi.requestLocationUpdates(mGoogleApiClient, mLocationRequest, this);
-        } else {
-            Log.d(TAG, "onConnected has last location");
-            handleNewLocation(location);
-        }
-    }
-
-    @Override
-    public void onConnectionSuspended(int i) {
-        Log.d(TAG, "Location services suspended. Please reconnect.");
-    }
-
-    @Override
-    public void onLocationChanged(Location location) {
-        Log.d(TAG, "onLocationChanged location changed");
-        handleNewLocation(location);
-    }
-
-
-    /*
-     * Called by Location Services if the attempt to
-     * Location Services fails.
-     */
-    @Override
-    public void onConnectionFailed(ConnectionResult connectionResult) {
-        if (connectionResult.hasResolution()) {
-            try {
-                // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
-            } catch (IntentSender.SendIntentException e) {
-                e.printStackTrace();
-            }
-        } else {
-            Log.d(TAG, "Location services connection failed with code " + connectionResult.getErrorCode());
-        }
-    }
-
-    /**
-     * gets the location and then asks Map fragment to update it
-     *
-     * @param location current loc
-     */
-    private void handleNewLocation(Location location) {
-        Log.d(TAG, location.toString());
-
-        double currentLatitude = location.getLatitude();
-        double currentLongitude = location.getLongitude();
-        mLatLng = new LatLng(currentLatitude, currentLongitude);
-
-        Log.e(TAG, "ACCURACY " + String.valueOf(location.getAccuracy()));
-
-//        getLocationsFromBackend(mLatLng);
-
-    }
-
-    /********************************
-     * GPS ENDS
-     ********************************/
-
 
     protected void onDestroy() {
         super.onDestroy();

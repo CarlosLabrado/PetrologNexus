@@ -4,7 +4,6 @@ package us.petrolog.nexus.ui;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
-import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -25,14 +24,10 @@ import com.squareup.otto.Subscribe;
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
-import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
 import us.petrolog.nexus.events.SendDeviceListEvent;
+import us.petrolog.nexus.events.StartDetailFragmentEvent;
 import us.petrolog.nexus.rest.model.Device;
-import us.petrolog.nexus.rest.model.DeviceDetail;
 
 /**
  * A simple {@link Fragment} subclass.
@@ -123,6 +118,7 @@ public class MapPetrologFragment extends Fragment {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Device device = mEventMarkerMap.get(marker.getId());
+                MainActivity.mBus.post(new StartDetailFragmentEvent(device.getRemoteDeviceId()));
                 //goLockyMarker = eventMarkerMap.get(marker.getId());
                 //inflateMarkerClickedDialog(goLockyMarker);
             }
@@ -188,26 +184,6 @@ public class MapPetrologFragment extends Fragment {
         }
     }
 
-    private void getDeviceDetail(Integer remoteDeviceId) {
-
-        Call<DeviceDetail> call = FirstApp.getRestClient().getApiService().getDeviceDetail(remoteDeviceId);
-        call.enqueue(new Callback<DeviceDetail>() {
-            @Override
-            public void onResponse(Call<DeviceDetail> call, Response<DeviceDetail> response) {
-                if (response.body() != null) {
-                    Log.d(TAG, "Callback successfully returned");
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<DeviceDetail> call, Throwable t) {
-                Log.e(TAG, "Callback failed");
-
-            }
-        });
-
-    }
 
     @Override
     public void onResume() {

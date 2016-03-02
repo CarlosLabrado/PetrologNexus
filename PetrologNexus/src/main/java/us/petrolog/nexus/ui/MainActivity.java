@@ -7,6 +7,7 @@ import android.content.Intent;
 import android.content.IntentSender;
 import android.location.Location;
 import android.location.LocationManager;
+import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
 import android.provider.Settings;
@@ -22,7 +23,6 @@ import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
-import android.widget.FrameLayout;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -30,6 +30,8 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.squareup.otto.Bus;
+import com.squareup.otto.Subscribe;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -40,14 +42,17 @@ import butterknife.ButterKnife;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import us.petrolog.nexus.Constants;
 import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
 import us.petrolog.nexus.events.SendDeviceListEvent;
+import us.petrolog.nexus.events.StartDetailFragmentEvent;
 import us.petrolog.nexus.misc.Utility;
 import us.petrolog.nexus.rest.model.Device;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
+        DetailFragment.OnFragmentInteractionListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
@@ -55,8 +60,6 @@ public class MainActivity extends AppCompatActivity
     private static final String TAG = MainActivity.class.getSimpleName();
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
-    @Bind(R.id.container)
-    FrameLayout mContainer;
     @Bind(R.id.nav_view)
     NavigationView mNavView;
     @Bind(R.id.drawer_layout)
@@ -64,10 +67,10 @@ public class MainActivity extends AppCompatActivity
 
     private GoogleApiClient mGoogleApiClient;
     private LocationRequest mLocationRequest;
-    private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     private LatLng mLatLng;
 
+    public static Bus mBus;
 
     private Stack<Integer> mDrawerStack;
 
@@ -84,6 +87,9 @@ public class MainActivity extends AppCompatActivity
         super.onCreate(savedInstanceState);
         setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
+
+        mBus = new Bus();
+        mBus.register(this);
 
         /**toolBar **/
         setUpToolBar();
@@ -296,7 +302,7 @@ public class MainActivity extends AppCompatActivity
         if (connectionResult.hasResolution()) {
             try {
                 // Start an Activity that tries to resolve the error
-                connectionResult.startResolutionForResult(this, CONNECTION_FAILURE_RESOLUTION_REQUEST);
+                connectionResult.startResolutionForResult(this, Constants.CONNECTION_FAILURE_RESOLUTION_REQUEST);
             } catch (IntentSender.SendIntentException e) {
                 e.printStackTrace();
             }
@@ -472,6 +478,24 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Subscribe
+    public void startDetailFragment(StartDetailFragmentEvent event) {
+        if (event != null) {
+            mDrawerStack.push(0);
+            new DetailFragment();
+            Fragment fragment = DetailFragment.newInstance(event.getDeviceId());
+            FragmentManager fragmentManager = getSupportFragmentManager();
+            fragmentManager.beginTransaction()
+                    .addToBackStack(null)
+                    .replace(R.id.container, fragment).commit();
+        }
+
+    }
+
+
+    /**
+     * goes to the backend to get all the devices that this user can see
+     */
     private void goToTheBackend() {
 
         final List<Device> devices = new ArrayList<>();
@@ -501,4 +525,8 @@ public class MainActivity extends AppCompatActivity
     }
 
 
+    @Override
+    public void onFragmentInteraction(Uri uri) {
+
+    }
 }

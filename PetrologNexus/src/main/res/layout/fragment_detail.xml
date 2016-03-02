@@ -1,0 +1,759 @@
+<?xml version="1.0" encoding="utf-8"?>
+<FrameLayout android:id="@+id/Main"
+             xmlns:android="http://schemas.android.com/apk/res/android"
+             xmlns:app="http://schemas.android.com/apk/res-auto"
+             xmlns:tools="http://schemas.android.com/tools"
+             android:layout_width="fill_parent"
+             android:layout_height="fill_parent"
+             android:background="#e6e6e6"
+             tools:context=".DetailActivity">
+
+    <android.support.v7.widget.GridLayout
+
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        >
+
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardWell"
+            android:layout_width="wrap_content"
+
+            android:layout_height="wrap_content"
+
+            android:layout_margin="4dp"
+            android:background="@color/red_400"
+            app:layout_column="0"
+            app:layout_columnSpan="2"
+            app:layout_columnWeight=".25"
+            app:layout_row="0"
+            app:layout_rowSpan="2"
+            app:layout_rowWeight=".1">
+
+            <android.support.v7.widget.GridLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                app:columnCount="3"
+                app:rowCount="3"
+                app:rowOrderPreserved="false"
+                >
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/well_status"
+                    android:textSize="@dimen/abc_text_size_caption_material"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="0"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextSwitcher
+                    android:id="@+id/text_sw_well_status"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="0"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:text="@string/n_a"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+                </TextSwitcher>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/pump_off"
+                    android:textSize="@dimen/abc_text_size_caption_material"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextSwitcher
+                    android:id="@+id/text_sw_pump_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center_vertical|left"
+                    android:gravity="center_vertical"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical|left"
+                        android:text="@string/n_a"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical|left"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+                </TextSwitcher>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="4dp"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/strokes_last"
+                    android:textSize="@dimen/abc_text_size_caption_material"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextSwitcher
+                    android:id="@+id/text_sw_last_cycle"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:foregroundGravity="center_vertical|left"
+                    android:gravity="center_vertical"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1">
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical|left"
+                        android:text="@string/n_a"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+
+                    <TextView
+                        android:layout_width="match_parent"
+                        android:layout_height="match_parent"
+                        android:gravity="center_vertical|left"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+                </TextSwitcher>
+            </android.support.v7.widget.GridLayout>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardRunTime"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="4dp"
+            android:background="@color/blue_500"
+            app:layout_column="2"
+            app:layout_columnSpan="2"
+            app:layout_columnWeight=".25"
+            app:layout_row="0"
+            app:layout_rowSpan="2"
+            >
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/title_runtime"
+                android:textSize="@dimen/abc_text_size_caption_material"
+                android:layout_gravity="center_horizontal"
+                />
+
+            <android.support.v7.widget.GridLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:layout_margin="2dp">
+
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="2"
+                    app:layout_rowWeight="1"
+                    >
+
+                    <ProgressBar
+                        android:id="@+id/runtime_today"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"/>
+
+
+                    <TextView
+                        android:id="@+id/today_runtime_percentTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_vertical"
+                        android:text="@string/desc_N_A"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+                </FrameLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/desc_today_runtime"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="center"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+
+                <TextView
+                    android:id="@+id/today_runtime_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:gravity="right"
+                    android:text="@string/desc_N_A"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/abc_text_size_caption_material"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <FrameLayout
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="3"
+                    app:layout_rowSpan="2"
+                    app:layout_rowWeight="1">
+
+                    <ProgressBar
+                        android:id="@+id/runtime_yesterday"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        />
+
+                    <TextView
+                        android:id="@+id/yesterday_runtime_percentTV"
+                        android:layout_width="wrap_content"
+                        android:layout_height="wrap_content"
+                        android:layout_gravity="center"
+                        android:gravity="center|center_vertical"
+                        android:text="@string/desc_N_A"
+                        android:textAppearance="?android:attr/textAppearanceSmall"
+                        android:textSize="@dimen/abc_text_size_caption_material"/>
+                </FrameLayout>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/desc_yesterday_runtime"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_gravity="center"
+                    app:layout_row="3"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/yesterday_runtime_time"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginRight="8dp"
+                    android:gravity="right"
+                    android:text="@string/desc_N_A"
+                    android:textAppearance="?android:attr/textAppearanceMedium"
+                    android:textSize="@dimen/abc_text_size_caption_material"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="4"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+            </android.support.v7.widget.GridLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardHistory"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_margin="4dp"
+            app:layout_column="0"
+            app:layout_columnSpan="4"
+            app:layout_columnWeight=".5"
+            app:layout_row="2"
+            app:layout_rowSpan="4"
+            app:layout_rowWeight=".6"
+            >
+
+            <LinearLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent"
+                android:gravity="center_horizontal"
+                android:orientation="horizontal">
+
+                <TextView
+                    android:id="@+id/state_one"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="5dp"
+                    android:drawableLeft="@drawable/tip_before_today"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/tip_before_today"
+                    android:text="@string/current_month"
+                    android:textColor="#ff2b2b2b"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/state_two"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:drawableLeft="@drawable/tip_today"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/tip_today"
+                    android:text="@string/today"
+                    android:textColor="#ff2b2b2b"
+                    android:textSize="12sp"/>
+
+                <TextView
+                    android:id="@+id/state_three"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginLeft="8dp"
+                    android:drawableLeft="@drawable/tip_after_today"
+                    android:drawablePadding="4dp"
+                    android:drawableStart="@drawable/tip_after_today"
+                    android:text="@string/last_month"
+                    android:textColor="#ff2b2b2b"
+                    android:textSize="12sp"/>
+            </LinearLayout>
+
+
+            <com.db.chart.view.LineChartView
+                android:id="@+id/linechartHistory"
+                xmlns:chart="http://schemas.android.com/apk/res-auto"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="visible"
+                chart:chart_fontSize="5dp"/>
+
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+            android:id="@+id/cardDyna"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="4dp"
+
+            android:background="@color/pink_400"
+            app:layout_column="4"
+            app:layout_columnSpan="4"
+            app:layout_columnWeight=".5"
+            app:layout_row="0"
+            app:layout_rowSpan="4"
+            app:layout_rowWeight=".6">
+
+            <com.github.mikephil.charting.charts.LineChart
+                android:id="@+id/linechartGraph"
+                android:layout_width="match_parent"
+                android:layout_height="match_parent"
+                android:layout_centerHorizontal="true"
+                android:layout_centerVertical="true"
+                android:visibility="visible"/>
+
+            <ProgressBar
+                android:id="@+id/progressBarDyna"
+                style="?android:attr/progressBarStyleHorizontal"
+                android:layout_width="100dp"
+                android:layout_height="wrap_content"
+                android:layout_gravity="bottom|right"
+                android:indeterminate="false"
+                android:max="100"
+                android:paddingRight="20dp"
+                android:progressBackgroundTint="@color/mainGray"
+                android:progressBackgroundTintMode="src_in"
+                android:progressTint="@color/mainBlue"/>
+
+        </android.support.v7.widget.CardView>
+
+
+        <android.support.v7.widget.CardView
+
+            android:id="@+id/cardStrokes"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="4dp"
+
+            android:background="@color/green_600"
+            android:padding="@dimen/padding_frames"
+            app:layout_column="4"
+            app:layout_columnSpan="2"
+            app:layout_columnWeight=".25"
+            app:layout_row="4"
+            app:layout_rowSpan="2"
+            app:layout_rowWeight=".1">
+
+            <android.support.v7.widget.GridLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="5dp"
+                    android:text="@string/pump_up_setting"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="0"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/strokes_pump_up"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="0"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="5dp"
+                    android:text="@string/pump_off_setting"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/strokes_pump_off"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="5dp"
+                    android:text="@string/timeout_setting"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/strokes_current_time_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical|right"
+                    android:paddingRight="5dp"
+                    android:text="@string/auto_timeout_setting"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="3"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextView
+                    android:id="@+id/strokes_automatic_time_out"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_weight="100"
+                    android:gravity="center_vertical"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="3"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+            </android.support.v7.widget.GridLayout>
+        </android.support.v7.widget.CardView>
+
+        <android.support.v7.widget.CardView
+
+            android:id="@+id/cardFillage"
+
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+
+            android:layout_margin="4dp"
+
+            android:background="@color/yellow_400"
+            android:padding="@dimen/padding_frames"
+            app:layout_column="6"
+            app:layout_columnSpan="2"
+            app:layout_columnWeight=".25"
+            app:layout_row="4"
+            app:layout_rowSpan="2"
+            app:layout_rowWeight=".1">
+
+            <android.support.v7.widget.GridLayout
+                android:layout_width="fill_parent"
+                android:layout_height="fill_parent">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/current_fillage"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="0"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextSwitcher
+                    android:id="@+id/fillage_current"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="0"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical|left"
+                        android:text="@string/n_a"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/textBottomRight"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical|left"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/textBottomRight"/>
+                </TextSwitcher>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/percent_fillage_setting"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"
+                    />
+
+                <TextView
+                    android:id="@+id/fillage_setting"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    android:textColor="#FFCCCCCC"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="1"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|right"
+                    android:text="@string/pump_off_distance"
+                    android:textAppearance="?android:attr/textAppearanceSmall"
+                    android:textSize="@dimen/textBottomRight"
+                    app:layout_column="0"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1"/>
+
+                <TextSwitcher
+                    android:id="@+id/fillage_pump_off_distance"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:gravity="center_vertical|left"
+                    android:paddingLeft="10dp"
+                    android:text="@string/n_a"
+                    app:layout_column="1"
+                    app:layout_columnSpan="1"
+                    app:layout_columnWeight="1"
+                    app:layout_row="2"
+                    app:layout_rowSpan="1"
+                    app:layout_rowWeight="1">
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical|left"
+                        android:text="@string/n_a"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/textBottomRight"/>
+
+                    <TextView
+                        android:layout_width="fill_parent"
+                        android:layout_height="fill_parent"
+                        android:gravity="center_vertical|left"
+                        android:textColor="#FFCCCCCC"
+                        android:textSize="@dimen/textBottomRight"/>
+                </TextSwitcher>
+
+            </android.support.v7.widget.GridLayout>
+
+        </android.support.v7.widget.CardView>
+
+    </android.support.v7.widget.GridLayout>
+
+    <FrameLayout
+        android:id="@+id/wait"
+        android:layout_width="fill_parent"
+        android:layout_height="fill_parent"
+        android:alpha=".7"
+        android:background="@android:color/darker_gray"
+        android:focusable="false"
+        android:focusableInTouchMode="false"
+        android:visibility="invisible"
+        tools:visibility="gone"
+        >
+
+        <ProgressBar
+            android:id="@+id/progressBar"
+            style="?android:attr/progressBarStyleLarge"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:background="@android:color/transparent"/>
+
+    </FrameLayout>
+</FrameLayout>
