@@ -46,13 +46,13 @@ import us.petrolog.nexus.events.SendDeviceListEvent;
 import us.petrolog.nexus.misc.Utility;
 import us.petrolog.nexus.rest.model.Device;
 
-public class MainActivityDrawer extends AppCompatActivity
+public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
         GoogleApiClient.ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener {
 
-    private static final String TAG = MainActivityDrawer.class.getSimpleName();
+    private static final String TAG = MainActivity.class.getSimpleName();
     @Bind(R.id.toolbar)
     Toolbar mToolbar;
     @Bind(R.id.container)
@@ -82,7 +82,7 @@ public class MainActivityDrawer extends AppCompatActivity
     @Override
     protected void onCreate(Bundle savedInstanceState) {
         super.onCreate(savedInstanceState);
-        setContentView(R.layout.activity_main_with_container);
+        setContentView(R.layout.activity_main);
         ButterKnife.bind(this);
 
         /**toolBar **/

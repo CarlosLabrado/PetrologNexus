@@ -44,7 +44,7 @@
             <!--</intent-filter>-->
         </activity>
         <activity
-            android:name=".ui.MainActivityDrawer"
+            android:name=".ui.MainActivity"
             android:label="@string/app_name"
             android:screenOrientation="landscape"
             android:theme="@style/AppTheme">
