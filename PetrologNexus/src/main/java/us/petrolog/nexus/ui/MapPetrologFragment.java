@@ -4,6 +4,7 @@ package us.petrolog.nexus.ui;
 import android.app.AlertDialog;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.View;
@@ -13,24 +14,39 @@ import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
 import com.google.android.gms.maps.SupportMapFragment;
+import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
+import com.google.android.gms.maps.model.LatLngBounds;
 import com.google.android.gms.maps.model.Marker;
+import com.google.android.gms.maps.model.MarkerOptions;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
+import java.util.HashMap;
+
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
+import us.petrolog.nexus.events.SendDeviceListEvent;
+import us.petrolog.nexus.rest.model.Device;
+import us.petrolog.nexus.rest.model.DeviceDetail;
 
 /**
  * A simple {@link Fragment} subclass.
  */
 public class MapPetrologFragment extends Fragment {
 
+    private static final String TAG = MapPetrologFragment.class.getSimpleName();
     private static View mView;
     private LatLng mLatLng;
     private GoogleMap mMap; // Might be null if Google Play services APK is not available.
     private AlertDialog mMarkerDialog = null;
-    private LatLng mLatLong;
+
+    private HashMap<String, Device> mEventMarkerMap;
+
 
     public static Bus mBus;
 
@@ -106,6 +122,7 @@ public class MapPetrologFragment extends Fragment {
         mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
             @Override
             public void onInfoWindowClick(Marker marker) {
+                Device device = mEventMarkerMap.get(marker.getId());
                 //goLockyMarker = eventMarkerMap.get(marker.getId());
                 //inflateMarkerClickedDialog(goLockyMarker);
             }
@@ -123,9 +140,73 @@ public class MapPetrologFragment extends Fragment {
 
     @Subscribe
     public void handleLocation(LatLng latLng) {
-        mLatLong = latLng;
+        mLatLng = latLng;
         CameraUpdate cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(latLng, 17);
         mMap.animateCamera(cameraUpdateFactory);
+    }
+
+    @Subscribe
+    public void getDeviceList(SendDeviceListEvent event) {
+        //List<LatLng> latLngList = new ArrayList<>();
+        LatLngBounds.Builder builder = new LatLngBounds.Builder();
+        mEventMarkerMap = new HashMap<>();
+
+        if (event != null) {
+            for (Device device : event.getDevices()) {
+                int deviceStatus = device.getRemoteDeviceStatus();
+                float markerColor = 0;
+                switch (deviceStatus) {
+                    case 0: // No data
+                        markerColor = BitmapDescriptorFactory.HUE_CYAN;
+                        break;
+                    case 1: // active
+                        markerColor = BitmapDescriptorFactory.HUE_GREEN;
+                        break;
+                    case 2: // Inactive
+                        markerColor = BitmapDescriptorFactory.HUE_YELLOW;
+                        break;
+                    case 3: // Offline
+                        markerColor = BitmapDescriptorFactory.HUE_CYAN;
+                        break;
+                    case 4: // Alert
+                        markerColor = BitmapDescriptorFactory.HUE_RED;
+                        break;
+                }
+                LatLng latLng = new LatLng(device.getLatitude(), device.getLongitude());
+                builder.include(latLng);
+                Marker marker = mMap.addMarker(new MarkerOptions()
+                        .position(latLng)
+                        .title(device.getName())
+                        .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
+
+                mEventMarkerMap.put(marker.getId(), device);
+            }
+            // Animates the camera to show all the current markers
+            LatLngBounds bounds = builder.build();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+
+        }
+    }
+
+    private void getDeviceDetail(Integer remoteDeviceId) {
+
+        Call<DeviceDetail> call = FirstApp.getRestClient().getApiService().getDeviceDetail(remoteDeviceId);
+        call.enqueue(new Callback<DeviceDetail>() {
+            @Override
+            public void onResponse(Call<DeviceDetail> call, Response<DeviceDetail> response) {
+                if (response.body() != null) {
+                    Log.d(TAG, "Callback successfully returned");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<DeviceDetail> call, Throwable t) {
+                Log.e(TAG, "Callback failed");
+
+            }
+        });
+
     }
 
     @Override
@@ -134,8 +215,8 @@ public class MapPetrologFragment extends Fragment {
         setUpMapIfNeeded();
         if (mMap != null) {
             //populateTheMap(mLocations);
-            if (mLatLong != null && mLatLong.latitude != 0.0 && mLatLong.longitude != 0.0) {
-                CameraUpdate cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(mLatLong, 17);
+            if (mLatLng != null && mLatLng.latitude != 0.0 && mLatLng.longitude != 0.0) {
+                CameraUpdate cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(mLatLng, 17);
                 mMap.animateCamera(cameraUpdateFactory);
             }
         }

@@ -31,12 +31,20 @@ import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.Stack;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
+import retrofit2.Call;
+import retrofit2.Callback;
+import retrofit2.Response;
+import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
+import us.petrolog.nexus.events.SendDeviceListEvent;
 import us.petrolog.nexus.misc.Utility;
+import us.petrolog.nexus.rest.model.Device;
 
 public class MainActivityDrawer extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -124,6 +132,8 @@ public class MainActivityDrawer extends AppCompatActivity
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
 
+
+        goToTheBackend();
 
     }
 
@@ -460,4 +470,35 @@ public class MainActivityDrawer extends AppCompatActivity
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
     }
+
+
+    private void goToTheBackend() {
+
+        final List<Device> devices = new ArrayList<>();
+
+        Call<List<Device>> call = FirstApp.getRestClient().getApiService().getDevices();
+        call.enqueue(new Callback<List<Device>>() {
+            @Override
+            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
+                if (response.body() != null) {
+                    for (int i = 0; i < response.body().size(); i++) {
+                        devices.add(response.body().get(i));
+                        response.body();
+                    }
+                    MapPetrologFragment.mBus.post(new SendDeviceListEvent(devices, false));
+                    //getDeviceDetail(devices.get(0).getRemoteDeviceId());
+
+                    Log.d(TAG, "Callback successfully returned");
+                }
+
+            }
+
+            @Override
+            public void onFailure(Call<List<Device>> call, Throwable t) {
+                Log.e(TAG, "Callback failed");
+            }
+        });
+    }
+
+
 }
