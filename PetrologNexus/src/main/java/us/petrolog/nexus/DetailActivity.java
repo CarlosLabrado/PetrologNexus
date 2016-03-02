@@ -57,13 +57,13 @@ import java.util.UUID;
 import us.petrolog.nexus.database.PetrologMarkerDataSource;
 
 
-public class MainActivity extends AppCompatActivity implements
+public class DetailActivity extends AppCompatActivity implements
         ConnectionCallbacks,
         GoogleApiClient.OnConnectionFailedListener,
         LocationListener,
         View.OnClickListener {
 
-    public static final String TAG = MainActivity.class.getSimpleName();
+    public static final String TAG = DetailActivity.class.getSimpleName();
     public static final int REQUEST_ENABLE_BT = 1;
     public static final String UUID_BLUE_RADIOS = "00001101-0000-1000-8000-00805F9B34FB";
     private final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
@@ -108,7 +108,7 @@ public class MainActivity extends AppCompatActivity implements
 
             /* Bluetooth disconnect */
             if (BluetoothDevice.ACTION_ACL_DISCONNECTED.equals(action)) {
-                Toast.makeText(MainActivity.this, "Petrolog disconnected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailActivity.this, "Petrolog disconnected", Toast.LENGTH_SHORT).show();
                 disconnect();
             }
 
@@ -126,14 +126,14 @@ public class MainActivity extends AppCompatActivity implements
                 try {
                     if (device.getName().contains("Petrolog")) {
                         device.fetchUuidsWithSdp();
-                        Toast.makeText(MainActivity.this, "Petrolog found: Connecting", Toast.LENGTH_SHORT).show();
+                        Toast.makeText(DetailActivity.this, "Petrolog found: Connecting", Toast.LENGTH_SHORT).show();
                         petrologFound = true;
                         mBluetoothAdapter.cancelDiscovery();
                         new AsyncBluetoothConnect().execute(device);
                     }
                 } catch (NullPointerException e) {
                     e.printStackTrace();
-                    Toast.makeText(MainActivity.this, "Error, try again", Toast.LENGTH_SHORT)
+                    Toast.makeText(DetailActivity.this, "Error, try again", Toast.LENGTH_SHORT)
                             .show();
                 }
             }
@@ -145,7 +145,7 @@ public class MainActivity extends AppCompatActivity implements
                     /* Enable BT connect menu button */
                     MyMenu.getItem(4).setEnabled(true);
 
-                    Toast.makeText(MainActivity.this, "Discovery finished: Petrolog not found, try again", Toast.LENGTH_SHORT)
+                    Toast.makeText(DetailActivity.this, "Discovery finished: Petrolog not found, try again", Toast.LENGTH_SHORT)
                             .show();
                 }
                 setProgressBarIndeterminateVisibility(false);
@@ -161,7 +161,7 @@ public class MainActivity extends AppCompatActivity implements
         super.onCreate(savedInstanceState);
         /* Progress spinner on menu */
 //        requestWindowFeature(Window.FEATURE_INDETERMINATE_PROGRESS);
-        setContentView(R.layout.activity_main);
+        setContentView(R.layout.activity_detail);
 
         getWindow().addFlags(WindowManager.LayoutParams.FLAG_FULLSCREEN);
 
@@ -877,10 +877,10 @@ public class MainActivity extends AppCompatActivity implements
                 getSupportActionBar().setTitle(getString(R.string.app_title) + " - " + wellName);
                 /* Run Serial Heart Beat only if BT connection established */
                 Connected = true;
-                Toast.makeText(MainActivity.this, "Connected", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailActivity.this, "Connected", Toast.LENGTH_SHORT).show();
 
             } else {
-                Toast.makeText(MainActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
+                Toast.makeText(DetailActivity.this, "Connection Error", Toast.LENGTH_SHORT).show();
                 disconnect();
             }
 

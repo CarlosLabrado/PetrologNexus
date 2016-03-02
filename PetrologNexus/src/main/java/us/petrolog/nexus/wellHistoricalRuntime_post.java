@@ -37,11 +37,11 @@ public class wellHistoricalRuntime_post {
      * Alpha
      */
     private static int mCurrAlpha;
-    MainActivity myAct;
+    DetailActivity myAct;
     private LineChartView mChart;
     private Handler mHandler;
 
-    public wellHistoricalRuntime_post(MainActivity myActivity) {
+    public wellHistoricalRuntime_post(DetailActivity myActivity) {
 
         myAct = myActivity;
 
@@ -64,7 +64,7 @@ public class wellHistoricalRuntime_post {
         clean();
         int day = 1;
         try {
-            day = Integer.valueOf(MainActivity.PetrologSerialCom.getPetrologClock().substring(9, 11));
+            day = Integer.valueOf(DetailActivity.PetrologSerialCom.getPetrologClock().substring(9, 11));
 
 
             LineSet dataSetBeforeToday = new LineSet();
@@ -82,7 +82,7 @@ public class wellHistoricalRuntime_post {
              */
 
             for (int i = 1; i < 32; i++) {
-                int petrologHistoricalRuntimeReading = (MainActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400;
+                int petrologHistoricalRuntimeReading = (DetailActivity.PetrologSerialCom.getHistoricalRuntime(i) * 100) / 86400;
 
                 point = new Point(String.valueOf(i), petrologHistoricalRuntimeReading);
                 dummyPoint = new Point(String.valueOf(i), 0);

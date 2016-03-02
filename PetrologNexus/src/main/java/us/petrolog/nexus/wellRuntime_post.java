@@ -13,7 +13,7 @@ import android.widget.TextView;
  */
 public class wellRuntime_post {
 
-    MainActivity myAct;
+    DetailActivity myAct;
     TextView todayRuntime;
     TextView todayRuntimePercent;
     TextView yesterdayRuntime;
@@ -23,7 +23,7 @@ public class wellRuntime_post {
     ProgressBar YesterdayRuntimePB;
 
 
-    public wellRuntime_post(MainActivity myActivity) {
+    public wellRuntime_post(DetailActivity myActivity) {
 
         myAct = myActivity;
 
@@ -43,7 +43,7 @@ public class wellRuntime_post {
     public void post() {
 
         /* Yesterday's Runtime */
-        int secYesterday = MainActivity.PetrologSerialCom.getYesterdayRuntime();
+        int secYesterday = DetailActivity.PetrologSerialCom.getYesterdayRuntime();
         if (secYesterday > 0) {
             /* Time */
             String data = getDurationString(secYesterday);
@@ -60,13 +60,13 @@ public class wellRuntime_post {
 
 
         /* Today's Runtime */
-        int secToday = MainActivity.PetrologSerialCom.getTodayRuntime();
+        int secToday = DetailActivity.PetrologSerialCom.getTodayRuntime();
         if (secToday > 0) {
             /* Time */
             String data = getDurationString(secToday);
             todayRuntime.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             /* % */
-            String InternalClock = MainActivity.PetrologSerialCom.getPetrologClock();
+            String InternalClock = DetailActivity.PetrologSerialCom.getPetrologClock();
             int totalSecToday = 0;
             try {
                 totalSecToday = Integer.valueOf(InternalClock.substring(0, 2)) * 3600 +

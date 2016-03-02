@@ -9,7 +9,7 @@ import android.widget.TextView;
  */
 public class wellSettings_post {
 
-    MainActivity myAct;
+    DetailActivity myAct;
     TextView settings_t1TV;
     TextView settings_v1TV;
     TextView settings_t2TV;
@@ -19,7 +19,7 @@ public class wellSettings_post {
     TextView settings_t5TV;
     TextView settings_v5TV;
 
-    public wellSettings_post(MainActivity myActivity) {
+    public wellSettings_post(DetailActivity myActivity) {
 
         myAct = myActivity;
         settings_t1TV = (TextView) myAct.findViewById(R.id.settings_t1TV);
@@ -36,7 +36,7 @@ public class wellSettings_post {
     public void post() {
 
         /* Format Pump Up Setting */
-        int tempInt = MainActivity.PetrologSerialCom.getPumpUpSetting();
+        int tempInt = DetailActivity.PetrologSerialCom.getPumpUpSetting();
         String data = String.valueOf(tempInt);
         String title = myAct.getString(R.string.pump_up_setting);
         settings_t1TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
@@ -49,7 +49,7 @@ public class wellSettings_post {
         }
 
         /* Format Pump Off Strokes Setting*/
-        tempInt = MainActivity.PetrologSerialCom.getPumpOffStrokesSetting();
+        tempInt = DetailActivity.PetrologSerialCom.getPumpOffStrokesSetting();
         data = String.valueOf(tempInt);
         title = myAct.getString(R.string.pump_off_setting);
         settings_t2TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
@@ -62,7 +62,7 @@ public class wellSettings_post {
         }
 
         /* Format Current Timeout Setting*/
-        tempInt = MainActivity.PetrologSerialCom.getCurrentTimeoutSetting();
+        tempInt = DetailActivity.PetrologSerialCom.getCurrentTimeoutSetting();
         data = String.valueOf(tempInt) + " min";
         title = myAct.getString(R.string.timeout_setting);
         settings_t4TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
@@ -75,7 +75,7 @@ public class wellSettings_post {
         }
 
         /* Format % Fillage Setting*/
-        data = MainActivity.PetrologSerialCom.getAutomaticTOSetting();
+        data = DetailActivity.PetrologSerialCom.getAutomaticTOSetting();
         title = myAct.getString(R.string.auto_timeout_setting);
         settings_t5TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
         if (data.contains("Yes") || data.contains("No")) {

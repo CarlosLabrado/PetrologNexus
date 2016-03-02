@@ -12,7 +12,7 @@ import android.widget.TextView;
  */
 public class wellStatus_post {
 
-    MainActivity myAct;
+    DetailActivity myAct;
     TextView current_t1TV;
     TextSwitcher current_v1TV;
     TextView current_t2TV;
@@ -20,7 +20,7 @@ public class wellStatus_post {
     TextView current_t3TV;
     TextSwitcher current_v3TV;
 
-    public wellStatus_post(MainActivity myActivity) {
+    public wellStatus_post(DetailActivity myActivity) {
 
         myAct = myActivity;
         current_t1TV = (TextView) myAct.findViewById(R.id.current_t1TV);
@@ -52,13 +52,13 @@ public class wellStatus_post {
     public void post() {
 
     /* Format Well Status */
-        String data = MainActivity.PetrologSerialCom.getWellStatus();
+        String data = DetailActivity.PetrologSerialCom.getWellStatus();
         String title = myAct.getString(R.string.well_status);
         current_t1TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
         if (data.contains("Running")) {
             /* Start Well button invisible*/
-            MainActivity.MyMenu.getItem(0).setVisible(false);
-            MainActivity.Help.setConnectedRunning();
+            DetailActivity.MyMenu.getItem(0).setVisible(false);
+            DetailActivity.Help.setConnectedRunning();
 
             TextView TempTV = (TextView) current_v1TV.getCurrentView();
             if (!TempTV.getText().toString().equals(data)) {
@@ -68,7 +68,7 @@ public class wellStatus_post {
         /* Format Pump Off */
             title = myAct.getString(R.string.pump_off);
             current_t2TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
-            data = MainActivity.PetrologSerialCom.getPumpOffStatus();
+            data = DetailActivity.PetrologSerialCom.getPumpOffStatus();
             if (data.contains("No")) {
                 current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
             } else if (data.contains("Yes")) {
@@ -78,7 +78,7 @@ public class wellStatus_post {
             }
 
         /* Format Strokes this Cycle */
-            int dataInt = MainActivity.PetrologSerialCom.getStrokesThis();
+            int dataInt = DetailActivity.PetrologSerialCom.getStrokesThis();
             data = String.valueOf(dataInt) + " strokes";
             title = myAct.getString(R.string.strokes_this);
             current_t3TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
@@ -95,9 +95,9 @@ public class wellStatus_post {
             }
         } else if (data.contains("Stopped")) {
             /* Start Well button visible*/
-            if (MainActivity.Connected) {
-                MainActivity.MyMenu.getItem(0).setVisible(true);
-                MainActivity.Help.setConnectedStopped();
+            if (DetailActivity.Connected) {
+                DetailActivity.MyMenu.getItem(0).setVisible(true);
+                DetailActivity.Help.setConnectedStopped();
             }
 
             TextView TempTV = (TextView) current_v1TV.getCurrentView();
@@ -108,8 +108,8 @@ public class wellStatus_post {
         /* Format Next Start */
             title = myAct.getString(R.string.next_start);
             current_t2TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
-            int min = MainActivity.PetrologSerialCom.getMinNextStart();
-            int sec = MainActivity.PetrologSerialCom.getSecNextStart();
+            int min = DetailActivity.PetrologSerialCom.getMinNextStart();
+            int sec = DetailActivity.PetrologSerialCom.getSecNextStart();
             if ((min >= 0 && min != 255) && (sec >= 0 && sec != 255)) {
                 data = String.format("%02d", min) + ":" + String.format("%02d", sec);
                 current_v2TV.setText(StringFormatValue.format(myAct, data, myAct.getResources().getColor(R.color.mainBlue), 1.2f, false));
@@ -120,7 +120,7 @@ public class wellStatus_post {
         /* Format Strokes last Cycle */
             title = myAct.getString(R.string.strokes_last);
             current_t3TV.setText(StringFormatTitle.format(title, Color.BLACK, 1f));
-            int dataInt = MainActivity.PetrologSerialCom.getStrokesLast();
+            int dataInt = DetailActivity.PetrologSerialCom.getStrokesLast();
             String data1 = String.valueOf(dataInt) + " strokes";
             if (dataInt > 0) {
                 TextView TempTVCC = (TextView) current_v3TV.getCurrentView();

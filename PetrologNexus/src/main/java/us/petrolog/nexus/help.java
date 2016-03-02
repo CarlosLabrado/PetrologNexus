@@ -12,7 +12,7 @@ public class help {
     private ImageView helpConnectedRunning;
 
 
-    public help(MainActivity myActivity) {
+    public help(DetailActivity myActivity) {
 
 //        /* Init Help */
 //        Typeface helpFont = Typeface.createFromAsset(myActivity.getAssets(), "fonts/gloriahallelujah.ttf");

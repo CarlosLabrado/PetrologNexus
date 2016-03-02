@@ -12,12 +12,12 @@ import android.widget.TextView;
  */
 public class wellFillage_post {
 
-    MainActivity myAct;
+    DetailActivity myAct;
     TextSwitcher currentFillage;
     TextView fillageSetting;
     TextSwitcher pumpOffDistance;
 
-    public wellFillage_post(MainActivity myActivity) {
+    public wellFillage_post(DetailActivity myActivity) {
 
         myAct = myActivity;
 
@@ -39,8 +39,8 @@ public class wellFillage_post {
     }
 
     public void post() {
-        int fillSetting = MainActivity.PetrologSerialCom.getFillageSetting();
-        int currentFill = MainActivity.PetrologSerialCom.getCurrentFillage();
+        int fillSetting = DetailActivity.PetrologSerialCom.getFillageSetting();
+        int currentFill = DetailActivity.PetrologSerialCom.getCurrentFillage();
 
         if ((fillSetting < 0) || (fillSetting > 90)) {
             fillageSetting.setText(StringFormatValue.format(myAct, "", myAct.getResources().getColor(R.color.mainGray), 1.2f, true));

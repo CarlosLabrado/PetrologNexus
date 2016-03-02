@@ -38,10 +38,10 @@ public class wellDynagraph_post {
 
     static ArrayList<ArrayList<Entry>> mBackup = new ArrayList<>();
 
-    MainActivity myAct;
+    DetailActivity myAct;
     private LineChart mLineChartMP;
 
-    public wellDynagraph_post(MainActivity myActivity) {
+    public wellDynagraph_post(DetailActivity myActivity) {
 
         myAct = myActivity;
 
@@ -51,7 +51,7 @@ public class wellDynagraph_post {
 
     public void post() {
         try {
-            SimpleXYSeries newDyna = MainActivity.PetrologSerialCom.getDynagraph();
+            SimpleXYSeries newDyna = DetailActivity.PetrologSerialCom.getDynagraph();
 
             if (newDyna != null) {
 

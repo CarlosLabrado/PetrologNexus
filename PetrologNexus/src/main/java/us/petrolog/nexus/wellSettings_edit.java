@@ -17,7 +17,7 @@ import android.widget.Toast;
  */
 public class wellSettings_edit {
 
-    private MainActivity myAct;
+    private DetailActivity myAct;
     private AlertDialog.Builder dialogBuilder;
     private AlertDialog dialog;
     private View tempView;
@@ -28,7 +28,7 @@ public class wellSettings_edit {
     private EditText settings_v4ET;
     private Spinner autoTimeOut;
 
-    public wellSettings_edit(MainActivity myActivity) {
+    public wellSettings_edit(DetailActivity myActivity) {
 
         myAct = myActivity;
 
@@ -48,20 +48,20 @@ public class wellSettings_edit {
     public void popup() {
 
         /* Mex date format -> US date format */
-        String date = MainActivity.PetrologSerialCom.getPetrologClock();
+        String date = DetailActivity.PetrologSerialCom.getPetrologClock();
         String time = date.substring(0, 9);
         String day = date.substring(9, 12);
         String month = date.substring(12, 15);
         String year = date.substring(15);
         settings_v0ET.setHint(time + month + day + year);
         settings_v0ET.setText("");
-        settings_v1ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getPumpUpSetting()));
+        settings_v1ET.setHint(String.valueOf(DetailActivity.PetrologSerialCom.getPumpUpSetting()));
         settings_v1ET.setText("");
-        settings_v2ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getPumpOffStrokesSetting()));
+        settings_v2ET.setHint(String.valueOf(DetailActivity.PetrologSerialCom.getPumpOffStrokesSetting()));
         settings_v2ET.setText("");
-        settings_v3ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getFillageSetting()));
+        settings_v3ET.setHint(String.valueOf(DetailActivity.PetrologSerialCom.getFillageSetting()));
         settings_v3ET.setText("");
-        settings_v4ET.setHint(String.valueOf(MainActivity.PetrologSerialCom.getCurrentTimeoutSetting()));
+        settings_v4ET.setHint(String.valueOf(DetailActivity.PetrologSerialCom.getCurrentTimeoutSetting()));
         settings_v4ET.setText("");
 
         autoTimeOut = (Spinner) tempView.findViewById(R.id.automatic_time_out);
@@ -73,7 +73,7 @@ public class wellSettings_edit {
 
         autoTimeOut.setAdapter(adapter);
 
-        if (MainActivity.PetrologSerialCom.getAutomaticTOSetting().equals("Yes")) {
+        if (DetailActivity.PetrologSerialCom.getAutomaticTOSetting().equals("Yes")) {
             autoTimeOut.setSelection(0);
         } else {
             autoTimeOut.setSelection(1);
@@ -126,7 +126,7 @@ public class wellSettings_edit {
                     removeDialog();
                     Toast.makeText(myAct, "Writing new settings to POC", Toast.LENGTH_LONG)
                             .show();
-                    MainActivity.PetrologSerialCom.setSettings(
+                    DetailActivity.PetrologSerialCom.setSettings(
                             tempV0,
                             tempV1,
                             tempV2,
@@ -168,7 +168,7 @@ public class wellSettings_edit {
         // Remove notification bar
         myAct.getWindow().getDecorView().setSystemUiVisibility(View.INVISIBLE);
         // Clean Dyna
-        MainActivity.wellDynagraphPost.clean();
+        DetailActivity.wellDynagraphPost.clean();
         // Remove View
 
     }

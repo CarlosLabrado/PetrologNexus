@@ -6,7 +6,7 @@
              android:layout_width="fill_parent"
              android:layout_height="fill_parent"
              android:background="#e6e6e6"
-             tools:context=".MainActivity">
+             tools:context=".DetailActivity">
 
     <android.support.v7.widget.GridLayout
 
