@@ -24,7 +24,9 @@ import com.squareup.otto.Subscribe;
 import java.util.HashMap;
 
 import butterknife.ButterKnife;
+import butterknife.OnClick;
 import us.petrolog.nexus.R;
+import us.petrolog.nexus.events.MapLoadedEvent;
 import us.petrolog.nexus.events.SendDeviceListEvent;
 import us.petrolog.nexus.events.StartDetailFragmentEvent;
 import us.petrolog.nexus.rest.model.Device;
@@ -42,6 +44,7 @@ public class MapPetrologFragment extends Fragment {
 
     private HashMap<String, Device> mEventMarkerMap;
 
+    LatLngBounds mBounds;
 
     public static Bus mBus;
 
@@ -49,6 +52,12 @@ public class MapPetrologFragment extends Fragment {
         // Required empty public constructor
     }
 
+    @OnClick(R.id.buttonFocusOnDevices)
+    public void focusOnDevicesClicked() {
+        if (mBounds != null) {
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
+        }
+    }
 
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
@@ -118,7 +127,7 @@ public class MapPetrologFragment extends Fragment {
             @Override
             public void onInfoWindowClick(Marker marker) {
                 Device device = mEventMarkerMap.get(marker.getId());
-                MainActivity.mBus.post(new StartDetailFragmentEvent(device.getRemoteDeviceId()));
+                MainActivity.mBus.post(new StartDetailFragmentEvent(device.getRemoteDeviceId(), device.getName(), device.getLocation()));
                 //goLockyMarker = eventMarkerMap.get(marker.getId());
                 //inflateMarkerClickedDialog(goLockyMarker);
             }
@@ -129,6 +138,7 @@ public class MapPetrologFragment extends Fragment {
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
+                MainActivity.mBus.post(new MapLoadedEvent());
 //                MainActivity.bus.post(new StartRegisteringUserEvent(StartRegisteringUserEvent.Type.STARTED, 1));
             }
         });
@@ -172,14 +182,14 @@ public class MapPetrologFragment extends Fragment {
                 builder.include(latLng);
                 Marker marker = mMap.addMarker(new MarkerOptions()
                         .position(latLng)
-                        .title(device.getName())
+                        .title(device.getName() + " - " + device.getLocation())
                         .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
 
                 mEventMarkerMap.put(marker.getId(), device);
             }
             // Animates the camera to show all the current markers
-            LatLngBounds bounds = builder.build();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(bounds, 20));
+            mBounds = builder.build();
+            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
 
         }
     }
@@ -188,6 +198,7 @@ public class MapPetrologFragment extends Fragment {
     @Override
     public void onResume() {
         super.onResume();
+        ((MainActivity) getActivity()).setActionBarTitle("Map", null, false);
         setUpMapIfNeeded();
         if (mMap != null) {
             //populateTheMap(mLocations);

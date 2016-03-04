@@ -45,6 +45,7 @@ import retrofit2.Response;
 import us.petrolog.nexus.Constants;
 import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
+import us.petrolog.nexus.events.MapLoadedEvent;
 import us.petrolog.nexus.events.SendDeviceListEvent;
 import us.petrolog.nexus.events.StartDetailFragmentEvent;
 import us.petrolog.nexus.misc.Utility;
@@ -137,9 +138,6 @@ public class MainActivity extends AppCompatActivity
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
-
-
-        goToTheBackend();
 
     }
 
@@ -477,13 +475,18 @@ public class MainActivity extends AppCompatActivity
         return true;
     }
 
+    @Subscribe
+    public void mapFinishedLoading(MapLoadedEvent event) {
+        goToTheBackend();
+    }
+
 
     @Subscribe
     public void startDetailFragment(StartDetailFragmentEvent event) {
         if (event != null) {
             mDrawerStack.push(0);
             new DetailFragment();
-            Fragment fragment = DetailFragment.newInstance(event.getDeviceId());
+            Fragment fragment = DetailFragment.newInstance(event.getDeviceId(), event.getName(), event.getLocationName());
             FragmentManager fragmentManager = getSupportFragmentManager();
             fragmentManager.beginTransaction()
                     .addToBackStack(null)

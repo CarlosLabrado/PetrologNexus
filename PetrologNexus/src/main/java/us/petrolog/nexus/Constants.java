@@ -14,6 +14,6 @@ public class Constants {
     public final static int CONNECTION_FAILURE_RESOLUTION_REQUEST = 9000;
 
     public static final String ARG_DEVICE_ID = "arg_device_id";
-
-
+    public static final String ARG_DEVICE_NAME = "arg_device_name";
+    public static final String ARG_DEVICE_LOCATION_NAME = "arg_device_location_name";
 }

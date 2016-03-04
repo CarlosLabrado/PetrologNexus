@@ -4,7 +4,8 @@
     <color name="transparent">#00ffffff</color>
     <color name="fillRed">#9be53935</color>
     <color name="fillBlue">#a442a5f5</color>
-    <color name="fillGrey">#a7494949</color>
+    <color name="fillGreen">#a466fa9c</color>
+    <color name="fillGrey">#a7686868</color>
 
     <color name="colorPrimary">@color/blue_700</color>
     <color name="colorPrimaryDark">@color/blue_900</color>
