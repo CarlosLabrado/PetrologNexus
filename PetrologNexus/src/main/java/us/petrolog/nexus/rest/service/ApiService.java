@@ -27,4 +27,7 @@ public interface ApiService {
     @GET("/api/v2/graph/{deviceId}/efficiency")
     Call<List<DeviceEfficiency>> getDeviceEfficiency(@Path("deviceId") Integer deviceId);
 
+    @GET("/api/v2/devices/withAttention")
+    Call<List<DeviceDetail>> getDevicesNeedAttention();
+
 }

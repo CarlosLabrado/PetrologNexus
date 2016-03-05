@@ -120,4 +120,10 @@
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="average_fillage">Average Fillage</string>
     <string name="setting_fillage">Setting Fillage</string>
+    <string name="list_name">Name</string>
+    <string name="list_problem">Problem</string>
+    <string name="list_group">Group</string>
+    <string name="list_location">Location</string>
+    <string name="list_last_update">Last Update</string>
+    <string name="topbar_title_attention">Wells that require attention</string>
 </resources>

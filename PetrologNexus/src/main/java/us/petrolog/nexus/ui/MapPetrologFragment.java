@@ -172,7 +172,7 @@ public class MapPetrologFragment extends Fragment {
                         markerColor = BitmapDescriptorFactory.HUE_YELLOW;
                         break;
                     case 3: // Offline
-                        markerColor = BitmapDescriptorFactory.HUE_CYAN;
+                        markerColor = BitmapDescriptorFactory.HUE_RED;
                         break;
                     case 4: // Alert
                         markerColor = BitmapDescriptorFactory.HUE_RED;

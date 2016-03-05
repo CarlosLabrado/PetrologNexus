@@ -1,0 +1,68 @@
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+              xmlns:tools="http://schemas.android.com/tools"
+              android:layout_width="match_parent"
+              android:layout_height="match_parent"
+              android:orientation="vertical"
+              tools:context="us.petrolog.nexus.ui.AttentionListFragment">
+
+    <LinearLayout
+        android:orientation="horizontal"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="16dp"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp">
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="@string/list_name"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/abc_primary_text_material_light"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="@string/list_problem"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/abc_primary_text_material_light"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="@string/list_group"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/abc_primary_text_material_light"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="@string/list_location"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/abc_primary_text_material_light"/>
+
+        <TextView
+            android:layout_width="fill_parent"
+            android:layout_height="50dp"
+            android:text="@string/list_last_update"
+            android:layout_weight="1"
+            android:gravity="left"
+            android:textColor="@color/abc_primary_text_material_light"/>
+
+    </LinearLayout>
+
+    <us.petrolog.nexus.misc.EmptyRecyclerView
+        android:id="@+id/my_recycler_view"
+        android:layout_width="match_parent"
+        android:layout_height="fill_parent"
+        android:layout_marginTop="18dp"
+        android:fadeScrollbars="false"
+        android:scrollbars="vertical"
+        android:layout_marginLeft="8dp"
+        android:layout_marginRight="8dp"/>
+
+</LinearLayout>
