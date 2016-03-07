@@ -126,4 +126,8 @@
     <string name="list_location">Location</string>
     <string name="list_last_update">Last Update</string>
     <string name="topbar_title_attention">Wells that require attention</string>
+    <string name="splash_email">Email</string>
+    <string name="splash_password">Password</string>
+    <string name="splash_log_in">Log in</string>
+    <string name="login_empty">One or both of the fields are empty</string>
 </resources>

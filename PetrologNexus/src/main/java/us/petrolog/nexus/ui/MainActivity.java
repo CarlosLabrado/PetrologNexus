@@ -23,6 +23,8 @@ import android.transition.TransitionInflater;
 import android.util.Log;
 import android.view.Menu;
 import android.view.MenuItem;
+import android.view.View;
+import android.widget.TextView;
 
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
@@ -82,6 +84,9 @@ public class MainActivity extends AppCompatActivity
 
     boolean isConnected;
 
+    private String mUserName;
+    private String mUserEmail;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -91,6 +96,9 @@ public class MainActivity extends AppCompatActivity
 
         mBus = new Bus();
         mBus.register(this);
+
+        mUserName = getIntent().getExtras().getString(Constants.EXTRA_USER_NAME);
+        mUserEmail = getIntent().getExtras().getString(Constants.EXTRA_USER_EMAIL);
 
         /**toolBar **/
         setUpToolBar();
@@ -138,6 +146,16 @@ public class MainActivity extends AppCompatActivity
                 .setPriority(LocationRequest.PRIORITY_HIGH_ACCURACY)
                 .setInterval(10 * 1000)        // 10 seconds, in milliseconds
                 .setFastestInterval(1 * 1000); // 1 second, in milliseconds
+
+
+        View header = mNavView.getHeaderView(0);
+
+
+        TextView textViewUserName = (TextView) header.findViewById(R.id.textViewUserName);
+        TextView textViewUserEmail = (TextView) header.findViewById(R.id.textViewUserEmail);
+
+        textViewUserName.setText(mUserName);
+        textViewUserEmail.setText(mUserEmail);
 
     }
 

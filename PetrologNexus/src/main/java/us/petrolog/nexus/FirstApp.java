@@ -15,7 +15,7 @@ public class FirstApp extends Application {
     public void onCreate() {
         super.onCreate();
 
-        restClient = new RestClient();
+        restClient = new RestClient(getApplicationContext());
     }
 
     public static RestClient getRestClient() {
