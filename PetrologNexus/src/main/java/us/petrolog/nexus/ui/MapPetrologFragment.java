@@ -46,6 +46,7 @@ public class MapPetrologFragment extends Fragment {
 
     LatLngBounds mBounds;
 
+    private boolean isFocusOnDevicesOn = false;
     public static Bus mBus;
 
     public MapPetrologFragment() {
@@ -55,6 +56,7 @@ public class MapPetrologFragment extends Fragment {
     @OnClick(R.id.buttonFocusOnDevices)
     public void focusOnDevicesClicked() {
         if (mBounds != null) {
+            isFocusOnDevicesOn = true;
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
         }
     }
@@ -144,8 +146,10 @@ public class MapPetrologFragment extends Fragment {
     @Subscribe
     public void handleLocation(LatLng latLng) {
         mLatLng = latLng;
-        CameraUpdate cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(latLng, 17);
-        mMap.animateCamera(cameraUpdateFactory);
+        if (!isFocusOnDevicesOn) { // the user pressed the focus on devices, so we keep it that way
+            CameraUpdate cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(latLng, 17);
+            mMap.animateCamera(cameraUpdateFactory);
+        }
     }
 
     @Subscribe
@@ -198,7 +202,7 @@ public class MapPetrologFragment extends Fragment {
         setUpMapIfNeeded();
         if (mMap != null) {
             //populateTheMap(mLocations);
-            if (mLatLng != null && mLatLng.latitude != 0.0 && mLatLng.longitude != 0.0) {
+            if (mLatLng != null && mLatLng.latitude != 0.0 && mLatLng.longitude != 0.0 && !isFocusOnDevicesOn) {
                 CameraUpdate cameraUpdateFactory = CameraUpdateFactory.newLatLngZoom(mLatLng, 17);
                 mMap.animateCamera(cameraUpdateFactory);
             }
