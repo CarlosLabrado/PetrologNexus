@@ -11,6 +11,7 @@ import android.view.View;
 import android.widget.Button;
 import android.widget.EditText;
 import android.widget.LinearLayout;
+import android.widget.ProgressBar;
 import android.widget.Toast;
 
 import butterknife.Bind;
@@ -35,6 +36,9 @@ public class SplashScreenActivity extends AppCompatActivity {
     @Bind(R.id.linearLayoutLoginContainer)
     LinearLayout mLinearLayoutLoginContainer;
 
+    @Bind(R.id.progressBarSplash)
+    ProgressBar mProgressBarSplash;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -44,6 +48,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         mLinearLayoutLoginContainer.setVisibility(View.GONE);
         mButtonLogIn.setEnabled(false);
+
+        mProgressBarSplash.setVisibility(View.GONE);
 
         SharedPreferences settings =
                 PreferenceManager.getDefaultSharedPreferences(this);
@@ -77,10 +83,14 @@ public class SplashScreenActivity extends AppCompatActivity {
 
         UserBody userBody = new UserBody(email, password);
 
+        mProgressBarSplash.setVisibility(View.VISIBLE);
+        mLinearLayoutLoginContainer.setVisibility(View.GONE);
+
         Call<User> call = FirstApp.getRestClient().getApiService().userLogin(userBody);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
+                mProgressBarSplash.setVisibility(View.GONE);
                 if (response.body() != null) {
                     User user = response.body();
 
@@ -103,6 +113,7 @@ public class SplashScreenActivity extends AppCompatActivity {
 
                     Log.d(TAG, "Callback for user login successfully returned");
                 } else {
+                    mLinearLayoutLoginContainer.setVisibility(View.VISIBLE);
                     Log.e(TAG, "Callback for user login failed body is null");
                 }
 
@@ -110,6 +121,8 @@ public class SplashScreenActivity extends AppCompatActivity {
 
             @Override
             public void onFailure(Call<User> call, Throwable t) {
+                mLinearLayoutLoginContainer.setVisibility(View.VISIBLE);
+                mProgressBarSplash.setVisibility(View.GONE);
                 Log.e(TAG, "Callback for user login failed");
             }
         });
@@ -128,7 +141,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                 startActivity(intent);
                 finish();
             }
-        }, 500);
+        }, 1500);
 
     }
 

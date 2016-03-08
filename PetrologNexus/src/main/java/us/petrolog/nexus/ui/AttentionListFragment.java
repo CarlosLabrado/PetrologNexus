@@ -9,6 +9,7 @@ import android.util.Log;
 import android.view.LayoutInflater;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.ProgressBar;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -32,6 +33,8 @@ public class AttentionListFragment extends Fragment {
     private static final String TAG = AttentionListFragment.class.getSimpleName();
     @Bind(R.id.my_recycler_view)
     EmptyRecyclerView mRecyclerView;
+    @Bind(R.id.progressBarAttention)
+    ProgressBar mProgressBarAttention;
 
     private List<DeviceDetail> mDeviceDetailList;
 
@@ -54,6 +57,8 @@ public class AttentionListFragment extends Fragment {
         // Inflate the layout for this fragment
         View view = inflater.inflate(R.layout.fragment_attention_list, container, false);
         ButterKnife.bind(this, view);
+
+        mProgressBarAttention.setVisibility(View.GONE);
         getDevicesThatNeedAttention();
 
         if (mDeviceDetailList == null) {
@@ -82,12 +87,15 @@ public class AttentionListFragment extends Fragment {
      */
     private void getDevicesThatNeedAttention() {
 
+        mProgressBarAttention.setVisibility(View.VISIBLE);
+
         mDeviceDetailList = new ArrayList<>();
 
         Call<List<DeviceDetail>> call = FirstApp.getRestClient().getApiService().getDevicesNeedAttention();
         call.enqueue(new Callback<List<DeviceDetail>>() {
             @Override
             public void onResponse(Call<List<DeviceDetail>> call, Response<List<DeviceDetail>> response) {
+                mProgressBarAttention.setVisibility(View.GONE);
                 if (response.body() != null) {
                     mDeviceDetailList = response.body();
                     drawTheList();
@@ -97,6 +105,7 @@ public class AttentionListFragment extends Fragment {
 
             @Override
             public void onFailure(Call<List<DeviceDetail>> call, Throwable t) {
+                mProgressBarAttention.setVisibility(View.GONE);
                 Log.e(TAG, "Callback devices that need attention failed");
 
             }
