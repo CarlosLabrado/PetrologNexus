@@ -5,11 +5,14 @@ import android.content.Context;
 import android.content.DialogInterface;
 import android.content.Intent;
 import android.content.IntentSender;
+import android.content.SharedPreferences;
 import android.location.Location;
 import android.location.LocationManager;
 import android.net.Uri;
 import android.os.Build;
 import android.os.Bundle;
+import android.os.Handler;
+import android.preference.PreferenceManager;
 import android.provider.Settings;
 import android.support.design.widget.NavigationView;
 import android.support.v4.app.Fragment;
@@ -87,6 +90,8 @@ public class MainActivity extends AppCompatActivity
     private String mUserName;
     private String mUserEmail;
 
+    private boolean isMapReadyEventFired;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -105,6 +110,7 @@ public class MainActivity extends AppCompatActivity
 
         setUpDrawer();
 
+        isMapReadyEventFired = false;
         isConnected = Utility.isNetworkAvailable(this);
 
         // This will take care of registering the user and also filling the user image
@@ -156,6 +162,18 @@ public class MainActivity extends AppCompatActivity
 
         textViewUserName.setText(mUserName);
         textViewUserEmail.setText(mUserEmail);
+
+        // we just want to wait a max of 10 seconds for the map to be ready
+        Handler handler = new Handler();
+        handler.postDelayed(new Runnable() {
+            @Override
+            public void run() {
+                if (!isMapReadyEventFired) {
+                    isMapReadyEventFired = true;
+                    goToTheBackend();
+                }
+            }
+        }, 10000);
 
     }
 
@@ -485,16 +503,10 @@ public class MainActivity extends AppCompatActivity
             // Handle the camera action
         } else if (id == R.id.nav_attention) {
             displayView(1);
+        } else if (id == R.id.nav_log_out) {
+            showLogOutDialog();
         }
-//        else if (id == R.id.nav_slideshow) {
-//
-//        } else if (id == R.id.nav_manage) {
-//
-//        } else if (id == R.id.nav_share) {
-//
-//        } else if (id == R.id.nav_send) {
-//
-//        }
+
 
         mDrawerLayout.closeDrawer(GravityCompat.START);
         return true;
@@ -502,6 +514,7 @@ public class MainActivity extends AppCompatActivity
 
     @Subscribe
     public void mapFinishedLoading(MapLoadedEvent event) {
+        isMapReadyEventFired = true;
         goToTheBackend();
     }
 
@@ -518,21 +531,6 @@ public class MainActivity extends AppCompatActivity
                     .replace(R.id.container, fragment).commit();
         }
     }
-
-//    @Subscribe
-//    public void startDetailFragment(StartDetailFragmentEvent event) {
-//        if (event != null) {
-//            mDrawerStack.push(0);
-//            new DetailFragment();
-//            Fragment fragment = DetailFragment.newInstance(event.getDeviceId(), event.getName(), event.getLocationName());
-//            FragmentManager fragmentManager = getSupportFragmentManager();
-//            fragmentManager.beginTransaction()
-//                    .addToBackStack(null)
-//                    .replace(R.id.container, fragment).commit();
-//        }
-//    }
-
-
 
 
     /**
@@ -564,6 +562,41 @@ public class MainActivity extends AppCompatActivity
                 Log.e(TAG, "Callback failed");
             }
         });
+    }
+
+
+    private void showLogOutDialog() {
+        AlertDialog.Builder dialog = new AlertDialog.Builder(this);
+        dialog.setTitle(getResources().getString(R.string.dialog_log_out_tittle));
+        dialog.setMessage(getResources().getString(R.string.dialog_log_out_message));
+        dialog.setPositiveButton(getResources().getString(R.string.dialog_log_out_yes), new DialogInterface.OnClickListener() {
+            @Override
+            public void onClick(DialogInterface dialog, int which) {
+                logOut();
+            }
+        });
+        dialog.setNegativeButton(getString(R.string.dialog_log_out_no), new DialogInterface.OnClickListener() {
+
+            @Override
+            public void onClick(DialogInterface paramDialogInterface, int paramInt) {
+                paramDialogInterface.cancel();
+            }
+        });
+        dialog.show();
+    }
+
+    private void logOut() {
+        SharedPreferences settings =
+                PreferenceManager.getDefaultSharedPreferences(getApplicationContext());
+        SharedPreferences.Editor editor = settings.edit();
+        editor.putBoolean(Constants.SP_IS_USER_LOGGED, false);
+
+        editor.clear();
+        editor.commit();
+
+        Intent intent = new Intent(this, SplashScreenActivity.class);
+        startActivity(intent);
+        finish();
     }
 
 

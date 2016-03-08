@@ -128,8 +128,6 @@ public class MapPetrologFragment extends Fragment {
             public void onInfoWindowClick(Marker marker) {
                 Device device = mEventMarkerMap.get(marker.getId());
                 MainActivity.mBus.post(new StartDetailFragmentEvent(device.getRemoteDeviceId(), device.getName(), device.getLocation()));
-                //goLockyMarker = eventMarkerMap.get(marker.getId());
-                //inflateMarkerClickedDialog(goLockyMarker);
             }
         });
 
@@ -139,7 +137,6 @@ public class MapPetrologFragment extends Fragment {
             @Override
             public void onMapLoaded() {
                 MainActivity.mBus.post(new MapLoadedEvent());
-//                MainActivity.bus.post(new StartRegisteringUserEvent(StartRegisteringUserEvent.Type.STARTED, 1));
             }
         });
     }
@@ -153,7 +150,6 @@ public class MapPetrologFragment extends Fragment {
 
     @Subscribe
     public void getDeviceList(SendDeviceListEvent event) {
-        //List<LatLng> latLngList = new ArrayList<>();
         LatLngBounds.Builder builder = new LatLngBounds.Builder();
         mEventMarkerMap = new HashMap<>();
 

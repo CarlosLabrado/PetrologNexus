@@ -5,24 +5,21 @@
         <item
             android:id="@+id/nav_map"
             android:icon="@drawable/ic_place_black_24dp"
-            android:title="Map"/>
+            android:title="@string/drawer_items_map"/>
         <item
             android:id="@+id/nav_attention"
             android:icon="@drawable/ic_warning_black_24dp"
-            android:title="Wells that require attention"/>
+            android:title="@string/drawer_items_wells_that_require_attention"/>
     </group>
 
-    <!--<item android:title="Communicate">-->
-    <!--<menu>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_share"-->
-    <!--android:icon="@drawable/ic_menu_share"-->
-    <!--android:title="Share"/>-->
-    <!--<item-->
-    <!--android:id="@+id/nav_send"-->
-    <!--android:icon="@drawable/ic_menu_send"-->
-    <!--android:title="Send"/>-->
-    <!--</menu>-->
-    <!--</item>-->
+    <item android:title="@string/drawer_item_settings">
+        <menu>
+            <item
+                android:id="@+id/nav_log_out"
+                android:icon="@drawable/ic_swap_horiz_grey_24dp"
+                android:title="@string/drawer_items_log_out"/>
+
+        </menu>
+    </item>
 
 </menu>

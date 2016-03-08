@@ -1,4 +1,4 @@
-package us.petrolog.nexus;
+package us.petrolog.nexus.ui;
 
 import android.content.Intent;
 import android.content.SharedPreferences;
@@ -20,9 +20,11 @@ import butterknife.OnClick;
 import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
+import us.petrolog.nexus.Constants;
+import us.petrolog.nexus.FirstApp;
+import us.petrolog.nexus.R;
 import us.petrolog.nexus.rest.model.User;
 import us.petrolog.nexus.rest.model.UserBody;
-import us.petrolog.nexus.ui.MainActivity;
 
 public class SplashScreenActivity extends AppCompatActivity {
 
@@ -114,6 +116,7 @@ public class SplashScreenActivity extends AppCompatActivity {
                     Log.d(TAG, "Callback for user login successfully returned");
                 } else {
                     mLinearLayoutLoginContainer.setVisibility(View.VISIBLE);
+                    Toast.makeText(getApplicationContext(), "There is an error while trying to log you in, please try again", Toast.LENGTH_SHORT).show();
                     Log.e(TAG, "Callback for user login failed body is null");
                 }
 

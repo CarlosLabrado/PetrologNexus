@@ -116,6 +116,11 @@
     <string name="dialog_not_connected_message">It appears that you don\'t have an active internet connection, this application needs an active internet connection, please check your settings and try again</string>
     <string name="dialog_not_connected_close">Close</string>
 
+    <string name="dialog_log_out_tittle">Log out</string>
+    <string name="dialog_log_out_message">Are you sure you want to log out?</string>
+    <string name="dialog_log_out_no">Cancel</string>
+    <string name="dialog_log_out_yes">Log out</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="average_fillage">Average Fillage</string>
@@ -130,4 +135,8 @@
     <string name="splash_password">Password</string>
     <string name="splash_log_in">Log in</string>
     <string name="login_empty">One or both of the fields are empty</string>
+    <string name="drawer_items_map">Map</string>
+    <string name="drawer_items_wells_that_require_attention">Wells that require attention</string>
+    <string name="drawer_item_settings">Settings</string>
+    <string name="drawer_items_log_out">Log out</string>
 </resources>
