@@ -27,9 +27,7 @@ import java.util.Calendar;
 import java.util.List;
 
 import us.petrolog.nexus.R;
-import us.petrolog.nexus.events.AttentionListClickedEvent;
 import us.petrolog.nexus.rest.model.DeviceDetail;
-import us.petrolog.nexus.ui.MainActivity;
 
 /**
  * Provide views to RecyclerView with data from mDataSet.
@@ -38,13 +36,14 @@ public class DevicesDetailAdapter extends RecyclerView.Adapter<DevicesDetailAdap
     private static final String TAG = "CustomAdapter";
 
     private List<DeviceDetail> mDataSet;
+    private static RecyclerViewClickListener mListener;
 
     // BEGIN_INCLUDE(recyclerViewSampleViewHolder)
 
     /**
      * Provide a reference to the type of views that you are using (custom ViewHolder)
      */
-    public static class ViewHolder extends RecyclerView.ViewHolder {
+    public static class ViewHolder extends RecyclerView.ViewHolder implements View.OnClickListener {
         private final TextView textViewItemName;
         private final TextView textViewItemProblem;
         private final TextView textViewItemGroup;
@@ -54,14 +53,7 @@ public class DevicesDetailAdapter extends RecyclerView.Adapter<DevicesDetailAdap
         public ViewHolder(View v) {
             super(v);
             // Define click listener for the ViewHolder's View.
-            v.setOnClickListener(new View.OnClickListener() {
-                @Override
-                public void onClick(View v) {
-                    MainActivity.mBus.post(new AttentionListClickedEvent());
-                    // MainActivity.bus.post(new SensorClickedEvent(SensorClickedEvent.Type.STARTED, 1, getPosition(), false));
-//                    Logger.d("Element " + getPosition() + " clicked.");
-                }
-            });
+            v.setOnClickListener(this);
             textViewItemName = (TextView) v.findViewById(R.id.textViewListItemName);
             textViewItemProblem = (TextView) v.findViewById(R.id.textViewListItemProblem);
             textViewItemGroup = (TextView) v.findViewById(R.id.textViewListItemGroup);
@@ -89,6 +81,10 @@ public class DevicesDetailAdapter extends RecyclerView.Adapter<DevicesDetailAdap
             return textViewItemLastUpdate;
         }
 
+        @Override
+        public void onClick(View v) {
+            mListener.recyclerViewListClicked(v, getLayoutPosition());
+        }
     }
     // END_INCLUDE(recyclerViewSampleViewHolder)
 
@@ -97,7 +93,8 @@ public class DevicesDetailAdapter extends RecyclerView.Adapter<DevicesDetailAdap
      *
      * @param dataSet a list with markers
      */
-    public DevicesDetailAdapter(List<DeviceDetail> dataSet) {
+    public DevicesDetailAdapter(List<DeviceDetail> dataSet, RecyclerViewClickListener listener) {
+        mListener = listener;
         mDataSet = dataSet;
     }
 

@@ -21,15 +21,17 @@ import retrofit2.Callback;
 import retrofit2.Response;
 import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
+import us.petrolog.nexus.events.StartDetailFragmentEvent;
 import us.petrolog.nexus.misc.DevicesDetailAdapter;
 import us.petrolog.nexus.misc.EmptyRecyclerView;
+import us.petrolog.nexus.misc.RecyclerViewClickListener;
 import us.petrolog.nexus.rest.model.DeviceDetail;
 
 /**
  * A simple {@link Fragment} subclass.
  * create an instance of this fragment.
  */
-public class AttentionListFragment extends Fragment {
+public class AttentionListFragment extends Fragment implements RecyclerViewClickListener {
     private static final String TAG = AttentionListFragment.class.getSimpleName();
     @Bind(R.id.my_recycler_view)
     EmptyRecyclerView mRecyclerView;
@@ -67,7 +69,7 @@ public class AttentionListFragment extends Fragment {
             mLayoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(mLayoutManager);
 
-            mAdapter = new DevicesDetailAdapter(mDeviceDetailList);
+            mAdapter = new DevicesDetailAdapter(mDeviceDetailList, this);
             mRecyclerView.setAdapter(mAdapter);
 //            DetailFragment.bus.post(new CurrentSelectedMicrologEvent(null, true)); //telephone is null, thus is empty
         } else {
@@ -75,7 +77,7 @@ public class AttentionListFragment extends Fragment {
             mLayoutManager = new LinearLayoutManager(getActivity());
             mRecyclerView.setLayoutManager(mLayoutManager);
 
-            mAdapter = new DevicesDetailAdapter(mDeviceDetailList);
+            mAdapter = new DevicesDetailAdapter(mDeviceDetailList, this);
             mRecyclerView.setAdapter(mAdapter);
         }
 
@@ -117,7 +119,7 @@ public class AttentionListFragment extends Fragment {
         mLayoutManager = new LinearLayoutManager(getActivity());
         mRecyclerView.setLayoutManager(mLayoutManager);
 
-        mAdapter = new DevicesDetailAdapter(mDeviceDetailList);
+        mAdapter = new DevicesDetailAdapter(mDeviceDetailList, this);
         mRecyclerView.setAdapter(mAdapter);
         mAdapter.notifyDataSetChanged();
 
@@ -134,5 +136,12 @@ public class AttentionListFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    @Override
+    public void recyclerViewListClicked(View v, int position) {
+        DeviceDetail currentDevice = mDeviceDetailList.get(position);
+        MainActivity.mBus.post(new StartDetailFragmentEvent(currentDevice.getRemoteDeviceId(), currentDevice.getName(), currentDevice.getLocation()));
+
     }
 }
