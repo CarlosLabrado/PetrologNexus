@@ -554,7 +554,6 @@ public class DetailFragment extends Fragment {
                 @Override
                 public void onComplete(ArrayList<ArrayList> chartValues, Exception e) {
                     buildChart(chartValues);
-                    updateXYGraph();
                 }
             }).execute(mDeviceGraph);
         }
