@@ -21,5 +21,9 @@
 
         </menu>
     </item>
+    <item
+        android:id="@+id/nav_legacy"
+        android:icon="@drawable/ic_bluetooth_searching_white_24dp"
+        android:title="@string/drawer_items_legacy"/>
 
 </menu>

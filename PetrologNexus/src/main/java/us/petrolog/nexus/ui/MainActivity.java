@@ -47,6 +47,7 @@ import retrofit2.Call;
 import retrofit2.Callback;
 import retrofit2.Response;
 import us.petrolog.nexus.Constants;
+import us.petrolog.nexus.DetailActivity;
 import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
 import us.petrolog.nexus.events.MapLoadedEvent;
@@ -482,6 +483,9 @@ public class MainActivity extends AppCompatActivity
             displayView(1);
         } else if (id == R.id.nav_log_out) {
             showLogOutDialog();
+        } else if (id == R.id.nav_legacy) {
+            Intent intent = new Intent(this, DetailActivity.class);
+            startActivity(intent);
         }
 
 
