@@ -1,9 +1,11 @@
 package us.petrolog.nexus.ui;
 
+import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
+import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -15,6 +17,7 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
+import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
@@ -44,6 +47,8 @@ import java.util.Calendar;
 import java.util.Collections;
 import java.util.HashSet;
 import java.util.List;
+import java.util.Timer;
+import java.util.TimerTask;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
@@ -138,6 +143,8 @@ public class DetailFragment extends Fragment {
     // Alpha
     private static int mCurrAlpha;
 
+    Timer mTimer = new Timer();
+
     private OnFragmentInteractionListener mListener;
 
     public DetailFragment() {
@@ -188,7 +195,20 @@ public class DetailFragment extends Fragment {
         mCurrAlpha = -1;
 
         getDeviceDetail(mDeviceId);
-        getDeviceLastGraph(mDeviceId);
+
+        mTimer.scheduleAtFixedRate(new TimerTask() {
+                                       @Override
+                                       public void run() {
+                                           getDeviceLastGraph(mDeviceId);
+                                           Log.d("getDevice", "get graph");
+                                       }
+                                   },
+                //Set how long before to start calling the TimerTask (in milliseconds)
+                0,
+                //Set the amount of time between each execution (in milliseconds)
+                10000);
+
+
         getDeviceEfficiencyList(mDeviceId);
 
         // Declare the in and out animations and initialize them
@@ -211,7 +231,7 @@ public class DetailFragment extends Fragment {
 
     private void updateUI() {
 
-        if (mDeviceDetail != null) {
+        if (isFragmentUIActive() && mDeviceDetail != null) {
             State state = mDeviceDetail.getState();
 
             String pumpOff;
@@ -247,10 +267,20 @@ public class DetailFragment extends Fragment {
 
     }
 
+    public boolean isFragmentUIActive() {
+        return isAdded() && !isDetached() && !isRemoving();
+    }
+
     @Override
     public void onResume() {
         super.onResume();
         ((MainActivity) getActivity()).setActionBarTitle(mDeviceName + " - " + mLocationName + " - " + mDeviceId, null, false);
+    }
+
+    @Override
+    public void onPause() {
+        super.onPause();
+        mTimer.cancel();
     }
 
     // TODO: Rename method, update argument and hook method into UI event
@@ -281,6 +311,15 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
+    }
+
+    private void startDynaLoadingBarAnimation() {
+        mProgressBarDyna.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.mainBlue), PorterDuff.Mode.SRC_IN);
+
+        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(mProgressBarDyna, "progress", 0, 100);
+        progressAnimator.setDuration(10000);
+        progressAnimator.setInterpolator(new LinearInterpolator());
+        progressAnimator.start();
     }
 
 
@@ -350,9 +389,13 @@ public class DetailFragment extends Fragment {
         call.enqueue(new Callback<List<DeviceEfficiency>>() {
             @Override
             public void onResponse(Call<List<DeviceEfficiency>> call, Response<List<DeviceEfficiency>> response) {
-                mDeviceEfficiencyList = response.body();
-                updateHistoryGraph(mDeviceEfficiencyList);
-                Log.d(TAG, "Callback device efficiency successfully returned");
+                if (response.body() != null) {
+                    mDeviceEfficiencyList = response.body();
+                    if (isFragmentUIActive()) {
+                        updateHistoryGraph(mDeviceEfficiencyList);
+                    }
+                    Log.d(TAG, "Callback device efficiency successfully returned");
+                }
             }
 
             @Override
@@ -553,7 +596,10 @@ public class DetailFragment extends Fragment {
             task.setListener(new MergeAndCalculateTaskListener() {
                 @Override
                 public void onComplete(ArrayList<ArrayList> chartValues, Exception e) {
-                    buildChart(chartValues);
+                    if (isFragmentUIActive()) {
+                        buildChart(chartValues);
+                        startDynaLoadingBarAnimation();
+                    }
                 }
             }).execute(mDeviceGraph);
         }
@@ -821,7 +867,7 @@ public class DetailFragment extends Fragment {
                 mMinX = Integer.MAX_VALUE;
                 mMaxX = Integer.MIN_VALUE;
                 for (int i = 0; i < newCoordinateOrderX.size(); i++) {
-                    Log.d("new Coordinates R", newCoordinateOrderX.get(i).toString() + " " + newCoordinateOrderY.get(i).toString() + " index " + i);
+//                    Log.d("new Coordinates R", newCoordinateOrderX.get(i).toString() + " " + newCoordinateOrderY.get(i).toString() + " index " + i);
                     int currentX = newCoordinateOrderX.get(i);
 
                     if (mMinX > currentX) {
