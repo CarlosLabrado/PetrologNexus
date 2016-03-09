@@ -554,6 +554,7 @@ public class DetailFragment extends Fragment {
                 @Override
                 public void onComplete(ArrayList<ArrayList> chartValues, Exception e) {
                     buildChart(chartValues);
+                    updateXYGraph();
                 }
             }).execute(mDeviceGraph);
         }
@@ -739,15 +740,13 @@ public class DetailFragment extends Fragment {
      * http://stackoverflow.com/questions/28116357/mpandroidchart-how-to-represent-multiple-dataset-object-with-different-number-of
      */
     public static class MergeAndCalculate extends AsyncTask<DeviceGraph, Void, ArrayList<ArrayList>> {
-        ArrayList<Number> xValues1 = new ArrayList<>();
-        ArrayList<Number> yValues1 = new ArrayList<>();
-        ArrayList<Number> xValues2 = new ArrayList<>();
-        ArrayList<Number> yValues2 = new ArrayList<>();
+        ArrayList<Integer> newCoordinateOrderX = new ArrayList<>();
+        ArrayList<Integer> newCoordinateOrderY = new ArrayList<>();
 
-        ArrayList<Number> xValuesFirst = new ArrayList<>();
-        ArrayList<Number> yValuesFirst = new ArrayList<>();
-        ArrayList<Number> xValuesSecond = new ArrayList<>();
-        ArrayList<Number> yValuesSecond = new ArrayList<>();
+        ArrayList<Integer> xValuesFirst = new ArrayList<>();
+        ArrayList<Integer> yValuesFirst = new ArrayList<>();
+        ArrayList<Integer> xValuesSecond = new ArrayList<>();
+        ArrayList<Integer> yValuesSecond = new ArrayList<>();
         //ArrayList<Integer> arrayListYvalues = new ArrayList<>();
         private Exception mError = null;
         private MergeAndCalculateTaskListener mListener = null;
@@ -762,19 +761,23 @@ public class DetailFragment extends Fragment {
 
             int minIndexX = 0;
             int maxIndexX = 0;
-            int minIndexY = 0;
-            int maxIndexy = 0;
 
             DeviceGraph deviceGraph = deviceGraphs[0];
             List<Coordinate> coordinates = deviceGraph.getCoordinates();
-            //SimpleXYSeries newDyna = simpleXYSeries[0];
 
-            Log.d("newDynaSize", String.valueOf(coordinates.size()));
+            /**
+             * We want to imagine these coordinates from "Top" to "Bottom", and expect that the
+             * higher values of X are in the top. If they aren't then we reverse them to be that way
+             * the whole following logic expects that.
+             */
+//            Log.d("newDynaSize", String.valueOf(coordinates.size()));
             for (int i = 0; i < coordinates.size(); i++) {
-                int currentX = coordinates.get(i).getX();
-                int currentY = coordinates.get(i).getY();
+                int currentX = coordinates.get(i).getY();
+                int currentY = coordinates.get(i).getX();
+//                Log.d("Coordinates", coordinates.get(i).getX().toString() + " " + coordinates.get(i).getY().toString() + " index " + i);
 
-                //arrayListYvalues.add(i, currentY);
+                newCoordinateOrderX.add(currentX);
+                newCoordinateOrderY.add(currentY);
 
                 if (mMinX > currentX) {
                     mMinX = currentX;
@@ -786,36 +789,68 @@ public class DetailFragment extends Fragment {
                 }
                 if (mMinY > currentY) {
                     mMinY = currentY;
-                    minIndexY = i;
                 }
                 if (mMaxY < currentY) {
                     mMaxY = currentY;
-                    maxIndexy = i;
                 }
 
             }
-            System.out.print(mMinY);
-            System.out.println("\n");
 
-            System.out.print(mMaxY);
-            System.out.println("\n");
 
+//            System.out.print("min index X " + minIndexX);
+//            System.out.println("\n");
+//
+//            System.out.print("MAX index X " + maxIndexX);
+//            System.out.println("\n");
+//
+//            System.out.print("min x " + mMinX);
+//            System.out.println("\n");
+//
+//            System.out.print("MAX x " + mMaxX);
+//            System.out.println("\n");
+
+//            for (int i = 0; i < newCoordinateOrderX.size(); i++) {
+//                Log.d("new Coordinates", newCoordinateOrderX.get(i).toString() + " " + newCoordinateOrderY.get(i).toString() + " index " + i);
+//            }
+
+            /* We don't want this scenario because we are predicting that the top values are going to be first
+               so if this happens we have to invert everything and search for the new indexes too
+              */
+            if (minIndexX < maxIndexX) {
+                Collections.reverse(newCoordinateOrderX);
+                Collections.reverse(newCoordinateOrderY);
+                mMinX = Integer.MAX_VALUE;
+                mMaxX = Integer.MIN_VALUE;
+                for (int i = 0; i < newCoordinateOrderX.size(); i++) {
+                    Log.d("new Coordinates R", newCoordinateOrderX.get(i).toString() + " " + newCoordinateOrderY.get(i).toString() + " index " + i);
+                    int currentX = newCoordinateOrderX.get(i);
+
+                    if (mMinX > currentX) {
+                        mMinX = currentX;
+                        minIndexX = i;
+                    }
+                    if (mMaxX < currentX) {
+                        mMaxX = currentX;
+                        maxIndexX = i;
+                    }
+                }
+            }
 
             // We save the values from 0 to the maxIndexY that were left out so we can later add them
             // to the second graph
-            ArrayList<Number> valuesLeftOutX = new ArrayList<>();
-            ArrayList<Number> valuesLeftOutY = new ArrayList<>();
-            for (int i = 0; i < maxIndexy; i++) {
-                valuesLeftOutX.add(coordinates.get(i).getX());
-                valuesLeftOutY.add(coordinates.get(i).getY());
+            ArrayList<Integer> valuesLeftOutX = new ArrayList<>();
+            ArrayList<Integer> valuesLeftOutY = new ArrayList<>();
+            for (int i = 0; i < maxIndexX; i++) {
+                valuesLeftOutX.add(newCoordinateOrderX.get(i));
+                valuesLeftOutY.add(newCoordinateOrderY.get(i));
             }
 
             // Now we go from MaxIndexY to the minIndexY this will be the first graph (this is
             // confusing because the values here go from Right to Left so in the end we must reverse
             // them
-            for (int i = maxIndexy; i < minIndexY; i++) {
-                xValuesFirst.add(coordinates.get(i).getX());
-                yValuesFirst.add(coordinates.get(i).getY());
+            for (int i = maxIndexX; i < minIndexX; i++) {
+                xValuesFirst.add(newCoordinateOrderX.get(i));
+                yValuesFirst.add(newCoordinateOrderY.get(i));
             }
             Collections.reverse(xValuesFirst);
             Collections.reverse(yValuesFirst);
@@ -823,82 +858,21 @@ public class DetailFragment extends Fragment {
             // Now the rest, from minIndexY to the full size of the coordinates list, and in the end
             // we must add the values that were left out at the beginning, we don't reverse this
             // because is in the right order, from Left to Right
-            for (int i = minIndexY; i < coordinates.size(); i++) {
-                xValuesSecond.add(coordinates.get(i).getX());
-                yValuesSecond.add(coordinates.get(i).getY());
+            for (int i = minIndexX; i < coordinates.size(); i++) {
+                xValuesSecond.add(newCoordinateOrderX.get(i));
+                yValuesSecond.add(newCoordinateOrderY.get(i));
             }
+
+            // we must reverse these too because they are taken from the top and we want them now at
+            // the "bottom"
+            Collections.reverse(valuesLeftOutX);
+            Collections.reverse(valuesLeftOutY);
 
             // add the values that were left out
             for (int i = 0; i < valuesLeftOutX.size(); i++) {
                 xValuesSecond.add(valuesLeftOutX.get(i));
                 yValuesSecond.add(valuesLeftOutY.get(i));
             }
-
-//            boolean reachedMinPoint = false;
-//            for (int i = 0; i < coordinates.size(); i++) {
-//                int currentX = coordinates.get(i).getX();
-//
-//                if (currentX == mMinX) {
-//                    reachedMinPoint = true;
-//                }
-//                if (!reachedMinPoint) {
-//                    xValues1.add(currentX);
-//                } else {
-//                    xValues2.add(currentX);
-//                }
-//            }
-//            for (int i = 0; i < coordinates.size(); i++) {
-//                if (i < xValues1.size()) {
-//                    yValues1.add(coordinates.get(i).getY());
-//                } else {
-//                    yValues2.add(coordinates.get(i).getY());
-//                }
-//            }
-//
-//            Collections.reverse(xValues1);
-//            Collections.reverse(yValues1);
-
-//            ArrayList<ArrayList> dataSets = new ArrayList<>();
-//            ArrayList<String> xVals = new ArrayList<>();
-//            ArrayList<Entry> yVals = new ArrayList<>();
-//
-//            ArrayList<String> xVals2 = new ArrayList<>();
-//            ArrayList<Entry> yVals2 = new ArrayList<>();
-//
-//            for (int i = 0; i < xValuesFirst.size(); i++) {
-//                xVals.add(i, String.valueOf(xValuesFirst.get(i)));
-//            }
-//
-//
-//            for (int i = 0; i < yValuesFirst.size(); i++) {
-//                try {
-//                    yVals.add(new Entry((Float) yValuesFirst.get(i), i));
-//
-//                } catch (Exception e) {
-////                            Log.e("yvals", "not in the array");
-//                }
-//
-//            }
-//
-//            for (int i = 0; i < xValuesSecond.size(); i++) {
-//                xVals2.add(i, String.valueOf(xValuesSecond.get(i)));
-//            }
-//
-//
-//            for (int i = 0; i < yValuesSecond.size(); i++) {
-//                try {
-//                    yVals2.add(new Entry((Float) yValuesSecond.get(i), i));
-//
-//                } catch (Exception e) {
-////                            Log.e("yvals", "not in the array");
-//                }
-//
-//            }
-//
-//            dataSets.add(yVals);
-//            dataSets.add(yVals2);
-//            dataSets.add(xVals);
-//            return dataSets;
             return startMerging(xValuesFirst, xValuesSecond, yValuesFirst, yValuesSecond);
         }
 
@@ -929,13 +903,13 @@ public class DetailFragment extends Fragment {
 
             mergedData.clear();
 
-            System.out.println(x1); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 25, 30, 35]
-            System.out.println(y1); // [5, null, null, null, null, null, null, null, null, 112, 23, 34, 50, 100, 130]
-
-            System.out.println("\n");
-
-            System.out.println(x2); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 25, 30, 35] // X = X1 = X2
-            System.out.println(y2); // [1, 5, 20, 15, 10, 30, 40, 70, 75, 100, null, null, null, null, null]
+//            System.out.println(x1); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 25, 30, 35]
+//            System.out.println(y1); // [5, null, null, null, null, null, null, null, null, 112, 23, 34, 50, 100, 130]
+//
+//            System.out.println("\n");
+//
+//            System.out.println(x2); // [0, 1, 2, 3, 4, 5, 6, 7, 8, 10, 15, 20, 25, 30, 35] // X = X1 = X2
+//            System.out.println(y2); // [1, 5, 20, 15, 10, 30, 40, 70, 75, 100, null, null, null, null, null]
 
             // we make sure they have starting connecting points
             if (!x1.isEmpty() && !x2.isEmpty() && !y1.isEmpty() && !y2.isEmpty()) {
@@ -946,7 +920,7 @@ public class DetailFragment extends Fragment {
                     if ((x1.get(x1.size() - 1)) != null && (y1.get(y1.size() - 1)) != null) {
                         int temp1 = x1.get(x1.size() - 1);
                         int temp2 = y1.get(y1.size() - 1);
-                        Log.d("size?", temp1 + " " + temp2);
+//                        Log.d("size?", temp1 + " " + temp2);
                         x2.add(temp1);
                         y2.add(temp2);
                     }
