@@ -3,12 +3,19 @@ package us.petrolog.nexus.ui;
 
 import android.app.AlertDialog;
 import android.os.Bundle;
+import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
 import android.view.InflateException;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
+import android.widget.RelativeLayout;
 
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.google.android.gms.maps.CameraUpdate;
 import com.google.android.gms.maps.CameraUpdateFactory;
 import com.google.android.gms.maps.GoogleMap;
@@ -23,6 +30,7 @@ import com.squareup.otto.Subscribe;
 
 import java.util.HashMap;
 
+import butterknife.Bind;
 import butterknife.ButterKnife;
 import butterknife.OnClick;
 import us.petrolog.nexus.R;
@@ -35,6 +43,11 @@ import us.petrolog.nexus.rest.model.Device;
  * A simple {@link Fragment} subclass.
  */
 public class MapPetrologFragment extends Fragment {
+
+    @Bind(R.id.buttonSwitchToSatellite)
+    public FloatingActionButton mButtonSwitchToSatellite;
+    @Bind(R.id.buttonFocusOnDevices)
+    public FloatingActionButton mButtonFocusOnDevices;
 
     private static final String TAG = MapPetrologFragment.class.getSimpleName();
     private static View mView;
@@ -49,6 +62,11 @@ public class MapPetrologFragment extends Fragment {
     private boolean isFocusOnDevicesOn = false;
     public static Bus mBus;
 
+    private ShowcaseView mShowcaseView;
+    private int mShowCaseCounter = 0;
+
+    boolean isSatView = false;
+
     public MapPetrologFragment() {
         // Required empty public constructor
     }
@@ -58,6 +76,19 @@ public class MapPetrologFragment extends Fragment {
         if (mBounds != null) {
             isFocusOnDevicesOn = true;
             mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
+        }
+    }
+
+    @OnClick(R.id.buttonSwitchToSatellite)
+    public void switchToSatelliteClicked() {
+        if (mMap != null) {
+            if (!isSatView) {
+                mMap.setMapType(GoogleMap.MAP_TYPE_HYBRID);
+                isSatView = true;
+            } else {
+                mMap.setMapType(GoogleMap.MAP_TYPE_NORMAL);
+                isSatView = false;
+            }
         }
     }
 
@@ -194,11 +225,27 @@ public class MapPetrologFragment extends Fragment {
         }
     }
 
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_map, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_help_map) {
+            showShowcaseHelp();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
 
     @Override
     public void onResume() {
         super.onResume();
-        ((MainActivity) getActivity()).setActionBarTitle("Map", null, false);
+        ((MainActivity) getActivity()).setActionBarTitle(getResources().getString(R.string.app_toolbar_title_main), null, false);
         setUpMapIfNeeded();
         if (mMap != null) {
             //populateTheMap(mLocations);
@@ -207,6 +254,42 @@ public class MapPetrologFragment extends Fragment {
                 mMap.animateCamera(cameraUpdateFactory);
             }
         }
+    }
+
+    private void showShowcaseHelp() {
+
+        // this is to put the button on the left
+        RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        mShowcaseView = new ShowcaseView.Builder(getActivity())
+                .setTarget(new ViewTarget(mButtonFocusOnDevices))
+                .setContentText(getString(R.string.help_map_focus))
+                .setStyle(R.style.CustomShowcaseTheme4)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        switch (mShowCaseCounter) {
+                            case 0:
+                                mShowcaseView.setShowcase(new ViewTarget(mButtonSwitchToSatellite), false);
+                                mShowcaseView.setContentText(getString(R.string.help_map_satellite));
+                                break;
+                            case 1:
+                                mShowcaseView.hide();
+                                mShowCaseCounter = -1;
+                                break;
+                        }
+                        mShowCaseCounter++;
+                    }
+                })
+                .build();
+        mShowcaseView.setButtonText(getString(R.string.next));
+        mShowcaseView.setHideOnTouchOutside(true);
+
     }
 
 }

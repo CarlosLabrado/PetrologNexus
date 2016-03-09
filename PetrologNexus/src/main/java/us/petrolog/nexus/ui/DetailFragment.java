@@ -11,14 +11,19 @@ import android.os.AsyncTask;
 import android.os.Bundle;
 import android.support.v4.app.Fragment;
 import android.support.v4.graphics.ColorUtils;
+import android.support.v7.widget.CardView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
 import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
 import android.widget.TextView;
 
@@ -32,6 +37,8 @@ import com.db.chart.view.animation.easing.BaseEasingMethod;
 import com.db.chart.view.animation.easing.BounceEase;
 import com.db.chart.view.animation.easing.QuintEase;
 import com.db.chart.view.animation.style.DashAnimation;
+import com.github.amlcurran.showcaseview.ShowcaseView;
+import com.github.amlcurran.showcaseview.targets.ViewTarget;
 import com.github.mikephil.charting.charts.LineChart;
 import com.github.mikephil.charting.components.Legend;
 import com.github.mikephil.charting.components.XAxis;
@@ -113,6 +120,18 @@ public class DetailFragment extends Fragment {
     TextSwitcher mTextSWFillagePumpOffDistance;
     @Bind(R.id.progressBar)
     ProgressBar mProgressBarWait;
+    @Bind(R.id.cardWell)
+    CardView mCardWell;
+    @Bind(R.id.cardRunTime)
+    CardView mCardRunTime;
+    @Bind(R.id.cardHistory)
+    CardView mCardHistory;
+    @Bind(R.id.cardDyna)
+    CardView mCardDyna;
+    @Bind(R.id.cardStrokes)
+    CardView mCardStrokes;
+    @Bind(R.id.cardFillage)
+    CardView mCardFillage;
 
     private int mDeviceId;
     private String mDeviceName;
@@ -146,6 +165,9 @@ public class DetailFragment extends Fragment {
     Timer mTimer = new Timer();
 
     private OnFragmentInteractionListener mListener;
+
+    private ShowcaseView mShowcaseView;
+    private int mShowCaseCounter = 0;
 
     public DetailFragment() {
         // Required empty public constructor
@@ -225,6 +247,8 @@ public class DetailFragment extends Fragment {
         mTextSwLastCycle.setOutAnimation(mOutAnim);
         mTextSwPumpOff.setInAnimation(mInAnim);
         mTextSwPumpOff.setOutAnimation(mOutAnim);
+
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -1105,5 +1129,80 @@ public class DetailFragment extends Fragment {
     public interface OnFragmentInteractionListener {
         // TODO: Update argument type and name
         void onFragmentInteraction(Uri uri);
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_details, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_help_details) {
+            showShowcaseHelp();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showShowcaseHelp() {
+
+        // this is to put the button on the left
+        final RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 30)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        mShowcaseView = new ShowcaseView.Builder(getActivity())
+                .setTarget(new ViewTarget(mLinechartGraph))
+                .setContentText(getString(R.string.dyna_h_s))
+                .setStyle(R.style.CustomShowcaseTheme4)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+
+                        switch (mShowCaseCounter) {
+                            case 0:
+                                mShowcaseView.setShowcase(new ViewTarget(mCardWell), false);
+                                mShowcaseView.setContentText(getResources().getString(R.string.current_h_s));
+                                break;
+
+                            case 1:
+                                mShowcaseView.setShowcase(new ViewTarget(mCardRunTime), false);
+                                mShowcaseView.setContentText(getResources().getString(R.string.runtime_h_s));
+                                break;
+
+                            case 2:
+                                mShowcaseView.setShowcase(new ViewTarget(mCardHistory), false);
+                                mShowcaseView.setContentText(getResources().getString(R.string.runtime_trend_h_s));
+                                break;
+
+                            case 3:
+                                mShowcaseView.setShowcase(new ViewTarget(mCardStrokes), false);
+                                mShowcaseView.setContentText(getResources().getString(R.string.settings_h_s));
+                                mShowcaseView.setButtonPosition(lps);
+                                break;
+                            case 4:
+                                mShowcaseView.setShowcase(new ViewTarget(mCardFillage), false);
+                                mShowcaseView.setContentText(getResources().getString(R.string.fillage_h_s));
+                                mShowcaseView.setButtonPosition(lps);
+                                break;
+
+                            case 5:
+                                mShowcaseView.hide();
+//                setAlpha(1.0f, textView1, textView2, textView3);
+                                mShowCaseCounter = -1;
+                                break;
+                        }
+                        mShowCaseCounter++;
+                    }
+                })
+                .build();
+        mShowcaseView.setButtonText(getString(R.string.next));
+        mShowcaseView.setHideOnTouchOutside(true);
+
     }
 }

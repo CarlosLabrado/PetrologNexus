@@ -7,9 +7,15 @@ import android.support.v7.widget.LinearLayoutManager;
 import android.support.v7.widget.RecyclerView;
 import android.util.Log;
 import android.view.LayoutInflater;
+import android.view.Menu;
+import android.view.MenuInflater;
+import android.view.MenuItem;
 import android.view.View;
 import android.view.ViewGroup;
 import android.widget.ProgressBar;
+import android.widget.RelativeLayout;
+
+import com.github.amlcurran.showcaseview.ShowcaseView;
 
 import java.util.ArrayList;
 import java.util.List;
@@ -42,6 +48,9 @@ public class AttentionListFragment extends Fragment implements RecyclerViewClick
 
     private DevicesDetailAdapter mAdapter;
     private RecyclerView.LayoutManager mLayoutManager;
+
+    private ShowcaseView mShowcaseView;
+    private int mShowCaseCounter = 0;
 
     public AttentionListFragment() {
         // Required empty public constructor
@@ -80,6 +89,8 @@ public class AttentionListFragment extends Fragment implements RecyclerViewClick
             mAdapter = new DevicesDetailAdapter(mDeviceDetailList, this);
             mRecyclerView.setAdapter(mAdapter);
         }
+
+        setHasOptionsMenu(true);
 
         return view;
     }
@@ -142,6 +153,47 @@ public class AttentionListFragment extends Fragment implements RecyclerViewClick
     public void recyclerViewListClicked(View v, int position) {
         DeviceDetail currentDevice = mDeviceDetailList.get(position);
         MainActivity.mBus.post(new StartDetailFragmentEvent(currentDevice.getRemoteDeviceId(), currentDevice.getName(), currentDevice.getLocation()));
+
+    }
+
+    @Override
+    public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
+        super.onCreateOptionsMenu(menu, inflater);
+        inflater.inflate(R.menu.menu_attention, menu);
+    }
+
+    @Override
+    public boolean onOptionsItemSelected(MenuItem item) {
+        int id = item.getItemId();
+
+        if (id == R.id.action_help_attention) {
+            showShowcaseHelp();
+        }
+        return super.onOptionsItemSelected(item);
+    }
+
+    private void showShowcaseHelp() {
+
+        // this is to put the button on the left
+        RelativeLayout.LayoutParams lps = new RelativeLayout.LayoutParams(ViewGroup.LayoutParams.WRAP_CONTENT, ViewGroup.LayoutParams.WRAP_CONTENT);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_TOP);
+        lps.addRule(RelativeLayout.ALIGN_PARENT_RIGHT);
+        int margin = ((Number) (getResources().getDisplayMetrics().density * 12)).intValue();
+        lps.setMargins(margin, margin, margin, margin);
+
+        mShowcaseView = new ShowcaseView.Builder(getActivity())
+                .setContentText(getString(R.string.help_attention))
+                .setStyle(R.style.CustomShowcaseTheme4)
+                .setOnClickListener(new View.OnClickListener() {
+                    @Override
+                    public void onClick(View view) {
+                        mShowcaseView.hide();
+                        mShowCaseCounter = -1;
+                    }
+                })
+                .build();
+        mShowcaseView.setButtonText(getString(R.string.next));
+        mShowcaseView.setHideOnTouchOutside(true);
 
     }
 }
