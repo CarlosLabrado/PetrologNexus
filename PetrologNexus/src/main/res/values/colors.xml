@@ -18,6 +18,9 @@
 
     <color name="gridBlue">@color/blue_200</color>
 
+    <color name="almostWhite">#FFCCCCCC</color>
+
+
     <!--Material design colors-->
     <color name="red_50">#ffebee</color>
     <color name="red_100">#ffcdd2</color>

@@ -8,8 +8,8 @@ android {
         applicationId "us.petrolog.nexus"
         minSdkVersion 16
         targetSdkVersion 22
-        versionCode 14
-        versionName "14"
+        versionCode 16
+        versionName "16"
     }
 
     buildTypes {

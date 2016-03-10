@@ -431,12 +431,13 @@ public class MainActivity extends AppCompatActivity
             int fragments = getSupportFragmentManager().getBackStackEntryCount();
             if (fragments > 2) {
                 try {
-                    mDrawerStack.pop();
-                    setCheckedDrawerItem(mDrawerStack.peek());
-                    super.onBackPressed();
+                    if (!mDrawerStack.isEmpty()) {
+                        mDrawerStack.pop();
+                        setCheckedDrawerItem(mDrawerStack.peek());
+                        super.onBackPressed();
+                    }
                 } catch (Exception e) {
                     e.printStackTrace();
-                    super.onBackPressed();
                 }
             } else {
                 finish();

@@ -2,6 +2,8 @@ package us.petrolog.nexus.ui;
 
 
 import android.app.AlertDialog;
+import android.graphics.Bitmap;
+import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
@@ -48,6 +50,8 @@ public class MapPetrologFragment extends Fragment {
     public FloatingActionButton mButtonSwitchToSatellite;
     @Bind(R.id.buttonFocusOnDevices)
     public FloatingActionButton mButtonFocusOnDevices;
+    @Bind(R.id.buttonGoToDetail)
+    public FloatingActionButton mButtonGoToDetail;
 
     private static final String TAG = MapPetrologFragment.class.getSimpleName();
     private static View mView;
@@ -66,6 +70,8 @@ public class MapPetrologFragment extends Fragment {
     private int mShowCaseCounter = 0;
 
     boolean isSatView = false;
+
+    private Device mDeviceClicked;
 
     public MapPetrologFragment() {
         // Required empty public constructor
@@ -92,6 +98,12 @@ public class MapPetrologFragment extends Fragment {
         }
     }
 
+    @OnClick(R.id.buttonGoToDetail)
+    public void goToDetailClicked() {
+        MainActivity.mBus.post(new StartDetailFragmentEvent(mDeviceClicked.getRemoteDeviceId(), mDeviceClicked.getName(), mDeviceClicked.getLocation()));
+
+    }
+
     @Override
     public View onCreateView(LayoutInflater inflater, ViewGroup container,
                              Bundle savedInstanceState) {
@@ -112,6 +124,9 @@ public class MapPetrologFragment extends Fragment {
         } catch (InflateException e) {
         /* map is already there, just return view as it is */
         }
+
+        mButtonGoToDetail.hide();
+
         setUpMapIfNeeded();
 
         setHasOptionsMenu(true);
@@ -164,6 +179,22 @@ public class MapPetrologFragment extends Fragment {
             }
         });
 
+        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
+            @Override
+            public boolean onMarkerClick(Marker marker) {
+                mDeviceClicked = mEventMarkerMap.get(marker.getId());
+                mButtonGoToDetail.show();
+                return false;
+            }
+        });
+
+        mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
+            @Override
+            public void onMapClick(LatLng latLng) {
+                mButtonGoToDetail.hide();
+            }
+        });
+
         // Initiate loadings
 
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
@@ -185,45 +216,76 @@ public class MapPetrologFragment extends Fragment {
 
     @Subscribe
     public void getDeviceList(SendDeviceListEvent event) {
-        LatLngBounds.Builder builder = new LatLngBounds.Builder();
-        mEventMarkerMap = new HashMap<>();
+        if (isFragmentUIActive()) {
+            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            mEventMarkerMap = new HashMap<>();
 
-        if (event != null) {
-            for (Device device : event.getDevices()) {
-                int deviceStatus = device.getRemoteDeviceStatus();
-                float markerColor = 0;
-                switch (deviceStatus) {
-                    case 0: // No data
-                        markerColor = BitmapDescriptorFactory.HUE_CYAN;
-                        break;
-                    case 1: // active
-                        markerColor = BitmapDescriptorFactory.HUE_GREEN;
-                        break;
-                    case 2: // Inactive
-                        markerColor = BitmapDescriptorFactory.HUE_YELLOW;
-                        break;
-                    case 3: // Offline
-                        markerColor = BitmapDescriptorFactory.HUE_RED;
-                        break;
-                    case 4: // Alert
-                        markerColor = BitmapDescriptorFactory.HUE_RED;
-                        break;
+            if (event != null) {
+                for (Device device : event.getDevices()) {
+                    int deviceStatus = device.getRemoteDeviceStatus();
+                    float markerColor = 0;
+                    BitmapDrawable bitmapDraw = null;
+                    switch (deviceStatus) {
+                        case 0: // No data
+                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_black_pin);
+                            break;
+                        case 1: // active
+                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_green_pin);
+                            break;
+                        case 2: // Inactive
+                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_yellow_pin);
+                            break;
+                        case 3: // Offline
+                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_grey_pin);
+                            break;
+                        case 4: // Alert
+                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_red_pin);
+                            break;
+                        default:
+                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_pin);
+                            break;
+                    }
+                    //Bitmap bitmap = resizeMapIcons("pin_blue", 30, 30);
+                    int height = 50;
+                    int width = 40;
+                    Bitmap b = bitmapDraw.getBitmap();
+                    Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+
+                    LatLng latLng = new LatLng(device.getLatitude(), device.getLongitude());
+                    builder.include(latLng);
+                    Marker marker = mMap.addMarker(new MarkerOptions()
+                            .position(latLng)
+                            .title(device.getName() + " - " + device.getLocation())
+                            //                        .icon(getBitmapDescriptor(R.drawable.ic_place_red_24dp)));
+                            .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+
+                    mEventMarkerMap.put(marker.getId(), device);
                 }
-                LatLng latLng = new LatLng(device.getLatitude(), device.getLongitude());
-                builder.include(latLng);
-                Marker marker = mMap.addMarker(new MarkerOptions()
-                        .position(latLng)
-                        .title(device.getName() + " - " + device.getLocation())
-                        .icon(BitmapDescriptorFactory.defaultMarker(markerColor)));
+                // Animates the camera to show all the current markers
+                mBounds = builder.build();
+                mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
 
-                mEventMarkerMap.put(marker.getId(), device);
             }
-            // Animates the camera to show all the current markers
-            mBounds = builder.build();
-            mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
-
         }
     }
+
+//    private BitmapDescriptor getBitmapDescriptor(int id) {
+//        Drawable vectorDrawable = ContextCompat.getDrawable(getContext(), id);
+//        Utils.init(getContext());
+//        int h = ((int) Utils.convertDpToPixel(40));
+//        int w = ((int) Utils.convertDpToPixel(40));
+//        vectorDrawable.setBounds(0, 0, w, h);
+//        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
+//        Canvas canvas = new Canvas(bm);
+//        vectorDrawable.draw(canvas);
+//        return BitmapDescriptorFactory.fromBitmap(bm);
+//    }
+//
+//    public Bitmap resizeMapIcons(String iconName,int width, int height){
+//        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
+//        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
+//        return resizedBitmap;
+//    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {
@@ -290,6 +352,10 @@ public class MapPetrologFragment extends Fragment {
         mShowcaseView.setButtonText(getString(R.string.next));
         mShowcaseView.setHideOnTouchOutside(true);
 
+    }
+
+    public boolean isFragmentUIActive() {
+        return isAdded() && !isDetached() && !isRemoving();
     }
 
 }

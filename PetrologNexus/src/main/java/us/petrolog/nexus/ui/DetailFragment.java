@@ -2,6 +2,7 @@ package us.petrolog.nexus.ui;
 
 import android.animation.ObjectAnimator;
 import android.content.Context;
+import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
@@ -117,7 +118,7 @@ public class DetailFragment extends Fragment {
     @Bind(R.id.fillage_setting)
     TextView mTextViewFillageSetting;
     @Bind(R.id.fillage_pump_off_distance)
-    TextSwitcher mTextSWFillagePumpOffDistance;
+    TextView mTextSWFillagePumpOffDistance;
     @Bind(R.id.progressBar)
     ProgressBar mProgressBarWait;
     @Bind(R.id.cardWell)
@@ -165,6 +166,11 @@ public class DetailFragment extends Fragment {
     Timer mTimer = new Timer();
 
     private OnFragmentInteractionListener mListener;
+
+    private int mDeviceEfficiencyToday;
+    private int mDeviceEfficiencyYesterday;
+    private int mTotalSecondsToday;
+    private boolean updateTheHistoryGraph = true;
 
     private ShowcaseView mShowcaseView;
     private int mShowCaseCounter = 0;
@@ -221,6 +227,7 @@ public class DetailFragment extends Fragment {
         mTimer.scheduleAtFixedRate(new TimerTask() {
                                        @Override
                                        public void run() {
+                                           getDeviceEfficiencyList(mDeviceId);
                                            getDeviceLastGraph(mDeviceId);
                                            Log.d("getDevice", "get graph");
                                        }
@@ -231,7 +238,6 @@ public class DetailFragment extends Fragment {
                 10000);
 
 
-        getDeviceEfficiencyList(mDeviceId);
 
         // Declare the in and out animations and initialize them
         mInAnim = AnimationUtils.loadAnimation(getContext(), R.anim.push_down_in);
@@ -241,8 +247,6 @@ public class DetailFragment extends Fragment {
         mTextSwWellStatus.setOutAnimation(mOutAnim);
         mTextSWFillageCurrent.setInAnimation(mInAnim);
         mTextSWFillageCurrent.setOutAnimation(mOutAnim);
-        mTextSWFillagePumpOffDistance.setInAnimation(mInAnim);
-        mTextSWFillagePumpOffDistance.setOutAnimation(mOutAnim);
         mTextSwLastCycle.setInAnimation(mInAnim);
         mTextSwLastCycle.setOutAnimation(mOutAnim);
         mTextSwPumpOff.setInAnimation(mInAnim);
@@ -256,37 +260,51 @@ public class DetailFragment extends Fragment {
     private void updateUI() {
 
         if (isFragmentUIActive() && mDeviceDetail != null) {
-            State state = mDeviceDetail.getState();
+            try {
+                State state = mDeviceDetail.getState();
 
-            String pumpOff;
-            if (state.getPumpOff()) {
-                pumpOff = "Yes";
-            } else {
-                pumpOff = "No";
+                String pumpOff;
+                if (state.getPumpOff()) {
+                    pumpOff = "Yes";
+                } else {
+                    pumpOff = "No";
+                }
+                mTextSwWellStatus.setText(state.getRemoteDeviceStatusDescription());
+                mTextSwPumpOff.setText(pumpOff);
+                mTextSwLastCycle.setText(state.getStrokesThisCycle().toString());
+
+                int secondsActiveToday = (mDeviceEfficiencyToday * mTotalSecondsToday) / 100;
+                mTextViewTodayRuntimePercent.setText(String.valueOf(mDeviceEfficiencyToday));
+                mTextViewTodayRuntimeTime.setText(getDurationString(secondsActiveToday));
+
+                int secondsActiveYesterday = (mDeviceEfficiencyYesterday * 86400) / 100;
+                mTextViewYesterdayRuntimePercent.setText(String.valueOf(mDeviceEfficiencyYesterday));
+                mTextViewYesterdayRuntimeTime.setText(getDurationString(secondsActiveYesterday));
+
+                mTextViewStrokesPumpUp.setText("N/A");
+                mTextViewStrokesPumpOff.setText("N/A");
+                mTextViewStrokesCurrentTimeOut.setText(state.getTimeOut().toString());
+                String automaticTimeOut;
+                if (state.getAutomatic()) {
+                    automaticTimeOut = "Yes";
+                } else {
+                    automaticTimeOut = "No";
+                }
+                mTextViewStrokesAutomaticTimeOut.setText(automaticTimeOut);
+
+                mTextSWFillageCurrent.setText(state.getPercentFillage().toString());
+                mTextViewFillageSetting.setText(state.getPercentFillageSetting().toString());
+                int pumpOffDistanceInt = state.getPercentFillage() - state.getPercentFillageSetting();
+                if (pumpOffDistanceInt < 0) {
+                    mTextSWFillagePumpOffDistance.setTextColor(getResources().getColor(R.color.red_400));
+                } else {
+                    mTextSWFillagePumpOffDistance.setTextColor(getResources().getColor(R.color.almostWhite));
+                }
+                mTextSWFillagePumpOffDistance.setText(String.valueOf(pumpOffDistanceInt));
+            } catch (Resources.NotFoundException e) {
+                e.printStackTrace();
             }
-            mTextSwWellStatus.setText(state.getRemoteDeviceStatusDescription());
-            mTextSwPumpOff.setText(pumpOff);
-            mTextSwLastCycle.setText(state.getStrokesThisCycle().toString());
 
-            mTextViewTodayRuntimePercent.setText("N/A");
-            mTextViewTodayRuntimeTime.setText("N/A");
-            mTextViewYesterdayRuntimePercent.setText("N/A");
-            mTextViewYesterdayRuntimeTime.setText("N/A");
-
-            mTextViewStrokesPumpUp.setText("N/A");
-            mTextViewStrokesPumpOff.setText("N/A");
-            mTextViewStrokesCurrentTimeOut.setText(state.getTimeOut().toString());
-            String automaticTimeOut;
-            if (state.getAutomatic()) {
-                automaticTimeOut = "Yes";
-            } else {
-                automaticTimeOut = "No";
-            }
-            mTextViewStrokesAutomaticTimeOut.setText(automaticTimeOut);
-
-            mTextSWFillageCurrent.setText(state.getPercentFillage().toString());
-            mTextViewFillageSetting.setText(state.getPercentFillageSetting().toString());
-            mTextSWFillagePumpOffDistance.setText("N/A");
         }
 
     }
@@ -416,7 +434,11 @@ public class DetailFragment extends Fragment {
                 if (response.body() != null) {
                     mDeviceEfficiencyList = response.body();
                     if (isFragmentUIActive()) {
-                        updateHistoryGraph(mDeviceEfficiencyList);
+                        if (updateTheHistoryGraph) {
+                            updateHistoryGraph(mDeviceEfficiencyList);
+                            updateTheHistoryGraph = false;
+                        }
+                        updateRuntimeBlock(mDeviceEfficiencyList);
                     }
                     Log.d(TAG, "Callback device efficiency successfully returned");
                 }
@@ -431,6 +453,68 @@ public class DetailFragment extends Fragment {
 
     }
 
+    private void updateRuntimeBlock(List<DeviceEfficiency> deviceEfficiencyList) {
+
+        Calendar c = Calendar.getInstance();
+        int today = c.get(Calendar.DAY_OF_MONTH);
+
+        int currentHour = c.get(Calendar.HOUR);
+        int currentMinutes = c.get(Calendar.MINUTE);
+        int currentSeconds = c.get(Calendar.SECOND);
+
+        boolean isYesterdayReached = false;
+
+        mTotalSecondsToday = (currentHour * 3600) + (currentMinutes + 60) + currentSeconds;
+
+        Collections.reverse(deviceEfficiencyList);
+
+        for (int i = 0; i < deviceEfficiencyList.size(); i++) {
+            DeviceEfficiency deviceEfficiency = deviceEfficiencyList.get(i);
+
+            Calendar date = Utility.getFormattedDate(deviceEfficiency.getDateTimeStamp());
+            SimpleDateFormat formatter = new SimpleDateFormat("MMM-dd");
+            String dateString = formatter.format(date.getTime());
+
+            // For the runtime card
+            if (today == date.get(Calendar.DAY_OF_MONTH)) {
+                DeviceEfficiency deviceEfficiencyToday = deviceEfficiencyList.get(0);
+                mDeviceEfficiencyToday = deviceEfficiencyToday.getEfficiency();
+            } else if (!isYesterdayReached) {
+                isYesterdayReached = true;
+                DeviceEfficiency deviceEfficiencyYesterday = deviceEfficiencyList.get(i);
+                mDeviceEfficiencyYesterday = deviceEfficiencyYesterday.getEfficiency();
+            }
+        }
+
+    }
+
+    private String getDurationString(int seconds) {
+
+        int hours = seconds / 3600;
+        int minutes = (seconds % 3600) / 60;
+        seconds = seconds % 60;
+
+        return twoDigitString(hours) + " : " + twoDigitString(minutes) + " : " + twoDigitString(seconds);
+    }
+
+    private String twoDigitString(int number) {
+
+        if (number == 0) {
+            return "00";
+        }
+
+        if (number / 10 == 0) {
+            return "0" + number;
+        }
+
+        return String.valueOf(number);
+    }
+
+    /**
+     * Updates the WilliamChart History Graph
+     *
+     * @param deviceEfficiencyList the list with the history of the well
+     */
     private void updateHistoryGraph(List<DeviceEfficiency> deviceEfficiencyList) {
 
         Calendar c = Calendar.getInstance();
@@ -438,12 +522,12 @@ public class DetailFragment extends Fragment {
         int currentMonth = c.get(Calendar.MONTH);
 
         try {
-            LineSet dataSetBeforeToday = new LineSet();
-            LineSet dataSetToday = new LineSet();
-            LineSet dataSetLastMonth = new LineSet();
+            LineSet dataSetRuntime = new LineSet();
+//            LineSet dataSetToday = new LineSet();
+//            LineSet dataSetLastMonth = new LineSet();
             LineSet dataSetAverageFillage = new LineSet();
             LineSet dataSetConfiguredFillage = new LineSet();
-            LineSet bottom = new LineSet();
+//            LineSet bottom = new LineSet();
 
             int highestYValue = 0;
             int maxDrawYValue = 100; // this will normally be 100 all the time but, some things happen
@@ -453,11 +537,11 @@ public class DetailFragment extends Fragment {
             Point dummyPoint;
             Point averageFillagePoint;
             Point configuredFillagePoint;
-            Point dummyPointBottom;
+//            Point dummyPointBottom;
 
             // we use these to know where to start/stop drawing each of the charts
-            int indexBeforeToday = 0;
-            int indexLastMonth = 0;
+//            int indexBeforeToday = 0;
+//            int indexLastMonth = 0;
 
             /** The logic behind the dummyPoint is that, for this charts we can't just put a chart
              * that is not the same size that the other ones, so we fill it with dummy transparent
@@ -481,39 +565,39 @@ public class DetailFragment extends Fragment {
                     dummyPoint = new Point(dateString, 0);
                     averageFillagePoint = new Point(dateString, averageFillage);
                     configuredFillagePoint = new Point(dateString, configuredFillage);
-                    dummyPointBottom = new Point(dateString, 0);
+//                    dummyPointBottom = new Point(dateString, 0);
                 } else {
                     point = new Point("", efficiency);
                     dummyPoint = new Point("", 0);
                     averageFillagePoint = new Point("", averageFillage);
                     configuredFillagePoint = new Point("", configuredFillage);
-                    dummyPointBottom = new Point("", 0);
+//                    dummyPointBottom = new Point("", 0);
                 }
                 dummyPoint.setColor(getContext().getResources().getColor(R.color.transparent));
                 dummyPoint.setRadius(2);
 
-                //dataSetToday.addPoint(point);
+                dataSetRuntime.addPoint(point);
 
-                if (today == date.get(Calendar.DAY_OF_MONTH)) {
-                    dataSetToday.addPoint(point);
-                    dataSetBeforeToday.addPoint(dummyPoint);
-                    dataSetLastMonth.addPoint(dummyPoint);
-                } else if (currentMonth == date.get(Calendar.MONTH)) {
-                    dataSetBeforeToday.addPoint(point);
-                    dataSetLastMonth.addPoint(dummyPoint);
-                    dataSetToday.addPoint(dummyPoint);
-
-                    indexBeforeToday = i;
-                } else {
-                    dataSetLastMonth.addPoint(point);
-                    dataSetBeforeToday.addPoint(dummyPoint);
-                    dataSetToday.addPoint(dummyPoint);
-
-                    indexLastMonth = i;
-                }
+//                if (today == date.get(Calendar.DAY_OF_MONTH)) {
+//                    dataSetToday.addPoint(point);
+//                    dataSetRuntime.addPoint(dummyPoint);
+//                    dataSetLastMonth.addPoint(dummyPoint);
+//                } else if (currentMonth == date.get(Calendar.MONTH)) {
+//                    dataSetRuntime.addPoint(point);
+//                    dataSetLastMonth.addPoint(dummyPoint);
+//                    dataSetToday.addPoint(dummyPoint);
+//
+//                    indexBeforeToday = i;
+//                } else {
+//                    dataSetLastMonth.addPoint(point);
+//                    dataSetRuntime.addPoint(dummyPoint);
+//                    dataSetToday.addPoint(dummyPoint);
+//
+//                    indexLastMonth = i;
+//                }
                 dataSetAverageFillage.addPoint(averageFillagePoint);
                 dataSetConfiguredFillage.addPoint(configuredFillagePoint);
-                bottom.addPoint(dummyPointBottom);
+//                bottom.addPoint(dummyPointBottom);
                 if (highestYValue <= efficiency) {
                     highestYValue = efficiency;
                 }
@@ -540,32 +624,30 @@ public class DetailFragment extends Fragment {
             mLineGridPaint.setAntiAlias(true);
             mLineGridPaint.setStrokeWidth(Tools.fromDpToPx(.5f));
 
-            dataSetBeforeToday.setColor(getContext().getResources().getColor(R.color.blue_600))
+            dataSetRuntime.setColor(getContext().getResources().getColor(R.color.blue_600))
                     .setFill(getContext().getResources().getColor(R.color.fillBlue))
                     .setDotsRadius(Tools.fromDpToPx(2))
                     //.setDashed(new float[]{10, 10})
 //                .setDotsStrokeThickness(Tools.fromDpToPx(2))
                     .setDotsColor(getContext().getResources().getColor(R.color.blue_800))
-                    .beginAt(indexLastMonth)
-                    .endAt(indexBeforeToday + 1)
                     .setThickness(Tools.fromDpToPx(2));
-            mLinechartHistory.addData(dataSetBeforeToday);
+            mLinechartHistory.addData(dataSetRuntime);
 
-            dataSetToday.setColor(getContext().getResources().getColor(R.color.red_600))
-                    .setFill(getContext().getResources().getColor(R.color.fillRed))
-                    .setDotsRadius(Tools.fromDpToPx(2))
-                    .setDotsColor(getContext().getResources().getColor(R.color.red_600))
-                    .beginAt(indexBeforeToday)
-                    .setThickness(Tools.fromDpToPx(2));
-            mLinechartHistory.addData(dataSetToday);
-
-            dataSetLastMonth.setColor(getContext().getResources().getColor(R.color.grey_600))
-                    .setFill(getContext().getResources().getColor(R.color.fillGrey))
-                    .setDotsRadius(Tools.fromDpToPx(2))
-                    .setDotsColor(getContext().getResources().getColor(R.color.grey_600))
-                    .endAt(indexLastMonth + 1)
-                    .setThickness(Tools.fromDpToPx(2));
-            mLinechartHistory.addData(dataSetLastMonth);
+//            dataSetToday.setColor(getContext().getResources().getColor(R.color.red_600))
+//                    .setFill(getContext().getResources().getColor(R.color.fillRed))
+//                    .setDotsRadius(Tools.fromDpToPx(2))
+//                    .setDotsColor(getContext().getResources().getColor(R.color.red_600))
+//                    .beginAt(indexBeforeToday)
+//                    .setThickness(Tools.fromDpToPx(2));
+//            mLinechartHistory.addData(dataSetToday);
+//
+//            dataSetLastMonth.setColor(getContext().getResources().getColor(R.color.grey_600))
+//                    .setFill(getContext().getResources().getColor(R.color.fillGrey))
+//                    .setDotsRadius(Tools.fromDpToPx(2))
+//                    .setDotsColor(getContext().getResources().getColor(R.color.grey_600))
+//                    .endAt(indexLastMonth + 1)
+//                    .setThickness(Tools.fromDpToPx(2));
+//            mLinechartHistory.addData(dataSetLastMonth);
 
 
             // These are weird cases, but we don't want the graph to look ugly
