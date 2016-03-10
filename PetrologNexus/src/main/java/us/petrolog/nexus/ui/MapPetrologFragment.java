@@ -2,11 +2,13 @@ package us.petrolog.nexus.ui;
 
 
 import android.app.AlertDialog;
+import android.content.Context;
 import android.graphics.Bitmap;
 import android.graphics.drawable.BitmapDrawable;
 import android.os.Bundle;
 import android.support.design.widget.FloatingActionButton;
 import android.support.v4.app.Fragment;
+import android.util.Log;
 import android.view.InflateException;
 import android.view.LayoutInflater;
 import android.view.Menu;
@@ -25,8 +27,10 @@ import com.google.android.gms.maps.SupportMapFragment;
 import com.google.android.gms.maps.model.BitmapDescriptorFactory;
 import com.google.android.gms.maps.model.LatLng;
 import com.google.android.gms.maps.model.LatLngBounds;
-import com.google.android.gms.maps.model.Marker;
 import com.google.android.gms.maps.model.MarkerOptions;
+import com.google.maps.android.clustering.Cluster;
+import com.google.maps.android.clustering.ClusterManager;
+import com.google.maps.android.clustering.view.DefaultClusterRenderer;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -39,6 +43,7 @@ import us.petrolog.nexus.R;
 import us.petrolog.nexus.events.MapLoadedEvent;
 import us.petrolog.nexus.events.SendDeviceListEvent;
 import us.petrolog.nexus.events.StartDetailFragmentEvent;
+import us.petrolog.nexus.misc.ClusterMarkerLocation;
 import us.petrolog.nexus.rest.model.Device;
 
 /**
@@ -70,6 +75,8 @@ public class MapPetrologFragment extends Fragment {
     private int mShowCaseCounter = 0;
 
     boolean isSatView = false;
+
+    ClusterManager<ClusterMarkerLocation> mClusterManager;
 
     private Device mDeviceClicked;
 
@@ -171,22 +178,34 @@ public class MapPetrologFragment extends Fragment {
     private void setUpMap() {
         mMap.setMyLocationEnabled(true);
 
-        mMap.setOnInfoWindowClickListener(new GoogleMap.OnInfoWindowClickListener() {
+        mClusterManager = new ClusterManager<ClusterMarkerLocation>(getActivity(), mMap);
+        mClusterManager.setRenderer(new OwnIconRendered(getContext(), mMap, mClusterManager));
+        mClusterManager.setOnClusterItemClickListener(new ClusterManager.OnClusterItemClickListener<ClusterMarkerLocation>() {
             @Override
-            public void onInfoWindowClick(Marker marker) {
-                Device device = mEventMarkerMap.get(marker.getId());
-                MainActivity.mBus.post(new StartDetailFragmentEvent(device.getRemoteDeviceId(), device.getName(), device.getLocation()));
-            }
-        });
-
-        mMap.setOnMarkerClickListener(new GoogleMap.OnMarkerClickListener() {
-            @Override
-            public boolean onMarkerClick(Marker marker) {
-                mDeviceClicked = mEventMarkerMap.get(marker.getId());
+            public boolean onClusterItemClick(ClusterMarkerLocation clusterMarkerLocation) {
+                mDeviceClicked = clusterMarkerLocation.getDevice();
                 mButtonGoToDetail.show();
                 return false;
             }
         });
+        mClusterManager.setOnClusterItemInfoWindowClickListener(new ClusterManager.OnClusterItemInfoWindowClickListener<ClusterMarkerLocation>() {
+            @Override
+            public void onClusterItemInfoWindowClick(ClusterMarkerLocation clusterMarkerLocation) {
+                Device device = clusterMarkerLocation.getDevice();
+                MainActivity.mBus.post(new StartDetailFragmentEvent(device.getRemoteDeviceId(), device.getName(), device.getLocation()));
+
+            }
+        });
+        mClusterManager.setOnClusterClickListener(new ClusterManager.OnClusterClickListener<ClusterMarkerLocation>() {
+            @Override
+            public boolean onClusterClick(Cluster<ClusterMarkerLocation> cluster) {
+                Log.d(TAG, "cluster click click");
+                return false;
+            }
+        });
+        mMap.setOnCameraChangeListener(mClusterManager);
+        mMap.setOnInfoWindowClickListener(mClusterManager);
+        mMap.setOnMarkerClickListener(mClusterManager);
 
         mMap.setOnMapClickListener(new GoogleMap.OnMapClickListener() {
             @Override
@@ -196,7 +215,6 @@ public class MapPetrologFragment extends Fragment {
         });
 
         // Initiate loadings
-
         mMap.setOnMapLoadedCallback(new GoogleMap.OnMapLoadedCallback() {
             @Override
             public void onMapLoaded() {
@@ -217,75 +235,70 @@ public class MapPetrologFragment extends Fragment {
     @Subscribe
     public void getDeviceList(SendDeviceListEvent event) {
         if (isFragmentUIActive()) {
-            LatLngBounds.Builder builder = new LatLngBounds.Builder();
+            LatLngBounds.Builder boundsBuilder = new LatLngBounds.Builder();
             mEventMarkerMap = new HashMap<>();
 
             if (event != null) {
                 for (Device device : event.getDevices()) {
-                    int deviceStatus = device.getRemoteDeviceStatus();
-                    float markerColor = 0;
-                    BitmapDrawable bitmapDraw = null;
-                    switch (deviceStatus) {
-                        case 0: // No data
-                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_black_pin);
-                            break;
-                        case 1: // active
-                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_green_pin);
-                            break;
-                        case 2: // Inactive
-                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_yellow_pin);
-                            break;
-                        case 3: // Offline
-                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_grey_pin);
-                            break;
-                        case 4: // Alert
-                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_red_pin);
-                            break;
-                        default:
-                            bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_pin);
-                            break;
-                    }
-                    //Bitmap bitmap = resizeMapIcons("pin_blue", 30, 30);
-                    int height = 50;
-                    int width = 40;
-                    Bitmap b = bitmapDraw.getBitmap();
-                    Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
-
                     LatLng latLng = new LatLng(device.getLatitude(), device.getLongitude());
-                    builder.include(latLng);
-                    Marker marker = mMap.addMarker(new MarkerOptions()
-                            .position(latLng)
-                            .title(device.getName() + " - " + device.getLocation())
-                            //                        .icon(getBitmapDescriptor(R.drawable.ic_place_red_24dp)));
-                            .icon(BitmapDescriptorFactory.fromBitmap(smallMarker)));
+                    boundsBuilder.include(latLng);
 
-                    mEventMarkerMap.put(marker.getId(), device);
+                    mClusterManager.addItem(new ClusterMarkerLocation(latLng, device));
                 }
                 // Animates the camera to show all the current markers
-                mBounds = builder.build();
+                mBounds = boundsBuilder.build();
                 mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(mBounds, 20));
 
             }
         }
     }
 
-//    private BitmapDescriptor getBitmapDescriptor(int id) {
-//        Drawable vectorDrawable = ContextCompat.getDrawable(getContext(), id);
-//        Utils.init(getContext());
-//        int h = ((int) Utils.convertDpToPixel(40));
-//        int w = ((int) Utils.convertDpToPixel(40));
-//        vectorDrawable.setBounds(0, 0, w, h);
-//        Bitmap bm = Bitmap.createBitmap(w, h, Bitmap.Config.ARGB_8888);
-//        Canvas canvas = new Canvas(bm);
-//        vectorDrawable.draw(canvas);
-//        return BitmapDescriptorFactory.fromBitmap(bm);
-//    }
-//
-//    public Bitmap resizeMapIcons(String iconName,int width, int height){
-//        Bitmap imageBitmap = BitmapFactory.decodeResource(getResources(),getResources().getIdentifier(iconName, "drawable", getActivity().getPackageName()));
-//        Bitmap resizedBitmap = Bitmap.createScaledBitmap(imageBitmap, width, height, false);
-//        return resizedBitmap;
-//    }
+    /**
+     * Is used by the cluster to render custom markers
+     */
+    class OwnIconRendered extends DefaultClusterRenderer<ClusterMarkerLocation> {
+
+        public OwnIconRendered(Context context, GoogleMap map,
+                               ClusterManager<ClusterMarkerLocation> clusterManager) {
+            super(context, map, clusterManager);
+        }
+
+        @Override
+        protected void onBeforeClusterItemRendered(ClusterMarkerLocation item, MarkerOptions markerOptions) {
+            BitmapDrawable bitmapDraw = null;
+
+            int height = 60;
+            int width = 50;
+            int deviceStatus = item.getDevice().getRemoteDeviceStatus();
+
+            switch (deviceStatus) {
+                case 0: // No data
+                    bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_black_pin);
+                    break;
+                case 1: // active
+                    bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_green_pin);
+                    break;
+                case 2: // Inactive
+                    bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_yellow_pin);
+                    break;
+                case 3: // Offline
+                    bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_grey_pin);
+                    break;
+                case 4: // Alert
+                    bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_red_pin);
+                    break;
+                default:
+                    bitmapDraw = (BitmapDrawable) getResources().getDrawable(R.drawable.loc_pin);
+                    break;
+            }
+            Bitmap b = bitmapDraw.getBitmap();
+            Bitmap smallMarker = Bitmap.createScaledBitmap(b, width, height, false);
+            markerOptions.icon(BitmapDescriptorFactory.fromBitmap(smallMarker));
+            //markerOptions.snippet(item.getDevice().);
+            markerOptions.title(item.getDevice().getName());
+            super.onBeforeClusterItemRendered(item, markerOptions);
+        }
+    }
 
     @Override
     public void onCreateOptionsMenu(Menu menu, MenuInflater inflater) {

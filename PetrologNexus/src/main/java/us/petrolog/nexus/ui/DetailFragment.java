@@ -472,17 +472,16 @@ public class DetailFragment extends Fragment {
             DeviceEfficiency deviceEfficiency = deviceEfficiencyList.get(i);
 
             Calendar date = Utility.getFormattedDate(deviceEfficiency.getDateTimeStamp());
-            SimpleDateFormat formatter = new SimpleDateFormat("MMM-dd");
-            String dateString = formatter.format(date.getTime());
-
-            // For the runtime card
-            if (today == date.get(Calendar.DAY_OF_MONTH)) {
-                DeviceEfficiency deviceEfficiencyToday = deviceEfficiencyList.get(0);
-                mDeviceEfficiencyToday = deviceEfficiencyToday.getEfficiency();
-            } else if (!isYesterdayReached) {
-                isYesterdayReached = true;
-                DeviceEfficiency deviceEfficiencyYesterday = deviceEfficiencyList.get(i);
-                mDeviceEfficiencyYesterday = deviceEfficiencyYesterday.getEfficiency();
+            if (date != null) {
+                // For the runtime card
+                if (today == date.get(Calendar.DAY_OF_MONTH)) {
+                    DeviceEfficiency deviceEfficiencyToday = deviceEfficiencyList.get(0);
+                    mDeviceEfficiencyToday = deviceEfficiencyToday.getEfficiency();
+                } else if (!isYesterdayReached) {
+                    isYesterdayReached = true;
+                    DeviceEfficiency deviceEfficiencyYesterday = deviceEfficiencyList.get(i);
+                    mDeviceEfficiencyYesterday = deviceEfficiencyYesterday.getEfficiency();
+                }
             }
         }
 

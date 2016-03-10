@@ -39,7 +39,7 @@ public class Utility {
      */
     public static Calendar getFormattedDate(String stringDate) {
         SimpleDateFormat formatter;
-        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss.SSS");
+        formatter = new SimpleDateFormat("yyyy-MM-dd'T'HH:mm:ss");
         try {
             Calendar calendar = new GregorianCalendar();
             Date date = formatter.parse(stringDate);
