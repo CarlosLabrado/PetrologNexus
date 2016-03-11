@@ -423,18 +423,6 @@
                 android:layout_centerVertical="true"
                 android:visibility="visible"/>
 
-            <ProgressBar
-                android:id="@+id/progressBarDyna"
-                style="?android:attr/progressBarStyleHorizontal"
-                android:layout_width="100dp"
-                android:layout_height="wrap_content"
-                android:layout_gravity="bottom|right"
-                android:indeterminate="false"
-                android:max="100"
-                android:paddingRight="20dp"
-                android:progressBackgroundTint="@color/mainGray"
-                android:progressBackgroundTintMode="src_in"
-                android:progressTint="@color/mainBlue"/>
 
         </android.support.v7.widget.CardView>
 

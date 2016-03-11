@@ -1,12 +1,10 @@
 package us.petrolog.nexus.ui;
 
-import android.animation.ObjectAnimator;
 import android.content.Context;
 import android.content.res.Resources;
 import android.graphics.Color;
 import android.graphics.DashPathEffect;
 import android.graphics.Paint;
-import android.graphics.PorterDuff;
 import android.net.Uri;
 import android.os.AsyncTask;
 import android.os.Bundle;
@@ -22,7 +20,6 @@ import android.view.View;
 import android.view.ViewGroup;
 import android.view.animation.Animation;
 import android.view.animation.AnimationUtils;
-import android.view.animation.LinearInterpolator;
 import android.widget.ProgressBar;
 import android.widget.RelativeLayout;
 import android.widget.TextSwitcher;
@@ -103,8 +100,6 @@ public class DetailFragment extends Fragment {
     LineChartView mLinechartHistory;
     @Bind(R.id.linechartGraph)
     LineChart mLinechartGraph;
-    @Bind(R.id.progressBarDyna)
-    ProgressBar mProgressBarDyna;
     @Bind(R.id.strokes_pump_up)
     TextView mTextViewStrokesPumpUp;
     @Bind(R.id.strokes_pump_off)
@@ -353,15 +348,6 @@ public class DetailFragment extends Fragment {
     public void onDestroyView() {
         super.onDestroyView();
         ButterKnife.unbind(this);
-    }
-
-    private void startDynaLoadingBarAnimation() {
-        mProgressBarDyna.getIndeterminateDrawable().setColorFilter(getResources().getColor(R.color.mainBlue), PorterDuff.Mode.SRC_IN);
-
-        ObjectAnimator progressAnimator = ObjectAnimator.ofInt(mProgressBarDyna, "progress", 0, 100);
-        progressAnimator.setDuration(10000);
-        progressAnimator.setInterpolator(new LinearInterpolator());
-        progressAnimator.start();
     }
 
 
@@ -703,7 +689,6 @@ public class DetailFragment extends Fragment {
                 public void onComplete(ArrayList<ArrayList> chartValues, Exception e) {
                     if (isFragmentUIActive()) {
                         buildChart(chartValues);
-                        startDynaLoadingBarAnimation();
                     }
                 }
             }).execute(mDeviceGraph);
