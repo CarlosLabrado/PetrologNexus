@@ -34,27 +34,22 @@ import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
+import com.path.android.jobqueue.JobManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.Stack;
 
 import butterknife.Bind;
 import butterknife.ButterKnife;
-import retrofit2.Call;
-import retrofit2.Callback;
-import retrofit2.Response;
 import us.petrolog.nexus.Constants;
 import us.petrolog.nexus.DetailActivity;
 import us.petrolog.nexus.FirstApp;
 import us.petrolog.nexus.R;
 import us.petrolog.nexus.events.MapLoadedEvent;
-import us.petrolog.nexus.events.SendDeviceListEvent;
 import us.petrolog.nexus.events.StartDetailFragmentEvent;
+import us.petrolog.nexus.jobs.JobGetDevicesFromBackend;
 import us.petrolog.nexus.misc.Utility;
-import us.petrolog.nexus.rest.model.Device;
 
 public class MainActivity extends AppCompatActivity
         implements NavigationView.OnNavigationItemSelectedListener,
@@ -92,6 +87,8 @@ public class MainActivity extends AppCompatActivity
 
     private boolean isMapReadyEventFired;
 
+    JobManager mJobManager;
+
 
     @Override
     protected void onCreate(Bundle savedInstanceState) {
@@ -104,6 +101,10 @@ public class MainActivity extends AppCompatActivity
 
         mUserName = getIntent().getExtras().getString(Constants.EXTRA_USER_NAME);
         mUserEmail = getIntent().getExtras().getString(Constants.EXTRA_USER_EMAIL);
+
+        mJobManager = FirstApp.getInstance().getJobManager();
+
+        FirstApp.getInstance().recreateRestClient();
 
         /**toolBar **/
         setUpToolBar();
@@ -170,7 +171,7 @@ public class MainActivity extends AppCompatActivity
             public void run() {
                 if (!isMapReadyEventFired) {
                     isMapReadyEventFired = true;
-                    goToTheBackend();
+                    mJobManager.addJobInBackground(new JobGetDevicesFromBackend());
                 }
             }
         }, 10000);
@@ -497,7 +498,7 @@ public class MainActivity extends AppCompatActivity
     @Subscribe
     public void mapFinishedLoading(MapLoadedEvent event) {
         isMapReadyEventFired = true;
-        goToTheBackend();
+        mJobManager.addJobInBackground(new JobGetDevicesFromBackend());
     }
 
 
@@ -512,38 +513,6 @@ public class MainActivity extends AppCompatActivity
                     .addToBackStack(null)
                     .replace(R.id.container, fragment).commit();
         }
-    }
-
-
-    /**
-     * goes to the backend to get all the devices that this user can see
-     */
-    private void goToTheBackend() {
-
-        final List<Device> devices = new ArrayList<>();
-
-        Call<List<Device>> call = FirstApp.getRestClient().getApiService().getDevices();
-        call.enqueue(new Callback<List<Device>>() {
-            @Override
-            public void onResponse(Call<List<Device>> call, Response<List<Device>> response) {
-                if (response.body() != null) {
-                    for (int i = 0; i < response.body().size(); i++) {
-                        devices.add(response.body().get(i));
-                        response.body();
-                    }
-                    MapPetrologFragment.mBus.post(new SendDeviceListEvent(devices, false));
-                    //getDeviceDetail(devices.get(0).getRemoteDeviceId());
-
-                    Log.d(TAG, "Callback successfully returned");
-                }
-
-            }
-
-            @Override
-            public void onFailure(Call<List<Device>> call, Throwable t) {
-                Log.e(TAG, "Callback failed");
-            }
-        });
     }
 
 

@@ -1,14 +1,5 @@
 package us.petrolog.nexus.rest;
 
-/**
- * Created by carlos on 2/26/16.
- */
-
-import android.content.Context;
-import android.content.SharedPreferences;
-import android.preference.PreferenceManager;
-import android.util.Base64;
-
 import com.google.gson.Gson;
 import com.google.gson.GsonBuilder;
 
@@ -23,24 +14,16 @@ import retrofit2.converter.gson.GsonConverterFactory;
 import us.petrolog.nexus.Constants;
 import us.petrolog.nexus.rest.service.ApiService;
 
-
-public class RestClient {
+/**
+ * Created by Vazh on 11/3/2016.
+ */
+public class RestClientForLogin {
     private ApiService apiService;
-    private Context mContext;
     private String mFullAuthString;
 
-    public RestClient(Context applicationContext) {
+    public RestClientForLogin() {
 
-        mContext = applicationContext;
-
-        SharedPreferences settings =
-                PreferenceManager.getDefaultSharedPreferences(mContext);
-
-        String userEmailFromSP = settings.getString(Constants.SP_USER_EMAIL, "");
-        String userPasswordFromSP = settings.getString(Constants.SP_USER_PASSWORD, "");
-        String auth = new String(Base64.encode((userEmailFromSP + ":" + userPasswordFromSP).getBytes(), Base64.URL_SAFE | Base64.NO_WRAP));
-        mFullAuthString = "Basic " + auth + "," + Constants.API_KEY; // This should look something like this Authorization: Basic c29wb3J0ZUBpbnRlbGVjdGl4LmNvbToxMjM0NTY=,ApiKey= zkPlklei#
-
+        mFullAuthString = Constants.API_KEY;
 
         Gson gson = new GsonBuilder()
                 .setDateFormat("yyyy'-'MM'-'dd'T'HH':'mm':'ss'.'SSS'Z'")
@@ -65,6 +48,7 @@ public class RestClient {
         OkHttpClient.Builder builder = new OkHttpClient.Builder();
         builder.interceptors().add(interceptor);
         OkHttpClient client = builder.build();
+
 
         Retrofit retrofit = new Retrofit.Builder()
                 .baseUrl(Constants.BASE_URL)

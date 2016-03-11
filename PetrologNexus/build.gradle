@@ -42,6 +42,10 @@ dependencies {
     // for clustering
     compile 'com.google.maps.android:android-maps-utils:0.4.3'
 
+    // Priority job queue
+    compile 'com.github.yigit:android-priority-jobqueue:v2-SNAPSHOT'
+
+
     compile files('libs/androidplot-core-0.6.0.jar')
 
     // History Chart

@@ -88,7 +88,7 @@ public class SplashScreenActivity extends AppCompatActivity {
         mProgressBarSplash.setVisibility(View.VISIBLE);
         mLinearLayoutLoginContainer.setVisibility(View.GONE);
 
-        Call<User> call = FirstApp.getRestClient().getApiService().userLogin(userBody);
+        Call<User> call = FirstApp.getRestClientForLogin().getApiService().userLogin(userBody);
         call.enqueue(new Callback<User>() {
             @Override
             public void onResponse(Call<User> call, Response<User> response) {
