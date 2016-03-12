@@ -17,7 +17,7 @@
         android:src="@drawable/ic_satellite_white_24dp"
         android:elevation="4dp"
         app:rippleColor="@color/grey_400"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
 
         android:layout_above="@+id/buttonFocusOnDevices"
         android:layout_alignLeft="@+id/buttonFocusOnDevices"
@@ -32,7 +32,7 @@
         android:src="@drawable/ic_pin_drop_black_24dp"
         android:elevation="4dp"
         app:rippleColor="@color/grey_400"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
 
         android:layout_alignParentBottom="true"
         android:layout_alignParentLeft="true"
@@ -49,7 +49,7 @@
         android:src="@drawable/ic_forward_white_24dp"
         android:elevation="4dp"
         app:rippleColor="@color/grey_400"
-        app:backgroundTint="@color/colorPrimary"
+        app:backgroundTint="@color/colorAccent"
 
         android:layout_centerVertical="true"
         android:layout_alignParentRight="true"
