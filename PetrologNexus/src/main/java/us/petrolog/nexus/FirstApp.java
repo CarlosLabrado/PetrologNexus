@@ -3,9 +3,9 @@ package us.petrolog.nexus;
 import android.app.Application;
 import android.util.Log;
 
-import com.path.android.jobqueue.JobManager;
-import com.path.android.jobqueue.config.Configuration;
-import com.path.android.jobqueue.log.CustomLogger;
+import com.birbit.android.jobqueue.JobManager;
+import com.birbit.android.jobqueue.config.Configuration;
+import com.birbit.android.jobqueue.log.CustomLogger;
 
 import us.petrolog.nexus.rest.RestClient;
 import us.petrolog.nexus.rest.RestClientForLogin;
@@ -72,7 +72,7 @@ public class FirstApp extends Application {
                 .loadFactor(3)//3 jobs per consumer
                 .consumerKeepAlive(120)//wait 2 minute
                 .build();
-        jobManager = new JobManager(this, configuration);
+        jobManager = new JobManager(configuration);
     }
 
     public JobManager getJobManager() {

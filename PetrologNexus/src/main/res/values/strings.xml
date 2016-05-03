@@ -115,6 +115,7 @@
     <string name="dialog_not_connected_tittle">No internet connection</string>
     <string name="dialog_not_connected_message">It appears that you don\'t have an active internet connection, this application needs an active internet connection, please check your settings and try again</string>
     <string name="dialog_not_connected_close">Close</string>
+    <string name="dialog_not_connected_legacy">Take me to Legacy</string>
 
     <string name="dialog_log_out_tittle">Log out</string>
     <string name="dialog_log_out_message">Are you sure you want to log out?</string>
@@ -141,6 +142,7 @@
     <string name="drawer_items_log_out">Log out</string>
     <string name="drawer_items_legacy">Legacy</string>
     <string name="action_help">help</string>
+    <string name="action_refresh">refresh</string>
     <string name="help_map_focus">Click here to focus on your wells, instead of your actual location</string>
     <string name="help_map_satellite">Click here to toggle between the satellite view and the normal view</string>
     <string name="help_attention">Click in any of the wells on this list to go to the details</string>

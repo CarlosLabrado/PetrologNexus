@@ -2,9 +2,15 @@
 <menu xmlns:android="http://schemas.android.com/apk/res/android"
       xmlns:app="http://schemas.android.com/apk/res-auto">
     <item
+        android:id="@+id/action_refresh_map"
+        android:title="@string/action_refresh"
+        android:orderInCategory="100"
+        app:showAsAction="ifRoom"
+        android:icon="@drawable/ic_cached_white_24dp"/>
+    <item
         android:id="@+id/action_help_map"
         android:title="@string/action_help"
-        android:orderInCategory="100"
+        android:orderInCategory="200"
         app:showAsAction="ifRoom"
         android:icon="@drawable/ic_help_outline_white_24dp"/>
 </menu>

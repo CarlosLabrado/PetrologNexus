@@ -301,7 +301,7 @@ public class DetailActivity extends AppCompatActivity implements
 
         switch (item.getItemId()) {
             case R.id.connect:
-//                initiateBluetoothConnection();
+                initiateBluetoothConnection();
                 break;
 
             case R.id.disconnect:
@@ -726,7 +726,7 @@ public class DetailActivity extends AppCompatActivity implements
                 /* Post Petrolog last 30 days of history */
                 wellHistoricalRuntimePost.post();
                 /* Action bar title (Well Name) */
-                getSupportActionBar().setTitle(getString(R.string.app_title) + " - " + wellName);
+                getSupportActionBar().setTitle(getString(R.string.app_title) + " Legacy - " + wellName);
                 /* Run Serial Heart Beat only if BT connection established */
                 Connected = true;
                 Toast.makeText(DetailActivity.this, "Connected", Toast.LENGTH_SHORT).show();

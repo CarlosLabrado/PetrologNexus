@@ -310,10 +310,17 @@ public class MapPetrologFragment extends Fragment {
     public boolean onOptionsItemSelected(MenuItem item) {
         int id = item.getItemId();
 
+        if (id == R.id.action_refresh_map) {
+            callForManualRefresh();
+        }
         if (id == R.id.action_help_map) {
             showShowcaseHelp();
         }
         return super.onOptionsItemSelected(item);
+    }
+
+    private void callForManualRefresh() {
+        MainActivity.mBus.post(new MapLoadedEvent());
     }
 
 

@@ -28,13 +28,13 @@ import android.view.MenuItem;
 import android.view.View;
 import android.widget.TextView;
 
+import com.birbit.android.jobqueue.JobManager;
 import com.google.android.gms.common.ConnectionResult;
 import com.google.android.gms.common.api.GoogleApiClient;
 import com.google.android.gms.location.LocationListener;
 import com.google.android.gms.location.LocationRequest;
 import com.google.android.gms.location.LocationServices;
 import com.google.android.gms.maps.model.LatLng;
-import com.path.android.jobqueue.JobManager;
 import com.squareup.otto.Bus;
 import com.squareup.otto.Subscribe;
 
@@ -370,13 +370,15 @@ public class MainActivity extends AppCompatActivity
         AlertDialog.Builder dialog = new AlertDialog.Builder(this);
         dialog.setTitle(getResources().getString(R.string.dialog_not_connected_tittle));
         dialog.setMessage(getResources().getString(R.string.dialog_not_connected_message));
-        dialog.setNegativeButton(getString(R.string.dialog_not_connected_close), new DialogInterface.OnClickListener() {
+        dialog.setNegativeButton(getString(R.string.dialog_not_connected_legacy), new DialogInterface.OnClickListener() {
 
             @Override
             public void onClick(DialogInterface paramDialogInterface, int paramInt) {
-                finish();
+                Intent intent = new Intent(getApplicationContext(), DetailActivity.class);
+                startActivity(intent);
             }
         });
+        dialog.setCancelable(false);
         dialog.show();
     }
 
